@@ -1,0 +1,1155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="50280d7f-fd5e-4f1e-8c34-679eb05952a2" activeEnvironment="Default environment" name="Micro-Services_Demo_Sprint 0" lastOpened="2016-09-22T16:43:37.114+05:30" resourceRoot="" soapui-version="6.0.0" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="f2be1a45-8f1d-4b5c-8818-af5ba6d11bd6" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 1" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:environmentSpec><con:entry environmentId="26e844f1-d86d-416b-ac1d-5a0abe45436d"><con:authProfile>Inherit From Parent</con:authProfile></con:entry></con:environmentSpec><con:resource name="/server/poc/bh_sl01na00/views/bh_sl01na00" path="/server/poc/bh_sl01na00/views/bh_sl01na00" id="b97ca824-804b-4d79-a9f9-69cff4f71d28"><con:settings/><con:parameters><con:parameter><con:name>$format</con:name><con:value>json</con:value><con:style>QUERY</con:style><con:default>json</con:default></con:parameter></con:parameters><con:method name="GET" id="3fc9a6c3-13a4-4c28-8963-10fae06d00cc" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html; subtype=denodo-6.0;charset=UTF-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:xht="http://www.w3.org/1999/xhtml">xht:html</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json; subtype=denodo-6.0;charset=UTF-8</con:mediaType><con:status>500</con:status><con:params/><con:element xmlns:bh="http://mum-dev/server/poc/bh_sl01na00/views/bh_sl01na00">bh:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; subtype=denodo-6.0;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:bh="http://mum-dev/server/poc/bh_sl01na00/views/bh_sl01na00">bh:Response</con:element></con:representation><con:request name="GET Request" id="9cf83147-871e-4c19-b8ec-b4d55524d77e" mediaType="application/json"><con:settings/><con:endpoint>http://mum-dev:9090</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/><con:environmentSpec><con:entry environmentId="26e844f1-d86d-416b-ac1d-5a0abe45436d"><con:authProfile>Inherit From Parent</con:authProfile></con:entry></con:environmentSpec></con:request><con:environmentSpec><con:entry environmentId="26e844f1-d86d-416b-ac1d-5a0abe45436d"><con:authProfile>Inherit From Parent</con:authProfile></con:entry></con:environmentSpec></con:method><con:environmentSpec><con:entry environmentId="26e844f1-d86d-416b-ac1d-5a0abe45436d"><con:authProfile>Inherit From Parent</con:authProfile></con:entry></con:environmentSpec></con:resource></con:interface><con:interface xsi:type="con:RestService" id="4dff2424-0334-489e-9c72-f2e517308b4c" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 2" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/denodo-restfulws/service_order_ds/views/bh_sm01na00" path="/denodo-restfulws/service_order_ds/views/bh_sm01na00" id="50889649-015c-4812-9813-aa792710d6aa"><con:settings/><con:parameters><con:parameter><con:name>sm01001</con:name><con:value>1500000000</con:value><con:style>QUERY</con:style><con:default>1500000000</con:default></con:parameter><con:parameter><con:name>$format</con:name><con:value>json</con:value><con:style>QUERY</con:style><con:default>json</con:default></con:parameter></con:parameters><con:method name="GET" id="85a5d08f-d963-4fda-8ccb-6af773ab66b6" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; subtype=denodo-6.0;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:bh="http://mum-dev/denodo-restfulws/service_order_ds/views/bh_sm01na00">bh:Response</con:element></con:representation><con:request name="GET Request" id="056d5333-b94a-4673-9a69-506b56123e18" mediaType="application/json"><con:settings/><con:endpoint>http://mum-dev:9090</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="b9f90011-20e4-4b76-8e3f-431c8f9697a7" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 3" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/api/order/1" path="/api/order/1" id="bdebbd6b-8cc0-48a2-8626-e15322b6a3c5"><con:settings/><con:parameters/><con:method name="GET" id="6b65c0f5-bc89-42d3-b167-4675a5c288e7" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="GET Request" id="07c25d05-9c15-4e43-be7c-55d6ff01a45f" mediaType="application/json"><con:settings/><con:endpoint>http://mum-dev:5004</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="1ae0d132-d17f-4ca3-bd8a-bb851b8fa534" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 4" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/api/order/1/ordername/4629" path="/api/order/1/ordername/4629" id="9be01c35-21ff-4f0d-bcc8-90452b6f2f5a"><con:settings/><con:parameters/><con:method name="GET" id="7ddacc45-b1c7-436b-8165-87ecc52c0af6" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="GET Request" id="d0c1abe9-e78f-4e9b-a7c9-2ec5b21fdf6e" mediaType="application/json"><con:settings/><con:endpoint>http://mum-dev:5004</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="c009e81b-4051-45c9-b529-efb382be05ed" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 5" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/api/order/companycode/1/ordername/1500" path="/api/order/companycode/1/ordername/1500" id="c81a31e3-7640-479f-af4d-49ce5b84043f"><con:settings/><con:parameters/><con:method name="GET" id="fb4ba1fd-d532-4c07-9163-5c5efb3a8ef7" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="GET Request" id="557a662a-6662-480f-8789-44a51f3de958" mediaType="application/json"><con:settings/><con:endpoint>http://mum-dev:5004</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="6b41937d-70ae-4ecc-90dd-d680294d208b" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 6" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/api/order/companycode/1" path="/api/order/companycode/1" id="af6d7da7-542c-4aae-a531-1b2f16fccc76"><con:settings/><con:parameters/><con:method name="GET" id="2a55a76e-4dee-42fe-88b6-6b1ccd85d952" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="GET Request" id="3b27a686-61c4-472b-b1f6-8839cd0e6d37" mediaType="application/json"><con:settings/><con:endpoint>http://mum-dev:5004</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="a64021fc-f605-45b4-aac7-ecc9f409a805" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 7" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/denodo-restfulws/service_order_ds/views/bh_sm01na00" path="/denodo-restfulws/service_order_ds/views/bh_sm01na00" id="dece3af4-71ab-452c-a815-686db27bbcfe"><con:settings/><con:parameters><con:parameter><con:name>$format</con:name><con:value>json</con:value><con:style>QUERY</con:style><con:default>json</con:default></con:parameter></con:parameters><con:method name="GET" id="ec03043a-b57f-4717-badf-853bbf6b37c5" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html; subtype=denodo-6.0;charset=UTF-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:xht="http://www.w3.org/1999/xhtml">xht:html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; subtype=denodo-6.0;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:bh="http://MUM-DEV/denodo-restfulws/service_order_ds/views/bh_sm01na00">bh:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="GET Request" id="efb59b48-65bd-47d1-b2f3-8490d7dc1fed" mediaType="application/json"><con:settings/><con:endpoint>http://MUM-DEV:9090</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="92c87381-3614-4d7e-a9ff-bd5d1eecabd3" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 8" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/helloworld6azurewebsites-2/help" path="/helloworld6azurewebsites-2/help" id="1821cda8-4ec9-483d-b04f-2d1541482ccd"><con:settings/><con:parameters><con:parameter><con:name>apikey</con:name><con:value>tltppwF4XYavrhh3SIVN4Ha8RApDpkJU</con:value><con:style>QUERY</con:style><con:default>tltppwF4XYavrhh3SIVN4Ha8RApDpkJU</con:default></con:parameter></con:parameters><con:method name="GET" id="96ae4761-4baa-41b3-81bd-c05f505f1fb2" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>text/html; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="GET Request" id="a2d0300c-84b7-40ae-a019-31bdd6a245b7" mediaType="application/json"><con:settings/><con:endpoint>http://apidev1.jci.com:9055</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="71eb26b1-de84-4eeb-979a-3182f5b81461" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 9" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/helloworld6azurewebsites-2/help" path="/helloworld6azurewebsites-2/help" id="cd884c90-9887-496a-a590-e78fb74f4cb9"><con:settings/><con:parameters/><con:method name="GET" id="61c01c0e-07dd-4ecd-9820-422021f8b141" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:help="http://apidev1.jci.com/helloworld6azurewebsites-2/help">help:Fault</con:element></con:representation><con:request name="GET Request" id="2f17433c-b25f-497f-b91d-04c856d69ab8" mediaType="application/json"><con:settings/><con:endpoint>http://apidev1.jci.com:9055</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="0554a221-a611-482f-9825-543b4607fcf3" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 10" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/" path="/" id="cdcf14e6-d30a-4c46-b353-f10d58c0e6c2"><con:settings/><con:parameters/><con:method name="GET" id="cce9b7cb-2c67-40cd-91d6-d4b3f3b10e82" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="GET Request" id="7b9edf49-cc45-4efe-8235-f734ed41ab4c" mediaType="application/json"><con:settings/><con:endpoint>http://${#Project#endpoint}</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="7a75db9e-5de2-4359-8e7c-c46f52f029f1" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 11" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/" path="/" id="e4509e0e-ce87-4074-9545-b7eba6b7d43d"><con:settings/><con:parameters/><con:method name="GET" id="67f11d3f-7c52-4681-9a64-b7c6fea0536e" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="GET Request" id="7d722d05-e8ea-428e-a017-6f21296545bd" mediaType="application/json"><con:settings/><con:endpoint>http://${RestfulURI}</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="2a36a729-4bb1-48c5-b5ff-4b7a21bab283" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 12" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/api/order/companycode/1/ServiceOrdNo/1500001" path="/api/order/companycode/1/ServiceOrdNo/1500001" id="65b1eb25-ae97-4b8a-b094-580f86ae8f13"><con:settings/><con:parameters/><con:method name="GET" id="48f49ea5-16b9-4b54-abe4-11153c78a14b" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="GET Request" id="e3452637-61f0-4a68-8997-5ba44d17781e" mediaType="application/json"><con:settings/><con:endpoint>http://mum-dev:5004</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="eada48bf-22d5-4de0-8064-4bbc9fe880b7" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 13" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/" path="/" id="6ad3b440-288f-4238-b412-aac5407519a8"><con:settings/><con:parameters/><con:method name="GET" id="8d3d445d-d074-4666-ad84-eba8e82bbbb2" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html; charset=us-ascii</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="GET Request" id="2db210ee-ef97-4f9b-8f5b-8430a9fc755f" mediaType="application/json"><con:settings/><con:endpoint>http://${RestfulURI}</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="7a45aaf0-d70d-466b-b5ef-31646b3c4488" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 14" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/${RestfulURI}" path="/${RestfulURI}" id="ad4c993c-a91a-4deb-9d92-2032d8e675a4"><con:settings/><con:parameters><con:parameter><con:name>RestfulURI</con:name><con:value>RestfulURI</con:value><con:style>TEMPLATE</con:style><con:default>RestfulURI</con:default></con:parameter></con:parameters><con:method name="GET" id="beca2e1d-348c-4c27-ab16-893070c93877" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="GET Request" id="1b260ee2-8217-4c3c-889d-e4f6ef90be9d" mediaType="application/json"><con:settings/><con:endpoint>http://mum-dev:5004</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="c0a23b02-1241-4879-993b-cd73963d1391" wadlVersion="http://wadl.dev.java.net/2009/02" name="REST Service 15" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/${RestfulURI}" path="/${RestfulURI}" id="e5649ab0-6f96-43b3-b36a-e2dd38f9193e"><con:settings/><con:parameters><con:parameter><con:name>RestfulURI</con:name><con:value>RestfulURI</con:value><con:style>TEMPLATE</con:style><con:default>RestfulURI</con:default></con:parameter></con:parameters><con:method name="GET" id="71cd0eb3-85cc-4118-972e-f021096caa0b" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="GET Request" id="bfac8a36-d60b-49fc-8d80-2c7190919c12" mediaType="application/json"><con:settings/><con:endpoint>http://mum-dev:5004</con:endpoint><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:parameters/></con:request></con:method></con:resource></con:interface><con:testSuite id="8452c9a2-6323-480a-a05c-12f79f99d720" name="Sprint_0_Demo"><con:settings/><con:savedRecentRuns>1</con:savedRecentRuns><con:runType>SEQUENTIAL</con:runType><con:testCase id="aafe42d8-953b-4f00-b57a-218be80562dd" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="TestCase 1_denodo level" searchProperties="true"><con:settings><con:setting id="IncludeOverview">true</con:setting><con:setting id="IncludeResults">true</con:setting><con:setting id="FlowLayout">false</con:setting><con:setting id="ErrorDetails">true</con:setting><con:setting id="IncludeCoverage">true</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="restrequest" name="REST Request" id="9b0e79fd-1132-4cdb-a87f-c746b96ad2d8"><con:settings/><con:config service="REST Service 1" resourcePath="/server/poc/bh_sl01na00/views/bh_sl01na00" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request" id="9cf83147-871e-4c19-b8ec-b4d55524d77e" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://mum-dev:9090</con:endpoint><con:request/><con:originalUri>http://mum-dev/server/poc/bh_sl01na00/views/bh_sl01na00</con:originalUri><con:credentials><con:username>admin</con:username><con:password>admin</con:password><con:domain>//mum-dev:9090</con:domain><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/><con:environmentSpec><con:entry environmentId="26e844f1-d86d-416b-ac1d-5a0abe45436d"><con:authProfile>Inherit From Parent</con:authProfile></con:entry></con:environmentSpec></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Get_Json_Data" id="0fa379e6-8957-47f4-b8a5-e1a829d48438"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+
+//log.info testRunner.testCase.getPropertyValue("Name")
+
+
+
+def responseContent = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("response")
+//log.info responseContent
+//log.info parse(responseContent).read('$..sl01001')
+def json_response_sl01001 = parse(responseContent).read('$..sl01001')
+//log.info json_response_sl01001[0]
+log.info json_response_sl01001
+/*
+def json_response_sl01001_pv = testRunner.testCase.testSuite.setPropertyValue("sl01001", json_response_sl01001.toString())
+
+log.info testRunner.testCase.testSuite.getPropertyValue("sl01001")
+*/
+
+/*
+for(def a=0; a&lt;=json_response_sl01001.size()-1; a++)
+{
+log.info json_response_sl01001[a]
+}
+*/
+
+
+
+/*
+log.info parse(responseContent).read('$..sl01002')
+log.info parse(responseContent).read('$..sl01005')
+log.info parse(responseContent).read('$..sl01013')
+log.info parse(responseContent).read('$..sl01109')          
+def var = parse(responseContent).read('$..Name')
+*/
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_compare sl01001" id="6ed62f1a-6e9f-4f30-a950-bf6cc890d1c1"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getResponce = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusId = parse(getResponce).read('$..sl01001')
+//log.info CusId
+
+wb = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DS_sl01na00_expected.xls"))
+
+sheet = wb.getSheet(0)
+log.info "Rows : " + sheet.getRows()
+
+for (def i=1; i&lt;sheet.getRows();i++) 
+   {
+   	 	
+   	     p=sheet.getCell(0,i).getContents()
+      	//log.info p
+      	for (def a : i)
+      	{
+      		if(CusId[a] == p)
+      		{
+      			log.info "TS PASS"
+      			log.info CusId[a]
+				log.info p
+      		}
+      		if(CusId[a] != p)
+      		{
+      			log.error "TS FAIL"
+      			log.error CusId[a]
+				log.error p
+				log.info "Trigger Email on TC Fail Step."
+				//testRunner.gotoStepByName("Send Mail")
+      		}
+      	}
+   }
+
+
+//$..book[?(@.isbn)]
+
+/*
+// Fetch By Name
+def ComCode = parse(getResponce).read('$..sl01002[0]')
+// Fetch By Type
+def Country = parse(getResponce).read('$..sl01005[0]')
+
+*/</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_compare sl01005" id="4868f4db-1b3e-4f3e-9a30-56e624aa5c4b"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getResponce = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusAdd = parse(getResponce).read('$..sl01005')
+//log.info CusId
+
+wb = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DS_sl01na00_expected.xls"))
+
+sheet = wb.getSheet(0)
+log.info "Rows : " + sheet.getRows()
+
+for (def i=1; i&lt;sheet.getRows();i++) 
+   {
+   	 	
+   	     p=sheet.getCell(4,i).getContents()
+      	//log.info p
+      	for (def a : i)
+      	{
+      		if(CusAdd[a] == p)
+      		{
+      			log.info "TS PASS"
+      			log.info CusAdd[a]
+				log.info p
+      		}
+      		else
+      		//if(CusId[a] != p)
+      		{
+      			log.error "TS FAIL"
+      			log.error CusAdd[a]
+				log.error p
+				//testRunner.gotoStepByName("Send Mail")
+      		}
+      	}
+   }
+
+
+//$..book[?(@.isbn)]
+
+/*
+// Fetch By Name
+def ComCode = parse(getResponce).read('$..sl01002[0]')
+// Fetch By Type
+def Country = parse(getResponce).read('$..sl01005[0]')
+
+*/</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_compare sl01002" id="20dfe81e-1c32-4f73-b4db-c8e859ee15ed"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getResponce = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusName = parse(getResponce).read('$..sl01002')
+//log.info CusId
+
+wb = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DS_sl01na00_expected.xls"))
+
+sheet = wb.getSheet(0)
+log.info "Rows : " + sheet.getRows()
+
+for (def i=1; i&lt;sheet.getRows();i++) 
+   {
+   	 	
+   	     p=sheet.getCell(1,i).getContents()
+      	//log.info p
+      	for (def a : i)
+      	{
+      		if(CusName[a] == p)
+      		{
+      			log.info "TS PASS"
+      			log.info CusName[a]
+				log.info p
+      		}
+      		else
+      		//if(CusId[a] != p)
+      		{
+      			log.error "TS FAIL"
+      			log.error CusName[a]
+				log.error p
+				//testRunner.gotoStepByName("Send Mail")
+      		}
+      	}
+   }
+
+
+//$..book[?(@.isbn)]
+
+/*
+// Fetch By Name
+def ComCode = parse(getResponce).read('$..sl01002[0]')
+// Fetch By Type
+def Country = parse(getResponce).read('$..sl01005[0]')
+
+*/</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_compare sl01013" id="41ef6345-d31f-4d2e-b47a-26a8beed6708"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getResponce = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusAdd = parse(getResponce).read('$..sl01013')
+//log.info CusId
+
+wb = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DS_sl01na00_ExpectedData_formatted.xls"))
+
+sheet = wb.getSheet(0)
+log.info "Rows : " + sheet.getRows()
+
+for (def i=1; i&lt;sheet.getRows();i++) 
+   {
+   	 	
+   	     p=sheet.getCell(12,i).getContents()
+      	//log.info p
+      	for (def a : i)
+      	{
+      		if(CusAdd[a] == p)
+      		{
+      			log.info "TS PASS"
+      			log.info CusAdd[a]
+				log.info p
+      		}
+      		else
+      		//if(CusId[a] != p)
+      		{
+      			log.error "TS FAIL"
+      			log.error CusAdd[a]
+				log.error p
+				log.error "Send email on TS Fail"
+				//testRunner.gotoStepByName("Send Mail")
+      		}
+      	}
+   }
+
+
+//$..book[?(@.isbn)]
+
+/*
+// Fetch By Name
+def ComCode = parse(getResponce).read('$..sl01002[0]')
+// Fetch By Type
+def Country = parse(getResponce).read('$..sl01005[0]')
+
+*/</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Negative Test Step" id="ac82748e-0f3e-4573-8c88-67baad7b7401"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getResponce = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusId = parse(getResponce).read('$..sl01001')
+
+
+if(CusId[9] == 456)
+{
+	log.info "TS PASS"
+     log.info CusId[9]
+	log.info p
+}
+else
+{
+	log.error "TS Fail"
+     log.error CusId[9]
+     testRunner.gotoStepByName("Send Mail on TS Fail")
+	
+}
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Response Times" id="8bc5bac0-21d4-4231-9d18-7a644c261808"><con:settings/><con:config><script>
+//def iTime = testRunner.timeTaken
+/*
+def iTime = testRunner.testCase.testSteps["REST Request"].timeTaken
+
+log.info iTime 
+
+if(iTime &lt;= 30000 ){
+	log.info "Test case get response within time"
+	log.info "Test case taken time is" + " " + testRunner.getTimeTaken();
+	}else{
+		testRunner.fail("Test Case taken time beyond the limit")
+	     log.error "Test case taken time is" + " " + testRunner.getTimeTaken();
+		log.info "Test case failed"
+	 
+	}
+	*/
+
+	def response_time = testRunner.testCase.testSteps["REST Request"].testRequest.response.timeTaken
+
+	log.info response_time
+
+	if(response_time &lt;= 500)
+	{
+		log.info "Response time is as expected!"
+	}
+	else
+	{
+		log.error "Response time exceeded expected time!"
+		testRunner.gotoStepByName("Send Mail on Wrong Response time")
+	}
+</script></con:config></con:testStep><con:testStep type="sendmailteststep" name="Send Mail on TS Fail" id="c4fc3e1e-3b7b-4451-977b-6e7a4fb60198"><con:settings/><con:config><subject>Test Step Failure Alert</subject><message>Hi! This is a Test Case Failure report.
+
+Validation : Value not equal -- has Failed!
+
+Note : This is an auto generated e-mail for validation purposes only. PLEASE DO NOT REPLY !! </message><server>webmail.jci.com</server><port>25</port><login>souvik.dey@jci.com</login><password>Jci@1111</password><mailTo>e.1.suryakanthi@jci.com, nilesh.kolhe-ext@jci.com,souvik.dey@jci.com</mailTo><mailFrom>souvik.dey@jci.com</mailFrom><timeout>5000</timeout><timeout_measure>1</timeout_measure></con:config></con:testStep><con:testStep type="sendmailteststep" name="Send Mail on Wrong Response time" id="6b6450ea-8330-49fb-9fd9-d52eaea161cc"><con:settings/><con:config><subject>Test Step Failure Alert</subject><message>Hi! This is a Test Case Failure report.
+
+Validation : Response time of the REST request should be less than 500ms -- has failed.
+
+Note : This is an auto generated e-mail for validation purposes only. PLEASE DO NOT REPLY !! </message><server>webmail.jci.com</server><port>25</port><login>souvik.dey@jci.com</login><password>Jci@1111</password><mailTo>e.1.suryakanthi@jci.com, nilesh.kolhe-ext@jci.com,shashank.singh-ext@jci.com,souvik.dey@jci.com,atul.singh-ext@jci.com,sameer.karkande-ext@jci.com</mailTo><mailFrom>souvik.dey@jci.com</mailFrom><timeout>5000</timeout><timeout_measure>1</timeout_measure></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_svk_1_compare sl01001_equals" id="994b438d-b87b-488b-8db6-135d9b29bd51" disabled="true"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getResponce = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusId = parse(getResponce).read('$..sl01001')
+//log.info CusId
+
+wb = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DS_sl01na00_expected.xls"))
+
+sheet = wb.getSheet(0)
+log.info "Rows : " + sheet.getRows()
+
+for (def i=1; i&lt;sheet.getRows();i++) 
+   {
+   	 	
+   	     p = sheet.getCell(0,i).getContents()
+      	//log.info p
+      	for (def a : i)
+      	{
+      		
+      		if(CusId[a]  == 456)
+      		//if(CusId[a].contains(p))
+      		{
+      			log.info "TS PASS"
+      			log.info CusId[a]
+				log.info p
+      		}
+      		else
+      		//if(CusId[a] != p)
+      		{
+      			log.error "TS FAIL"
+      			log.error CusId[a]
+				log.error p			
+				testRunner.gotoStepByName("Send Mail")
+      		}
+      	}
+   }
+
+
+//$..book[?(@.isbn)]
+
+/*
+// Fetch By Name
+def ComCode = parse(getResponce).read('$..sl01002[0]')
+// Fetch By Type
+def Country = parse(getResponce).read('$..sl01005[0]')
+
+*/</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_svk_1_sm01na00_sm01001" id="8f629fc7-6398-48d3-9de2-a97eb8af00cc" disabled="true"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getResponce = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusName = parse(getResponce).read('$..sl01002')
+//log.info CusId
+
+wb = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DS_sm01na00_expected.xls"))
+
+sheet = wb.getSheet(0)
+log.info "Rows : " + sheet.getRows()
+
+for (def i=1; i&lt;sheet.getRows();i++) 
+   {
+   	 	
+   	     p=sheet.getCell(1,i).getContents()
+      	//log.info p
+      	for (def a : i)
+      	{
+      		if(CusName[a] == p)
+      		{
+      			log.info "TS PASS"
+      			log.info CusName[a]
+				log.info p
+      		}
+      		else
+      		//if(CusId[a] != p)
+      		{
+      			log.error "TS FAIL"
+      			log.error CusName[a]
+				log.error p
+				testRunner.gotoStepByName("Send Mail")
+      		}
+      	}
+   }
+
+
+//$..book[?(@.isbn)]
+
+/*
+// Fetch By Name
+def ComCode = parse(getResponce).read('$..sl01002[0]')
+// Fetch By Type
+def Country = parse(getResponce).read('$..sl01005[0]')
+
+*/</script></con:config></con:testStep><con:properties><con:property><con:name>host</con:name><con:value>//mum-dev:9090/</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>c4fc3e1e-3b7b-4451-977b-6e7a4fb60198</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>994b438d-b87b-488b-8db6-135d9b29bd51</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>20dfe81e-1c32-4f73-b4db-c8e859ee15ed</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>8f629fc7-6398-48d3-9de2-a97eb8af00cc</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>4868f4db-1b3e-4f3e-9a30-56e624aa5c4b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>41ef6345-d31f-4d2e-b47a-26a8beed6708</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>ac82748e-0f3e-4573-8c88-67baad7b7401</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:environmentSpec><con:entry environmentId="26e844f1-d86d-416b-ac1d-5a0abe45436d"><con:authProfile>Inherit From Parent</con:authProfile></con:entry></con:environmentSpec></con:testCase><con:testCase id="4adc3127-fffa-4aa8-afcb-408c6d3dfc10" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="TestCase 2_Azure Level" searchProperties="true"><con:settings/><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="Groovy Script_Dynamic Azure URI" id="72488d70-f821-4bfc-af5f-7145d11d6a7f" disabled="true"><con:settings/><con:config><script>//context["resource"] = "/api/order/companycode/1/ServiceOrdNo/1500001"
+
+//http://mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500001
+
+// read property file
+def properties = new java.util.Properties();
+properties.load( new java.io.FileInputStream( "C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\Sprint 0_Azure url_variable uri_property file.properties" ));
+
+proj = testRunner.testCase.testSuite.project;
+
+def names = [];
+names =  properties.propertyNames();
+while( names.hasMoreElements() )
+{
+  def name = names.nextElement();
+  log.info name + " " + properties.getProperty(name);
+  proj.setPropertyValue(name, properties.getProperty(name)) ;
+}
+
+</script></con:config></con:testStep><con:testStep type="restrequest" name="REST Request_Dynamic Azure URI" id="7a52fcd8-abef-4c58-9d0c-cc65de157e12" disabled="true"><con:settings/><con:config service="REST Service 10" resourcePath="/" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_Dynamic Azure URI" id="7b9edf49-cc45-4efe-8235-f734ed41ab4c" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://${#Project#endpoint}</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/order/companycode/1/ServiceOrdNo/1500001/</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="REST Request_Denodo URL" id="c87b3e86-1a0f-4c5f-a11e-df2e0c6053df"><con:settings/><con:config service="REST Service 7" resourcePath="/denodo-restfulws/service_order_ds/views/bh_sm01na00" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_Denodo URL" id="efb59b48-65bd-47d1-b2f3-8490d7dc1fed" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://MUM-DEV:9090</con:endpoint><con:request/><con:originalUri>http://MUM-DEV/denodo-restfulws/service_order_ds/views/bh_sm01na00</con:originalUri><con:credentials><con:username>admin</con:username><con:password>admin</con:password><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="REST Request_Azure URL" id="e4bb0056-b99a-4267-a23d-6398f045ebdd"><con:settings/><con:config service="REST Service 6" resourcePath="/api/order/companycode/1" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_Azure URL" id="3b27a686-61c4-472b-b1f6-8839cd0e6d37" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://mum-dev:5004</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/order/companycode/1</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Check no of entries." id="c4c83265-55fb-4e8e-ab5b-1f2a3bddf4fa"><con:settings/><con:config><script>
+
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_Azure URL").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusId = parse(getAzureResponse).read('$..CustomerRef')
+
+def getDenodoResponse = testRunner.testCase.getTestStepByName("REST Request_Denodo URL").getPropertyValue("Response")
+def DenodoRes = parse(getDenodoResponse).read('$..sm01004')
+
+if( CusId.size() == DenodoRes.size() )
+{
+	log.info "TS PASS"
+	log.info CusId.size()
+	log.info DenodoRes.size()
+}
+else
+{
+	log.error "TS FAIL"
+}
+
+
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Set Counter Value" id="db64395a-69cd-4137-bf8c-628f8d338261"><con:settings/><con:config><script>
+
+
+
+//def getResponce = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+//def CusId = parse(getResponce).read('$..sl01001')
+//log.info CusId
+
+
+//def a = 1
+
+
+//testRunner.testCase.setPropertyValue("Counter", a.toString())
+
+def i = testRunner.testCase.getPropertyValue("Counter")
+//def counter_inc
+
+def counter_inc = i.toInteger() + 1
+
+
+testRunner.testCase.setPropertyValue("Counter", counter_inc.toString())
+
+log.info "Current Counter Value :" +testRunner.testCase.getPropertyValue("Counter")
+
+
+
+
+/*
+def j 
+
+++j*/</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Validate entries_Recurring" id="110c20e4-728f-4647-9ee8-11102966d97e"><con:settings/><con:config><script>
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+import java.io.IOException
+
+
+
+Workbook wb = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\Denodo and Azure Compare.xls"))
+
+Sheet sheetDenodo = wb.getSheet(0)
+def denodosheet_rows = sheetDenodo.getRows()
+//log.info "Rows in Denodo Sheet: " + sheetDenodo.getRows()
+
+Sheet sheetAzure = wb.getSheet(1)
+//log.info "Rows in Azure Sheet: " + sheetAzure.getRows()
+
+//Read DENODO Response
+
+def getDenodoResponse = testRunner.testCase.getTestStepByName("REST Request_Denodo URL").getPropertyValue("Response")
+
+def counter_value = testRunner.testCase.getPropertyValue("Counter").toInteger()
+
+//log.info counter_value
+//print counter_value
+
+//try{
+if(counter_value &lt;= 16)
+{
+for( i = counter_value ; i &lt;= counter_value ; i++ )
+{
+	for(def a : counter_value){
+	location_id_d = sheetDenodo.getCell(0,a).getContents()
+		//def location_id_d = "\$.."+p
+	}
+
+		//log.info location_id_d
+		json_locator = "\$.."+location_id_d 
+		log.info json_locator
+
+		//def CusId = parse(getDenodoResponse).read(json_locator)
+		CusId = parse(getDenodoResponse).read(json_locator)
+		log.info CusId[i]
+}
+}
+else
+{
+	log.error " All Cells are considered! Going to the next Test Step."
+	//testRunner.gotoStepByName("Groovy Script_Response Times")
+}
+	
+
+/*
+ * 
+ }catch(ArithmeticException e)
+{
+	e.printStackTrace()
+	testRunner.gotoStepByName("Groovy Script_Response Times")
+	}
+	*/
+
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_Azure URL").getPropertyValue("Response")
+
+if(counter_value &lt;= 16)
+{
+for( j = counter_value ; j &lt;= counter_value ; j++ )
+{
+	for(def b : counter_value){
+	location_id_d_1 = sheetAzure.getCell(0,b).getContents()
+		//def location_id_d = "\$.."+p
+	}
+
+		//log.info location_id_d
+		json_locator_1 = "\$.."+location_id_d_1
+		log.info json_locator_1
+
+		//def DenodoRes = parse(getAzureResponse).read(json_locator_1)
+		DenodoRes = parse(getAzureResponse).read(json_locator_1)
+		log.info DenodoRes[j]
+}
+
+}
+else
+{
+	log.error " All Cells are considered! Going to the next Test Step."
+	//testRunner.gotoStepByName("Groovy Script_Response Times")
+}
+
+if(counter_value &lt;= 16)
+{
+if( CusId[i] == DenodoRes[j] )
+{
+	log.info "TS PASS"
+	log.info CusId[i]
+	log.info DenodoRes[j]
+	
+}
+else
+{
+	log.error "TS FAIL"
+	log.error "Send mail on TS fail"
+}
+
+testRunner.gotoStepByName("Groovy Script_Set Counter Value")
+}
+
+else
+{
+	log.error " All Cells are considered! Going to the next Test Step."
+	testRunner.gotoStepByName("Groovy Script_Response Times")
+}
+
+
+
+
+/*
+for (counter_value  : denodosheet_rows ) 
+   {
+
+		location_id_d = sheetDenodo.getCell(0,counter_value).getContents()
+		//def location_id_d = "\$.."+p
+
+		log.info location_id_d
+   	     
+   	 	
+   	     
+   }
+
+
+
+//log.info getResponce
+
+// Fetch By ID
+
+/*
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_Azure URL").getPropertyValue("Response")
+def CusId = parse(getAzureResponse).read('$..ServiceOrdNo')
+
+def getDenodoResponse = testRunner.testCase.getTestStepByName("REST Request_Denodo URL").getPropertyValue("Response")
+def DenodoRes = parse(getDenodoResponse).read('$..sm01001')
+
+*/
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Response Times" id="4db89f5f-2152-4c11-a39d-32bf6df4141a"><con:settings/><con:config><script>
+//def iTime = testRunner.timeTaken
+/*
+def iTime = testRunner.testCase.testSteps["REST Request"].timeTaken
+
+log.info iTime 
+
+if(iTime &lt;= 30000 ){
+	log.info "Test case get response within time"
+	log.info "Test case taken time is" + " " + testRunner.getTimeTaken();
+	}else{
+		testRunner.fail("Test Case taken time beyond the limit")
+	     log.error "Test case taken time is" + " " + testRunner.getTimeTaken();
+		log.info "Test case failed"
+	 
+	}
+	*/
+
+	def response_time = testRunner.testCase.testSteps["REST Request_Azure URL"].testRequest.response.timeTaken
+
+	log.info response_time
+
+	if(response_time &lt;= 500)
+	{
+		log.info "Response time is as expected!"
+	}
+	else
+	{
+		log.error "Response time exceeded expected time!"
+		testRunner.gotoStepByName("Send Mail on Wrong Response time")
+	}
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Negative Test Step" id="b76c7690-e8dc-4896-a3ea-1e8f881cb041"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getResponce = testRunner.testCase.getTestStepByName("REST Request_Azure URL").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusId = parse(getResponce).read('$..CustCodeInv')
+
+
+if(CusId[9] == 456)
+{
+	log.info "TS PASS"
+     log.info CusId[9]
+	log.info p
+}
+else
+{
+	log.error "TS Fail"
+     log.error CusId[9]
+     testRunner.gotoStepByName("Send Mail on TS Fail")
+	
+}
+</script></con:config></con:testStep><con:testStep type="sendmailteststep" name="Send Mail on TS Fail" id="4488d742-ba30-4cf3-9568-0f49c92513cd" disabled="true"><con:settings/><con:config><subject>Test Step Failure Alert</subject><message>Hi! This is a Test Case Failure report.
+
+Validation : Value not equal -- has Failed!
+
+Note : This is an auto generated e-mail for validation purposes only. PLEASE DO NOT REPLY !! </message><server>webmail.jci.com</server><port>25</port><login>souvik.dey@jci.com</login><password>Jci@1111</password><mailTo>e.1.suryakanthi@jci.com, nilesh.kolhe-ext@jci.com,souvik.dey@jci.com</mailTo><mailFrom>souvik.dey@jci.com</mailFrom><timeout>5000</timeout><timeout_measure>1</timeout_measure></con:config></con:testStep><con:testStep type="sendmailteststep" name="Send Mail on Wrong Response time" id="8c0bbae7-01ee-4c82-b0b3-e5c676d105c3" disabled="true"><con:settings/><con:config><subject>Test Step Failure Alert</subject><message>Hi! This is a Test Case Failure report.
+
+Validation : Response time of the REST request should be less than 500ms -- has failed.
+
+Note : This is an auto generated e-mail for validation purposes only. PLEASE DO NOT REPLY !! </message><server>webmail.jci.com</server><port>25</port><login>souvik.dey@jci.com</login><password>Jci@1111</password><mailTo>e.1.suryakanthi@jci.com, nilesh.kolhe-ext@jci.com,shashank.singh-ext@jci.com,souvik.dey@jci.com,atul.singh-ext@jci.com,sameer.karkande-ext@jci.com</mailTo><mailFrom>souvik.dey@jci.com</mailFrom><timeout>5000</timeout><timeout_measure>1</timeout_measure></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Check ServiceOrdNo" id="52293d68-45d3-4434-bd87-f251b110fd59" disabled="true"><con:settings/><con:config><script>
+
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_Azure URL").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusId = parse(getAzureResponse).read('$..ServiceOrdNo')
+
+def getDenodoResponse = testRunner.testCase.getTestStepByName("REST Request_Denodo URL").getPropertyValue("Response")
+def DenodoRes = parse(getDenodoResponse).read('$..sm01001')
+
+for(def i = 0; i &lt;= CusId.size() - 1; i++ )
+if( CusId[i] == DenodoRes[i] )
+{
+	log.info "TS PASS"
+	log.info CusId[i]
+	log.info DenodoRes[i]
+	
+}
+else
+{
+	log.error "TS FAIL"
+}
+
+
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Check CustCodeInv" id="2399ca14-5c26-4f43-9a11-b8171aad95e4" disabled="true"><con:settings/><con:config><script>
+
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_Azure URL").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusId = parse(getAzureResponse).read('$..CustCodeInv')
+
+def getDenodoResponse = testRunner.testCase.getTestStepByName("REST Request_Denodo URL").getPropertyValue("Response")
+def DenodoRes = parse(getDenodoResponse).read('$..sm01002')
+
+for(def i = 0; i &lt;= CusId.size() - 1; i++ )
+if( CusId[i] == DenodoRes[i] )
+{
+	
+	log.info "TS PASS"
+	log.info CusId[i]
+	log.info DenodoRes[i]
+	
+}
+else
+{
+	log.error "TS FAIL"
+	log.info CusId[i]
+	log.info DenodoRes[i]
+}
+
+
+
+</script></con:config></con:testStep><con:properties><con:property><con:name>Counter</con:name><con:value>17</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>e4bb0056-b99a-4267-a23d-6398f045ebdd</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c87b3e86-1a0f-4c5f-a11e-df2e0c6053df</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>db64395a-69cd-4137-bf8c-628f8d338261</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>110c20e4-728f-4647-9ee8-11102966d97e</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c4c83265-55fb-4e8e-ab5b-1f2a3bddf4fa</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>4488d742-ba30-4cf3-9568-0f49c92513cd</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>8c0bbae7-01ee-4c82-b0b3-e5c676d105c3</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>4db89f5f-2152-4c11-a39d-32bf6df4141a</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>b76c7690-e8dc-4896-a3ea-1e8f881cb041</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>72488d70-f821-4bfc-af5f-7145d11d6a7f</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>7a52fcd8-abef-4c58-9d0c-cc65de157e12</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:testCase id="6a350aa4-7a1c-426c-aba5-de84b9dddb12" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="TestCase 2_Azure Level_Dynamic entries" searchProperties="true" disabled="true"><con:settings/><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="Groovy Script_Set Counter Value_Prop" id="c15fad57-cad5-46fd-92c0-2e24946bc411"><con:settings/><con:config><script>
+
+
+
+//def getResponce = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+//def CusId = parse(getResponce).read('$..sl01001')
+//log.info CusId
+
+
+//def a = 1
+
+
+//testRunner.testCase.setPropertyValue("Counter", a.toString())
+
+def i = testRunner.testCase.getPropertyValue("Counter")
+//def counter_inc
+
+def counter_inc = i.toInteger() + 1
+
+
+testRunner.testCase.setPropertyValue("Counter", counter_inc.toString())
+
+log.info "Current Counter Value :" +testRunner.testCase.getPropertyValue("Counter")
+
+
+
+
+/*
+def j 
+
+++j*/</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Read File line by line" id="bed0e4ae-1eb2-41c4-ba38-2c9301aa168b"><con:settings/><con:config><script>
+
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\trial read url resource line by line.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+
+def lines = file.readLines()
+if(lines[lineNo] != null){
+log.info  "Here is the first line: ${lines[lineNo]}"
+context["RestfulURI"] = "${lines[lineNo]}"
+//testRunner.gotoStepByName("REST Request")
+testRunner.gotoStepByName("REST Request 2")
+}
+else 
+{
+	testRunner.gotoStepByName("Send Mail")
+}
+/*
+//log.info lineNo 
+
+file.withReader { //reader ->
+//         while ((line = reader.readLine())!=null) {
+            log.info "${lineNo}. ${line}"
+            //lineNo++
+//         }
+      }
+
+      */</script></con:config></con:testStep><con:testStep type="restrequest" name="REST Request_Recurring Search" id="8ed45370-e1a0-464d-9db9-347b40278514"><con:settings/><con:config service="REST Service 15" resourcePath="/${RestfulURI}" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_Recurring Search" id="bfac8a36-d60b-49fc-8d80-2c7190919c12" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://mum-dev:5004</con:endpoint><con:request/><con:originalUri>http://mum-dev/RestfulURI</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_validate REST response" id="d8d14299-0281-44a8-803a-aa3e64dfadd5"><con:settings/><con:config><script>
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+//import com.eviware.soapui.model.iface
+
+/*
+def responseHolder = groovyUtils.getXmlHolder( testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response") )
+
+testRunner.testCase.setPropertyValue("xml_res", responseHolder)
+*/
+
+//def refNum = responseHolder.getNodeValue(“//html[1]/body[1]/p[1]”)
+
+
+
+def getResponse = testRunner.testCase.getTestStepByName("REST Request_Recurring Search").getPropertyValue("Response")
+def parseResponse = parse(getResponse).read("\$..ServiceOrdNo")
+
+log.info parseResponse[0]
+
+
+if(parseResponse[0] == null)
+{
+	//testRunner.gotoStepByName("Groovy Script_Set Counter Value_Prop")
+	testRunner.gotoStepByName("Send Mail")
+}
+else
+{
+	testRunner.gotoStepByName("Groovy Script_Set Counter Value_Prop")
+	//testRunner.gotoStepByName("Send Mail")
+}
+
+</script></con:config></con:testStep><con:testStep type="sendmailteststep" name="Send Mail" id="5406ffb1-9ea2-4882-9253-fc636ba2819a"><con:settings/><con:config><subject>Test</subject><message>Test for failure</message><server>webmail.jci.com</server><port>25</port><login>souvik.dey@jci.com</login><password>Jci@1111</password><mailTo>souvik.dey@jci.com</mailTo><mailFrom>souvik.dey@jci.com</mailFrom><timeout>3</timeout><timeout_measure>0</timeout_measure></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Dynamic Azure URI_Read Properties file" id="5933372b-fb88-4716-b4a6-ad8f5b33927b" disabled="true"><con:settings/><con:config><script>//context["resource"] = "/api/order/companycode/1/ServiceOrdNo/1500001"
+
+//http://mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500001
+
+// read property file
+def properties = new java.util.Properties();
+properties.load( new java.io.FileInputStream( "C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\Sprint 0_Azure url_variable uri_property file.properties" ));
+
+proj = testRunner.testCase.testSuite.project;
+
+def names = [];
+names =  properties.propertyNames();
+while( names.hasMoreElements() )
+//while( names.hasNext() )
+{
+  def name = names.nextElement();
+  log.info name + " " + properties.getProperty(name);
+  proj.setPropertyValue(name, properties.getProperty(name)) ;
+  context["RestfulURI"] = proj.getPropertyValue(name)
+  //testRunner.gotoStepByName("Groovy Script_Dynamic Resource")
+  testRunner.gotoStepByName("REST Request")
+}
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Dynamic Azure URI_Read Properties file_Counter" id="c350790e-1274-4d2a-bcaf-4504ccdc94aa" disabled="true"><con:settings/><con:config><script>//context["resource"] = "/api/order/companycode/1/ServiceOrdNo/1500001"
+
+//http://mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500001
+
+// read property file
+def properties = new java.util.Properties();
+properties.load( new java.io.FileInputStream( "C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\Sprint 0_Azure url_variable uri_property file.properties" ));
+
+proj = testRunner.testCase.testSuite.project;
+counter = testRunner.testCase.getPropertyValue("Counter")
+
+def names = [];
+names =  properties.propertyNames();
+while( names.hasMoreElements() )
+//while( names.hasNext() )
+{
+  def name = names.nextElement();
+  //def name = names[1];
+  log.info name + " " + properties.getProperty(name);
+  proj.setPropertyValue(name, properties.getProperty(name)) ;
+  context["RestfulURI"] = proj.getPropertyValue(name)
+  //testRunner.gotoStepByName("Groovy Script_Dynamic Resource")
+  testRunner.gotoStepByName("REST Request")
+}
+
+</script></con:config></con:testStep><con:testStep type="restrequest" name="REST Request" id="aed736d8-aec6-45d9-8b33-7b5db84efc56" disabled="true"><con:settings/><con:config service="REST Service 11" resourcePath="/" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request" id="7d722d05-e8ea-428e-a017-6f21296545bd" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://${RestfulURI}</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/order/companycode/1/ServiceOrdNo/1500001000/</con:originalUri><con:assertion type="Simple Contains" id="0c060e90-6935-4e0e-9ee4-7b60b7d8ff0e" name="Contains"><con:configuration><token>HTTP Error 404. The requested resource is not found.</token><ignoreCase>true</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="246a5557-c468-4f4c-8ceb-b2a9078fd53a" name="Script Assertion"><con:configuration/></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="goto" name="Conditional Goto" id="59fa7a5f-a12a-4f41-b408-517b3f563187" disabled="true"><con:settings/><con:config xsi:type="con:GotoStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:condition><con:name>Condition 1</con:name><con:type>XPATH</con:type><con:expression>//html[1]</con:expression></con:condition></con:config></con:testStep><con:properties><con:property><con:name>Counter</con:name><con:value>8</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>e4bb0056-b99a-4267-a23d-6398f045ebdd</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c87b3e86-1a0f-4c5f-a11e-df2e0c6053df</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>db64395a-69cd-4137-bf8c-628f8d338261</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>110c20e4-728f-4647-9ee8-11102966d97e</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c4c83265-55fb-4e8e-ab5b-1f2a3bddf4fa</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>4488d742-ba30-4cf3-9568-0f49c92513cd</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>8c0bbae7-01ee-4c82-b0b3-e5c676d105c3</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>4db89f5f-2152-4c11-a39d-32bf6df4141a</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>b76c7690-e8dc-4896-a3ea-1e8f881cb041</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>72488d70-f821-4bfc-af5f-7145d11d6a7f</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>7a52fcd8-abef-4c58-9d0c-cc65de157e12</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>aed736d8-aec6-45d9-8b33-7b5db84efc56</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c350790e-1274-4d2a-bcaf-4504ccdc94aa</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c15fad57-cad5-46fd-92c0-2e24946bc411</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>d8d14299-0281-44a8-803a-aa3e64dfadd5</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>bed0e4ae-1eb2-41c4-ba38-2c9301aa168b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>8ed45370-e1a0-464d-9db9-347b40278514</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>5406ffb1-9ea2-4882-9253-fc636ba2819a</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>5933372b-fb88-4716-b4a6-ad8f5b33927b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:testCase id="9326562e-50f4-4987-93e0-acf29f5c9db1" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="TestCase 5_Apigee Level" searchProperties="true"><con:settings/><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="restrequest" name="REST Request_Apigee URL_with apikey" id="7d02265d-a6b8-4af9-9fd5-04a0422a1831"><con:settings/><con:config service="REST Service 8" resourcePath="/helloworld6azurewebsites-2/help" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_Apigee URL_with apikey" id="a2d0300c-84b7-40ae-a019-31bdd6a245b7" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://apidev1.jci.com:9055</con:endpoint><con:request/><con:originalUri>http://apidev1.jci.com/helloworld6azurewebsites-2/help</con:originalUri><con:assertion type="Simple Contains" id="ff6ee1ff-09dc-4d7e-9879-ffe07ebdb198" name="Contains"><con:configuration><token>ASP.NET Web API Help Page</token><ignoreCase>true</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains" id="77b4d036-369a-45fb-a6c4-ff3906bcf93e" name="Contains 2" disabled="true"><con:configuration><token>Failed to resolve API Key variable request.queryparam.apikey</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="REST Request_Apigee URL_without apikey_Negative" id="f1f27d85-488b-4b70-88b0-b51119448496"><con:settings/><con:config service="REST Service 9" resourcePath="/helloworld6azurewebsites-2/help" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_Apigee URL_without apikey_Negative" id="2f17433c-b25f-497f-b91d-04c856d69ab8" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://apidev1.jci.com:9055</con:endpoint><con:request/><con:originalUri>http://apidev1.jci.com/helloworld6azurewebsites-2/help</con:originalUri><con:assertion type="Simple Contains" id="a668bef5-9b02-4fe0-bb4e-4022705d678c" name="Contains" disabled="true"><con:configuration><token>Failed to resolve API Key variable request.queryparam.apikey</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains" id="f24a28d4-f1e7-4bd9-96e7-79a3d3432138" name="Contains 2" disabled="true"><con:configuration><token>ASP.NET Web API Help Page</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="goto" name="Conditional Goto_Navigation on KEY Authentication failure" id="b11d71b7-b526-4fbd-87c0-ad149bcd0ee8"><con:settings/><con:config xsi:type="con:GotoStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:condition><con:name>Condition 1_Check Without APIKEY</con:name><con:type>XPATH</con:type><con:expression>declare namespace ns1='http://apidev1.jci.com/helloworld6azurewebsites-2/help';
+//ns1:Fault[1]/ns1:fault[1]/ns1:detail[1]/ns1:errorcode[1]</con:expression><con:targetStep>Send Mail on API KEY Authentication Failure</con:targetStep></con:condition></con:config></con:testStep><con:testStep type="sendmailteststep" name="Send Mail on API KEY Authentication Failure" id="c391e017-8224-47b7-a61c-54f776fb1c4a"><con:settings/><con:config><subject>Test Step Failure Alert</subject><message>Hi! This is a Test Case Failure report.
+
+Validation : REST Request_Apigee URL_with apikey -- Authentication of triggering the APIGEE url without API KEY -- has failed.
+
+Note : This is an auto generated e-mail for validation purposes only. PLEASE DO NOT REPLY !! </message><server>webmail.jci.com</server><port>25</port><login>souvik.dey@jci.com</login><password>Jci@1111</password><mailTo>e.1.suryakanthi@jci.com, nilesh.kolhe-ext@jci.com,shashank.singh-ext@jci.com,souvik.dey@jci.com,atul.singh-ext@jci.com,sameer.karkande-ext@jci.com</mailTo><mailFrom>souvik.dey@jci.com</mailFrom><timeout>5000</timeout><timeout_measure>1</timeout_measure></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Validate API key" id="f4fa008f-7f9a-485d-811e-6d6077643637" disabled="true"><con:settings/><con:config><script>
+import groovy.util.XmlSlurper
+import groovy.util.XmlParser
+import java.util.*
+
+
+
+//def getApigeeResponse = testRunner.testCase.getTestStepByName("REST Request_Apigee URL_with apikey").getPropertyValue("Response")
+
+def getApigeeResponse = testRunner.testCase.getTestStepByName("REST Request_Apigee URL_with apikey").getPropertyValue("apikey")
+
+def xml_response = new XmlSlurper(false,false,true).parseText(getApigeeResponse)
+
+//def xml_response = new XmlParser().parseText(getApigeeResponse)
+
+/*
+def parser = new XmlSlurper() 
+parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+def xml_response = parser.parseText(getApigeeResponse)
+*/
+
+
+log.info xml_response</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Validate no API key response" id="a4991133-6279-44eb-8ff7-4f14f0f4e3bf" disabled="true"><con:settings/><con:config><script>
+import groovy.util.XmlSlurper
+import groovy.util.XmlParser
+import java.util.*
+
+
+
+def project = testRunner.testCase.testSuite.project ;
+def tcase = project.testSuites["Sprint_0_Demo"].testCases["TestCase 4_Apigee Level"] ; 
+def tstep = tcase.getTestStepByName("REST Request_Apigee URL_without apikey");
+
+def responseTestSuite1 = tstep.getPropertyValue("response");
+
+//def getApigeeResponse = testRunner.testCase.getTestStepByName("REST Request_Apigee URL_with apikey").getPropertyValue("Response")
+
+//def getApigeeResponse = testRunner.testCase.getTestStepByName("REST Request_Apigee URL_without apikey").getPropertyValue("Response")
+
+def xml_response = new XmlSlurper(false,false,true).parseText(responseTestSuite1)
+
+log.info xml_response
+
+//def xml_response = new XmlParser().parseText(getApigeeResponse)
+
+/*
+def parser = new XmlSlurper() 
+parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+def xml_response = parser.parseText( getApigeeResponse )
+*/
+
+log.info xml_response</script></con:config></con:testStep><con:properties/><con:reportParameters/><con:breakPoints><con:testStepId>c391e017-8224-47b7-a61c-54f776fb1c4a</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>b11d71b7-b526-4fbd-87c0-ad149bcd0ee8</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:testCase id="778e783e-dde9-4db9-80a9-663d4007816d" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="TestCase 2_Nashim Help" searchProperties="true" disabled="true"><con:settings/><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="Groovy Script_variable uri" id="a95d0c1d-665a-4793-9265-d98f0b28c0bc"><con:settings/><con:config><script>
+
+
+
+context["endpoint"] = "mum-dev"
+context["resource"] = "denodo-restfulws/service_order_ds/views/bh_sm01na00?sm01001=1500000000&amp;$format=json"
+
+
+
+</script></con:config></con:testStep><con:testStep type="restrequest" name="REST Request" id="0af8b446-853f-47c0-bfd3-6c5c930272a9"><con:settings/><con:config service="REST Service 2" resourcePath="/denodo-restfulws/service_order_ds/views/bh_sm01na00" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request" id="056d5333-b94a-4673-9a69-506b56123e18" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://mum-dev:9090</con:endpoint><con:request/><con:originalUri>http://mum-dev/denodo-restfulws/service_order_ds/views/bh_sm01na00</con:originalUri><con:credentials><con:username>admin</con:username><con:password>admin</con:password><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:properties/><con:reportParameters/><con:breakPoints><con:testStepId>a95d0c1d-665a-4793-9265-d98f0b28c0bc</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:testCase id="98fa928e-ea05-4d26-9e01-162bf49e9938" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="Copy of TestCase 3_Azure Level" searchProperties="true" disabled="true"><con:settings/><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="restrequest" name="REST Request_Denodo URL" id="debe5cf1-2c0e-42ad-9137-230badd75abe"><con:settings/><con:config service="REST Service 7" resourcePath="/denodo-restfulws/service_order_ds/views/bh_sm01na00" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_Denodo URL" id="efb59b48-65bd-47d1-b2f3-8490d7dc1fed" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://MUM-DEV:9090</con:endpoint><con:request/><con:originalUri>http://MUM-DEV/denodo-restfulws/service_order_ds/views/bh_sm01na00</con:originalUri><con:credentials><con:username>admin</con:username><con:password>admin</con:password><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="REST Request_Azure URL" id="8f446619-f7eb-47d5-bfeb-e2d9cbc760c9" disabled="true"><con:settings/><con:config service="REST Service 6" resourcePath="/api/order/companycode/1" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_Azure URL" id="3b27a686-61c4-472b-b1f6-8839cd0e6d37" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://mum-dev:5004</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/order/companycode/1</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script" id="8908d9f5-bcc8-4550-aa14-5b5d30a7aa61"><con:settings/><con:config><script>
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+
+wb = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\Denodo and Azure Compare.xls"))
+
+sheetDenodo = wb.getSheet(0)
+denodosheet_rows = sheetDenodo.getRows()
+log.info "Rows in Denodo Sheet: " + sheetDenodo.getRows()
+
+sheetAzure = wb.getSheet(1)
+//log.info "Rows in Azure Sheet: " + sheetAzure.getRows()
+
+//Read DENODO Response
+
+def getDenodoResponse = testRunner.testCase.getTestStepByName("REST Request_Denodo URL").getPropertyValue("Response")
+
+def counter_value = testRunner.testCase.getPropertyValue("Counter").toInteger()
+
+log.info counter_value
+
+for(def i = counter_value ; i &lt;= denodosheet_rows ; i++)
+{
+	for(def a : i){
+	location_id_d = sheetDenodo.getCell(0,a).getContents()
+		//def location_id_d = "\$.."+p
+
+		log.info location_id_d
+	}
+}
+
+
+/*
+for (counter_value  : denodosheet_rows ) 
+   {
+
+		location_id_d = sheetDenodo.getCell(0,counter_value).getContents()
+		//def location_id_d = "\$.."+p
+
+		log.info location_id_d
+   	     
+   	 	
+   	     
+   }
+
+
+
+//log.info getResponce
+
+// Fetch By ID
+
+/*
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_Azure URL").getPropertyValue("Response")
+def CusId = parse(getAzureResponse).read('$..ServiceOrdNo')
+
+def getDenodoResponse = testRunner.testCase.getTestStepByName("REST Request_Denodo URL").getPropertyValue("Response")
+def DenodoRes = parse(getDenodoResponse).read('$..sm01001')
+
+*/
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Check no of entries." id="4da3b36e-564f-4071-bc15-01f34659e4df" disabled="true"><con:settings/><con:config><script>
+
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_Azure URL").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusId = parse(getAzureResponse).read('$..CustomerRef')
+
+def getDenodoResponse = testRunner.testCase.getTestStepByName("REST Request_Denodo URL").getPropertyValue("Response")
+def DenodoRes = parse(getDenodoResponse).read('$..sm01004')
+
+if( CusId.size() == DenodoRes.size() )
+{
+	log.info "TS PASS"
+}
+else
+{
+	log.error "TS FAIL"
+}
+
+
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Set Counter Value" id="48b89423-4fc5-4b40-bced-b0ded185a67a" disabled="true"><con:settings/><con:config><script>
+
+
+
+//def getResponce = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+//def CusId = parse(getResponce).read('$..sl01001')
+//log.info CusId
+
+
+//def a = 1
+
+
+//testRunner.testCase.setPropertyValue("Counter", a.toString())
+
+def i = testRunner.testCase.getPropertyValue("Counter")
+
+def counter_inc = i.toInteger() + 1
+
+testRunner.testCase.setPropertyValue("Counter", counter_inc.toString())
+
+log.info "Current Counter Value :" +testRunner.testCase.getPropertyValue("Counter")
+
+
+
+
+/*
+def j 
+
+++j*/</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Check ServiceOrdNo" id="197d7a92-1ad9-4095-bcf5-0f0d21782dd8" disabled="true"><con:settings/><con:config><script>
+
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_Azure URL").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusId = parse(getAzureResponse).read('$..ServiceOrdNo')
+
+def getDenodoResponse = testRunner.testCase.getTestStepByName("REST Request_Denodo URL").getPropertyValue("Response")
+def DenodoRes = parse(getDenodoResponse).read('$..sm01001')
+
+for(def i = 0; i &lt;= CusId.size() - 1; i++ )
+if( CusId[i] == DenodoRes[i] )
+{
+	log.info "TS PASS"
+	log.info CusId[i]
+	log.info DenodoRes[i]
+	
+}
+else
+{
+	log.error "TS FAIL"
+}
+
+
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Check CustCodeInv" id="d12214fc-4a29-42bb-9131-946abc5ad9ba" disabled="true"><con:settings/><con:config><script>
+
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_Azure URL").getPropertyValue("Response")
+//log.info getResponce
+
+// Fetch By ID
+def CusId = parse(getAzureResponse).read('$..CustCodeInv')
+
+def getDenodoResponse = testRunner.testCase.getTestStepByName("REST Request_Denodo URL").getPropertyValue("Response")
+def DenodoRes = parse(getDenodoResponse).read('$..sm01002')
+
+for(def i = 0; i &lt;= CusId.size() - 1; i++ )
+if( CusId[i] == DenodoRes[i] )
+{
+	
+	log.info "TS PASS"
+	log.info CusId[i]
+	log.info DenodoRes[i]
+	
+}
+else
+{
+	log.error "TS FAIL"
+	log.info CusId[i]
+	log.info DenodoRes[i]
+}
+
+
+
+</script></con:config></con:testStep><con:properties><con:property><con:name>Counter</con:name><con:value>0</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>e4bb0056-b99a-4267-a23d-6398f045ebdd</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c87b3e86-1a0f-4c5f-a11e-df2e0c6053df</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>db64395a-69cd-4137-bf8c-628f8d338261</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>110c20e4-728f-4647-9ee8-11102966d97e</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:properties/><con:reportParameters/><con:environmentSpec><con:entry environmentId="26e844f1-d86d-416b-ac1d-5a0abe45436d"><con:authProfile>Inherit From Parent</con:authProfile></con:entry></con:environmentSpec></con:testSuite><con:savedRecentRuns>1</con:savedRecentRuns><con:requirements/><con:properties><con:property><con:name>endpoint</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500012000</con:value></con:property><con:property><con:name>endpoint1</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500000000</con:value></con:property><con:property><con:name>endpoint13</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500012000</con:value></con:property><con:property><con:name>endpoint12</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500011000</con:value></con:property><con:property><con:name>endpoint11</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500010000</con:value></con:property><con:property><con:name>endpoint10</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500009000</con:value></con:property><con:property><con:name>endpoint9</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500008000</con:value></con:property><con:property><con:name>endpoint8</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500007000</con:value></con:property><con:property><con:name>endpoint7</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500006000</con:value></con:property><con:property><con:name>endpoint6</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500005000</con:value></con:property><con:property><con:name>endpoint5</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500004000</con:value></con:property><con:property><con:name>endpoint4</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500003000</con:value></con:property><con:property><con:name>endpoint3</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500002000</con:value></con:property><con:property><con:name>endpoint2</con:name><con:value>mum-dev:5004/api/order/companycode/1/ServiceOrdNo/1500001000</con:value></con:property></con:properties><con:wssContainer/><con:databaseConnectionContainer/><con:oAuth2ProfileContainer/><con:reporting><con:reportTemplates/><con:xmlTemplates/><con:xmlTemplates/><con:parameters/><con:parameters/></con:reporting><con:reporting/><con:environment id="26e844f1-d86d-416b-ac1d-5a0abe45436d" name="Denodo Environment"><con:service type="REST" name="REST Service 1"><con:endpoint authProfile="No Authorization"/></con:service><con:service type="REST" name="REST Service 2"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 3"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 4"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 5"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 6"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 7"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 8"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 9"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 10"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 11"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 12"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 13"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 14"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:service type="REST" name="REST Service 15"><con:endpoint authProfile="Inherit From Parent"/></con:service><con:property><con:name>endpoint</con:name><con:value/></con:property><con:property><con:name>endpoint1</con:name><con:value/></con:property><con:property><con:name>endpoint13</con:name><con:value/></con:property><con:property><con:name>endpoint12</con:name><con:value/></con:property><con:property><con:name>endpoint11</con:name><con:value/></con:property><con:property><con:name>endpoint10</con:name><con:value/></con:property><con:property><con:name>endpoint9</con:name><con:value/></con:property><con:property><con:name>endpoint8</con:name><con:value/></con:property><con:property><con:name>endpoint7</con:name><con:value/></con:property><con:property><con:name>endpoint6</con:name><con:value/></con:property><con:property><con:name>endpoint5</con:name><con:value/></con:property><con:property><con:name>endpoint4</con:name><con:value/></con:property><con:property><con:name>endpoint3</con:name><con:value/></con:property><con:property><con:name>endpoint2</con:name><con:value/></con:property><con:databaseConnectionContainer/></con:environment><con:authRepository/><con:environmentSpec><con:entry environmentId="26e844f1-d86d-416b-ac1d-5a0abe45436d"><con:authProfile>No Authorization</con:authProfile></con:entry></con:environmentSpec><con:tags/></con:soapui-project>

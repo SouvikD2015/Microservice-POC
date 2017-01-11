@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="19c64339-0744-4217-9087-9a4abce01047" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="GetByCustomerName" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="19c64339-0744-4217-9087-9a4abce01047fileName">GetByCustomerName</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="SetDynamicURI" id="673f03a1-d2f9-49c6-a8f6-f812f015ca68"><con:settings/><con:config><script>import jxl.*
+
+def companyCode_no = []
+def proCode = []
+def step_count
+
+//Create an object for GroovyUtils
+def groovyUtils=new  com.eviware.soapui.support.GroovyUtils(context)
+// Using the method projectPath you can get the project path which you are working
+def projectPath = groovyUtils.projectPath
+// Printing the value of the variable
+//log.info projectPath
+
+
+
+ wb = Workbook.getWorkbook(new File(projectPath+"/"+"TestData.xls"))
+sheet = wb.getSheet(0)
+sheet1=wb.getSheet(9)
+
+         	def Domain = sheet.getCell(1,2).getContents()
+      	//log.info Domain 
+      	def Port = sheet.getCell(1,3).getContents()
+      	//log.info Port
+      	def context1 = sheet.getCell(1,4).getContents() 
+      	//log.info context1 
+      	def ledgerflag =  sheet.getCell(0,6).getContents()   	
+		def companycode = sheet.getCell(0,5).getContents()
+	    def method = sheet1.getCell(0,0).getContents()		
+		context["host"]= Domain
+		context["port"]= Port
+		context["context1"]= context1
+		context["companycode"]= companycode
+		context["colon"] = ":"
+		context["backslash"] = "/"
+		context["method"] = method
+		context["ledgerflag"] = ledgerflag	
+		//log.info method.toString()
+		testRunner.testCase.setPropertyValue("method", method)
+def cnt =0
+
+for( def k=1 ; k&lt;2; k++)
+{
+	 def ledger= sheet.getCell(k,6).getContents().toString()
+	 context["context3"] =ledger
+	 testRunner.testCase.setPropertyValue("parameter2", ledger)
+	//def no = sheet1.getRows()
+	//log.info "no. of rows in sheet1:" +no
+	
+     for (def i = 1 ; i&lt;= sheet1.getRows()-1 ; i++)
+       {
+	      def comCode =  sheet1.getCell(0,i).getContents()
+	
+	      context["comcode"] = comCode
+	      def com = comCode.toString()
+           //log.info comCode
+
+	testRunner.testCase.setPropertyValue("CompanyCode1",comCode)
+	//log.info "sheet columns:" +sheet1.getColumns()-1
+	for(def j=1; j&lt;=sheet1.getColumns()-1; j++)
+	{ 
+		if(sheet1.getCell(j,i).getContents() != "")
+		{
+		proCode.add(sheet1.getCell(j,i).getContents())
+		context["context2"] = proCode[cnt]
+		String parameter1 = proCode[cnt].toString()
+		testRunner.testCase.setPropertyValue("parameter1",parameter1)
+		//log.info parameter1
+		
+		cnt++
+		def str1 = "https://" + context["host"] + context["colon"] +context["port"] + context["backslash"] +context["context1"] + context["backslash"]+ context["companycode"]+ context["backslash"] +context["comcode"]+context["backslash"]+context["ledgerflag"]+context["backslash"]+context["context3"]+context["backslash"]+context["method"]+context["backslash"]+context["context2"]
+		
+		testRunner.testCase.testSuite.setPropertyValue("URI", str1)
+		log.info str1
+		}
+	
+	Thread.sleep(1000)
+	//testRunner.testCase.testSuite.setPropertyValue("MethodName", " ")
+	//log.info "going to rest req"
+	testRunner.runTestStepByName("REST Request")
+	
+	
+	//testRunner.runTestStepByName("RestStatus")
+	testRunner.runTestStepByName("Business_Validation")
+	
+}
+ }
+
+}	
+wb.close()
+//testRunner.cancel( "Stop Test" )
+ </script></con:config></con:testStep><con:testStep type="restrequest" name="REST Request" id="9f6da112-8c4b-4ff8-ad4b-4845bfb1cec3"><con:settings/><con:config service="REST Service 1" resourcePath="/" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request" id="ecf1be94-b535-480e-b0cd-c85640c96ab5" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://${host}${colon}${port}${backslash}${context1}${backslash}${companycode}${backslash}${comcode}${backslash}${ledgerflag}${backslash}${context3}${backslash}${method}${backslash}${context2}</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/creditstatus/companycode/na/customercode/4629/ledgerflag/true/</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="func" id="53e2e605-90c4-4ea1-aaab-44f7c8e7061e"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper 
+import static com.jayway.jsonpath.JsonPath.parse 
+import com.eviware.soapui.model.project.ProjectFactoryRegistry 
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory 
+import static org.codehaus.groovy.runtime.StackTraceUtils.sanitize
+import jxl.*;
+
+import jxl.write.*
+
+
+
+
+class Test {
+	def arr1 = []
+	def i
+
+
+def count = 1
+
+//comp_id_entry = 1415
+//def sum_y = 0;
+//def input_flag = "y"
+	def log
+	def testRunner
+	def context
+
+	def arr_val_name =[]
+	static name 
+	def var
+	static details
+	def arr = []
+
+	def Test(logIn, contextIn, testRunnerIn){
+
+		this.log = logIn;
+		this.testRunner = testRunnerIn;
+		this.context = contextIn
+		
+		}
+
+/* ********************************************************************************************** */		
+public def GetExelSheetLocator()
+		{
+			
+			def company = testRunner.testCase.getPropertyValue("CompanyCode1")
+			switch(company)
+			{
+				case "na":
+				 var =2;
+				 //log.info "2"
+				break;
+
+                    /* case "na":
+				 var =2;
+				break;*/
+
+                    case "j1":
+				 var =3;
+				break;
+
+				case "ea":
+				 var =4;
+				break;
+
+				case "j4":
+				 var =5;
+				break;
+
+				case "l1":
+				 var =6;
+				break;
+
+				case "m1":
+				 var =7;
+				break;
+                     
+				default:
+				log.info "wrong comapny code"
+				break;
+			}
+			def groovyUtils=new  com.eviware.soapui.support.GroovyUtils(context)
+			def projectPath = groovyUtils.projectPath
+			def wb = Workbook.getWorkbook(new File(projectPath+"/"+"TestData.xls"))
+			def test_sheet = wb.getSheet(var)
+			return test_sheet
+		} 
+/* **************************************************************************************************** */
+
+   public def JsonResGenerator(int integer)
+                              {
+                                             def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+                                             
+                                                     //def json_locator_sheet = GetExelSheetLocator()
+
+               def groovyUtils=new  com.eviware.soapui.support.GroovyUtils(context)
+			def projectPath = groovyUtils.projectPath
+			def wb = Workbook.getWorkbook(new File(projectPath+"/"+"TestData.xls"))
+			def json_locator_sheet = wb.getSheet(8)
+                                                      def i = integer
+                                                            def locator = json_locator_sheet.getCell(0,i).getContents()
+                                                            def json_res = parse(getAzureResponse).read(locator)
+                                                            //log.info json_res
+                                                            return json_res
+                                           
+                              }
+
+/* *********************************************************************************************************** */
+
+
+public def ValidateFlag(String cus_name,String flag){
+	def data_sheet =GetExelSheetLocator()
+	def response = JsonResGenerator(2)
+	//def response1 = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+			//def response= parse(response1).read('$..Status')
+			//log.info "json_response :"+response
+for (def i = 1 ; i<= data_sheet.getRows()-1 ; i++)
+{
+
+               count++
+               def cus = data_sheet.getCell(1,i).getContents().toString().toLowerCase()
+               //log.info "sheet cus:"+cus
+               //log.info "json_response :"+response
+              // log.info "cus_name"+cus_name
+                 
+            if(cus.contains(cus_name.toString().toLowerCase()) )
+
+               {             
+               	         log.info "sheet data:" +cus
+               	         log.info "json data:" +cus_name.toString()
+                             log.info "got the same name at row number :"+count
+                             
+                              if(flag == "true")
+                              {
+                              	        //log.info "Flag Y"
+                              
+                                           String variable1 = data_sheet.getCell(2,i).getContents()
+                                           def var1 = variable1.isFloat() ? variable1.toFloat() : variable1.toInteger()
+                                           //log.info "var:" +var1
+                                           String variable2 = data_sheet.getCell(3,i).getContents()
+                                           def var2 = variable2.isFloat() ? variable2.toFloat() : variable2.toInteger()
+                                            //log.info "var:" +var2
+                                             String variable3 = data_sheet.getCell(4,i).getContents()
+                                           def var3 = variable3.isFloat() ? variable3.toFloat() : variable3.toInteger()
+                                            //log.info "var:" +var3
+                                            String sum1 = (var1+var2+var3)
+                                            def sum = sum1.isFloat() ? sum1.toFloat() : null
+                             
+                                         // if(sum.round(3) == data_sheet.getCell(5,i).getContents().toFloat().round(3))
+                                            // {
+                                                   //log.info "2"
+                                                    def credit_limit = data_sheet.getCell(7,i).getContents().toFloat().round(3)
+                                                    if(sum.round(3) > credit_limit)
+                                                       {
+                                                          //log.info "FALSE"
+                                                          arr << "false"
+                                                       }
+                                                     else
+                                                       {
+                                                          // log.info "TRUE"
+                                                           arr << "true"
+                                                        }
+                                                            
+                                              //}
+                                 //log.info "Valid Sum is :"+ sum.round(3)
+                                
+                               }
+               
+                              else if(flag == "false")
+                             {
+                              
+                               String variable1 = data_sheet.getCell(2,i).getContents()
+                               def var1 = variable1.isFloat() ? variable1.toFloat() : variable1.toInteger()
+                               //log.info "var:" +var1
+
+                               String variable2 = data_sheet.getCell(4,i).getContents()
+                               def var2 = variable2.isFloat() ? variable2.toFloat() : variable2.toInteger()
+                               //log.info "var:" +var2
+
+                              String sum1 = (var1+var2)
+                              def sum = sum1.isFloat() ? sum1.toFloat() : null
+                              //log.info "sum:" +  (float)sum.round(3)
+             
+			                        //if(sum.round(3) == data_sheet.getCell(6,i).getContents().toFloat().round(3))
+                                       //{
+                                          //     log.info "2"
+                                         def credit_limit = data_sheet.getCell(7,i).getContents().toFloat().round(3)
+                                             if(sum.round(3) > credit_limit)
+                                                 {
+                                                         //log.info "FALSE"
+                                                         arr << "false"
+                                                  }
+                                              else
+                                                    {
+                                                        //log.info "TRUE"
+                                                         arr << "true"
+                                                    }
+                                                            
+                                       //}
+             //log.info "Valid Sum is :"+sum.round(3)
+                                    }
+               
+               }
+              
+              
+}
+                             log.info "after loop array:" +arr
+                             log.info "json response:" +response
+                             for(def k =0; k <= response.size()-1; k++)
+                                             {
+                                                            if(response[k].toString() == arr[k].toString() )
+                                                            {
+                                                                           arr_val_name<< "Validation Successful"
+                                                            }
+                                                            else
+                                                            {
+                                                            	   log.error "validation error"
+                                                                           arr_val_name<< "Validation Error!"
+                                                            }
+                                          }
+                                           
+ return arr_val_name;
+
+
+
+}
+
+/* *********************************************** get by customer code ************************* */
+
+public def ValidateFlag_code(String cus_code,String flag){
+	def data_sheet =GetExelSheetLocator()
+ def response = JsonResGenerator(2)
+ //log.info response
+//def response1 = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+			//def response= parse(response1).read('$..Status')
+//log.info "response" +response
+
+ 
+for (def i = 1 ; i<= data_sheet.getRows()-1 ; i++)
+{
+
+               count++
+               def cus = data_sheet.getCell(0,i).getContents()
+               if(cus.toString() == cus_code )
+               {
+                              log.info "got the same code at row number :"+count
+                             //log.info flag
+                              if(flag == "true")
+                              {
+                              	            //log.info "Flag true/yes"
+                              
+                                            String variable1 = data_sheet.getCell(2,i).getContents()
+                                           def var1 = variable1.isFloat() ? variable1.toFloat() : variable1.toInteger()
+                                           //log.info "var:" +var1
+                                            String variable2 = data_sheet.getCell(3,i).getContents()
+                                           def var2 = variable2.isFloat() ? variable2.toFloat() : variable2.toInteger()
+                                            //log.info "var:" +var2
+                                             String variable3 = data_sheet.getCell(4,i).getContents()
+                                           def var3 = variable3.isFloat() ? variable3.toFloat() : variable3.toInteger()
+                                            //log.info "var:" +var3
+                                            String sum1 = (var1+var2+var3)
+                                            def sum = sum1.isFloat() ? sum1.toFloat() : null
+                             
+                                         // if(sum.round(3) == data_sheet.getCell(5,i).getContents().toFloat().round(3))
+                                           //  {
+                                                   //log.info "2"
+                                                    def credit_limit = data_sheet.getCell(7,i).getContents().toFloat().round(3)
+                                                    if(sum.round(3) > credit_limit)
+                                                       {
+                                                          //log.info "FALSE"
+                                                          arr1 << "false"
+                                                       }
+                                                     else
+                                                       {
+                                                           //log.info "TRUE"
+                                                           arr1 << "true"
+                                                        }
+                                                            
+                                              //}
+                                 log.info "Valid Sum is :"+ sum.round(3)
+                                
+                               }
+               
+                              else if(flag == "false")
+                             {
+                              
+                               String variable1 = data_sheet.getCell(2,i).getContents()
+                               def var1 = variable1.isFloat() ? variable1.toFloat() : variable1.toInteger()
+                             //  log.info "var:" +var1
+
+                               String variable2 = data_sheet.getCell(4,i).getContents()
+                               def var2 = variable2.isFloat() ? variable2.toFloat() : variable2.toInteger()
+                               //log.info "var:" +var2
+
+                              String sum1 = (var1+var2)
+                              def sum = sum1.isFloat() ? sum1.toFloat() : null
+                              //log.info "sum:" +  (float)sum.round(3)
+             
+			                        //if(sum.round(3) == data_sheet.getCell(6,i).getContents().toFloat().round(3))
+                                       //{
+               
+                                         def credit_limit = data_sheet.getCell(7,i).getContents().toFloat().round(3)
+                                             if(sum.round(3) > credit_limit)
+                                                 {
+                                                         //log.info "FALSE"
+                                                         arr1 <<"false"
+                                              }
+                                              else
+                                                    {
+                                                        //log.info "TRUE"
+                                                         arr1 <<"true"
+                                                    }
+                                                            
+                                       //}
+             log.info "Valid Sum is :"+sum.round(3)
+               }
+               }
+              
+ }
+
+  for(def k =0; k <= response.size()-1; k++)
+                                             {
+                                             	//log.info "response inside loop:" +response[k]
+                                             	//log.info "array:" +arr1[k]
+                                                            if(response[k].toString() == arr1[k].toString() )
+                                                            {
+                                                                           arr1<< "Validation Successful"
+                                                            }
+                                                            else
+                                                            {
+                                                                           arr1<< "Validation Error!"
+                                                            }
+                                          }
+                                           
+ return arr1;
+ 
+}
+
+}
+context.setProperty("dk",new Test(log,context,testRunner));]]></script></con:config></con:testStep><con:testStep type="groovy" name="Business_Validation" id="9b2e0683-0108-4fe2-8e1b-1680026c1788"><con:settings/><con:config><script>import static org.codehaus.groovy.runtime.StackTraceUtils.sanitize
+ 
+lib = testRunner.testCase.testSuite.project.testSuites["CreditCheck"].testCases["GetByCustomerName"].testSteps["func"]
+
+lib.run(testRunner, context)
+ def rd = context.dk
+def method_name = testRunner.testCase.getPropertyValue("method")
+//log.info method_name
+ def param2 = testRunner.testCase.getPropertyValue("parameter2")
+ //log.info param2
+ def param1 = testRunner.testCase.getPropertyValue("parameter1")
+ //log.info param1
+ 
+
+switch(method_name)
+{
+case "customername":
+ log.info " Get By customername"
+def TestStepRuningInfor1 = rd.ValidateFlag(param1,param2)
+log.info TestStepRuningInfor1
+break;
+
+case "customercode":
+log.info " Get By customercode"
+def TestStepRuningInfor2 = rd.ValidateFlag_code(param1,param2)
+log.info TestStepRuningInfor2
+break;
+
+default:
+log.info "wrong method"
+break;
+}
+
+</script></con:config></con:testStep><con:properties><con:property><con:name>CompanyCode1</con:name><con:value>m1</con:value></con:property><con:property><con:name>parameter1</con:name><con:value>Internal Warranty Short/Long Term</con:value></con:property><con:property><con:name>parameter2</con:name><con:value>true</con:value></con:property><con:property><con:name>method</con:name><con:value>customername</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>c74674d8-9d24-4bb4-9721-59b01dc03a47</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>bcdacb7d-b78e-4030-847a-5cd41c5f9500</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>38c00c6f-3582-423c-be15-36aa4878c178</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>05eca6eb-0417-4bbc-9210-0500895e965e</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase>

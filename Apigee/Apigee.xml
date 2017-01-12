@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="078aa560-cfed-4bce-acbb-75a293877ab5" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="Apigee" searchProperties="true" timeout="0" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="078aa560-cfed-4bce-acbb-75a293877ab5fileName">Apigee</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="Generate URL" id="742cc05d-999d-4c8d-a91f-0a707a0a3086"><con:settings/><con:config><script>//http://apidev2.jci.com:9055/microservices_contract/companycode/na/status/3?apikey=JR406xAlI5WFtAeT7FGDbW95KAkEL2uS
+
+import jxl.*
+
+def companyCode_no = []
+def proCode = []
+def step_count
+
+//Create an object for GroovyUtils
+def groovyUtils=new  com.eviware.soapui.support.GroovyUtils(context)
+// Using the method projectPath you can get the project path which you are working
+def projectPath = groovyUtils.projectPath
+// Printing the value of the variable
+//log.info projectPath
+
+ wb = Workbook.getWorkbook(new File(projectPath+"/"+"TestDataApigee.xls"))
+sheet = wb.getSheet(0)
+
+Domain = sheet.getCell(1,2).getContents()
+
+if(Domain.contains("apidev2.jci.com"))
+{
+	log.info "For Apigee Sandbox!"
+	FormApigeeURL()
+}
+
+
+public def FormApigeeURL()
+{
+
+	log.info "FormApigeeURL Method"
+
+	//Read Values for the variables!
+	def Port = sheet.getCell(1,3).getContents()
+     def context1 = sheet.getCell(1,4).getContents() 
+     def ledgerflag =  sheet.getCell(0,6).getContents()   	
+	def companycode = sheet.getCell(1,5).getContents()
+	//def method = sheet1.getCell(0,0).getContents()	
+
+	//Set Context for the variables! 	
+		context["host"]= Domain
+		context["port"]= Port
+		context["context1"]= context1
+		context["companycode"]= companycode
+		context["colon"] = ":"
+		context["backslash"] = "/"
+		//context["method"] = method
+		context["ledgerflag"] = ledgerflag	
+		context["status"] = "Status"
+		context["statusval"] = "3"
+		context["context2"] = "?apikey=JR406xAlI5WFtAeT7FGDbW95KAkEL2uS"
+		
+
+	/*//Set Property Value for the Method to validate!
+	testRunner.testCase.testSuite.setPropertyValue("method", method)*/
+
+	def str1 = "http://" + context["host"] + context["colon"] +context["port"]  
+	def str2 = context["backslash"] +context["context1"] + context["backslash"]+ context["companycode"]+ context["backslash"] +context["status"]+context["backslash"]+context["statusval"]/*+context["backslash"]*/+context["context2"]//+context["backslash"]+context["ledgerflag"]+context["backslash"]+context["context3"]
+	log.info str1
+	log.info "Test Step "+testRunner.testCase.getTestStepByName("REST Request")
+	//testRunner.testCase.getTestStepByName("REST Request").getHttpRequest().setEndpoint("http://apidev2.jci.com:9055")
+	//testRunner.testCase.getTestStepByName("REST Request").getHttpRequest().setPath( "/microservices_contract/companycode/na/status/3?apikey=JR406xAlI5WFtAeT7FGDbW95KAkEL2uS" )
+	testRunner.testCase.getTestStepByName("REST Request").getHttpRequest().setEndpoint(str1)
+	testRunner.testCase.getTestStepByName("REST Request").getHttpRequest().setPath( str2 )
+	log.info "!"
+	def end = testRunner.testCase.getTestStepByName("REST Request").getHttpRequest().getEndpoint()
+	log.info end
+	testRunner.runTestStepByName("REST Request")
+	testRunner.runTestStepByName("CallFunctions_RnD")
+	
+}
+
+
+</script></con:config></con:testStep><con:testStep type="restrequest" name="REST Request" id="a58be313-c8cb-4bd4-8b1b-5f2e91f1cfbc"><con:settings/><con:config service="REST Service 2" resourcePath="" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request" id="5bab8eea-ba46-4c37-af51-df60f4b13c8f" mediaType="application/json" fullPath="/microservices_contract/companycode/na/Status/3?apikey=JR406xAlI5WFtAeT7FGDbW95KAkEL2uS"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://apidev2.jci.com:9055</con:endpoint><con:request/><con:originalUri>http://apidev2.jci.com/microservices_contract/companycode/na/Status/3/api/creditstatus/companycode/l1/ledgerflag/true/customername/(주)창하엔지니어링</con:originalUri><con:credentials><con:selectedAuthProfile>Inherit From Parent</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="REST Request 2" id="037cdb32-f261-46a8-b644-d609a9142d65" disabled="true"><con:settings/><con:config service="REST Service 3" resourcePath="/microservices_contract/companycode/na/status/3" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request 2" id="25dac8e1-0823-47d6-aa06-08a4c5b0cca9" mediaType="application/json"><con:settings/><con:endpoint>http://apidev2.jci.com:9055</con:endpoint><con:request/><con:credentials><con:selectedAuthProfile>Inherit From Parent</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Functions_Library" id="1234c399-4102-46aa-823f-cb0138915d72"><con:settings/><con:config><script><![CDATA[import jxl.*
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+import static org.codehaus.groovy.runtime.StackTraceUtils.sanitize
+
+//testRunner.testCase.testSuite.project.testSuites["CompanyCode"].testCases["CompanyCode"].testSteps["CompanyCode_Static"].run(testRunner, context)
+
+//Get the JSON Response
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+
+
+
+//jRes = context.JsonRes
+
+class BusinessValidation
+{
+	def attribute = []
+	def i
+
+	def log
+	def testRunner
+	def context
+
+	def static name 
+	def static details
+	
+	//def jRes = context.JsonRes
+	
+	def BusinessValidation(logIn, contextIn, testRunnerIn){
+
+		this.log = logIn;
+		this.testRunner = testRunnerIn;
+		this.context = contextIn
+		
+		}
+		def arr = []
+
+		public def GetExelSheetLocator()
+		{
+			def groovyUtils=new  com.eviware.soapui.support.GroovyUtils(context)
+			def projectPath = groovyUtils.projectPath
+			def wb = Workbook.getWorkbook(new File(projectPath+"/"+"TestData_CI.xls"))
+			def json_locator_sheet = wb.getSheet(0)
+			return json_locator_sheet
+		}
+
+		
+		public def JsonResGenerator(int integer)
+		{
+			def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+			
+			//Get the Location Path for the Project
+			/*def groovyUtils=new  com.eviware.soapui.support.GroovyUtils(context)
+			def projectPath = groovyUtils.projectPath
+			def wb = Workbook.getWorkbook(new File(projectPath+"/"+"TestData.xls"))
+			def json_locator_sheet = wb.getSheet(0)*/
+
+			def json_locator_sheet = GetExelSheetLocator()
+			
+			//for(def i = 1; i <= json_locator_sheet.getRows()-1; i++)
+			//{
+				def i = integer
+				def locator = json_locator_sheet.getCell(0,i).getContents()
+				def json_res = parse(getAzureResponse).read(locator)
+				//log.info json_res
+				return json_res
+			//}
+		}
+
+		public def ServiceContractNumber()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(1)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			//return response
+			
+	     }
+
+	     public def CustomerCodeInvoice()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(2)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+
+		 public def Remarks()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(3)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def StartDate()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(4)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def EndDate()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(5)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def Type()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(6)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def Code()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(7)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def Status()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(8)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def Terms()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(9)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def TypeWarranty()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(10)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def CustomerName()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(11)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def CustomerEmail()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(12)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def CustomerReference()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(13)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def CustomerRequestNumber()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(14)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def CustomerSearchKey()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(15)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def CustomerPurchaseOrderNumber()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(16)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+	     public def InvoiceDate()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(17)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }
+		public def OurReference()
+		{
+			name = sanitize( new Exception().fillInStackTrace() ).stackTrace.find {!( it.className ==~ /^java_.*|^org.codehaus.*/) }?.methodName
+			
+			def response = JsonResGenerator(18)
+
+			for(def k =0; k <= response.size()-1; k++)
+			{
+				if(response[k] != null )
+				{
+					return "Validation Successful"
+				}
+				else
+				{
+					return "Validation Error!"
+				}
+			}
+										
+			return response
+	     }	
+
+
+
+
+
+			
+	}
+
+
+//log.info "Func_Lib is set going to Call function"
+context.setProperty("bussVal", new BusinessValidation(log, context, testRunner))
+//context.setProperty("nk", new Func_Lib(log, context, testRunner))
+
+]]></script></con:config></con:testStep><con:testStep type="groovy" name="CallFunctions_RnD" id="338581ff-fab2-4122-8afb-41fdc8e7f5ef"><con:settings/><con:config><script>
+//testRunner.testCase.testSuite.project.testSuites["CompanyCode"].testCases["CompanyCode"].testSteps["GetResponse_Excel"].run(testRunner, context)
+testRunner.testCase.testSuite.project.testSuites["Apigee"].testCases["Apigee"].testSteps["Functions_Library"].run(testRunner, context)
+
+
+
+def callFunc = context.bussVal
+
+//def val_jres = callFunc.JsonResGenerator(3)
+//log.info val_jres
+
+def val_SCN = callFunc.ServiceContractNumber()
+log.info "ServiceContractNumber   "+val_SCN
+
+def val_CCN = callFunc.CustomerCodeInvoice()
+log.info "CustomerCodeInvoice   "+val_CCN
+
+def val_REM = callFunc.Remarks()
+log.info "Remarks   "+val_REM 
+
+def val_SD= callFunc.StartDate()
+log.info "StartDate   "+val_SD
+
+def val_ED = callFunc.EndDate()
+log.info "EndDate   "+val_ED
+
+def val_TY = callFunc.Type()
+log.info "Type   "+val_TY
+
+def val_COD = callFunc.Code()
+log.info "Code   "+val_COD
+
+def val_STAT = callFunc.Status()
+log.info "Status   "+val_STAT
+
+def val_TERM = callFunc.Terms()
+log.info "Terms   "+val_TERM
+
+def val_TW = callFunc.TypeWarranty()
+log.info "TypeWarranty   "+val_TW
+
+def val_CN = callFunc.CustomerName()
+log.info "CustomerName   "+val_CN
+
+def val_CM = callFunc.CustomerEmail()
+log.info "CustomerEmail   "+val_CM
+
+def val_CR = callFunc.CustomerReference()
+log.info "CustomerReference   "+val_CR
+
+def val_CRN = callFunc.CustomerRequestNumber()
+log.info "CustomerRequestNumber   "+val_CRN
+
+def val_CSK = callFunc.CustomerSearchKey()
+log.info "CustomerSearchKey   "+val_CSK
+
+def val_CPON = callFunc.CustomerPurchaseOrderNumber()
+log.info "CustomerPurchaseOrderNumber   "+val_CPON
+
+def val_ID = callFunc.InvoiceDate()
+log.info "InvoiceDate   "+val_ID
+
+def val_OR = callFunc.OurReference()
+log.info "OurReference   "+val_OR</script></con:config></con:testStep><con:properties/><con:reportParameters/></con:testCase>

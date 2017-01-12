@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:interface xsi:type="con:WsdlInterface" id="9b05b1b4-5a1f-43c8-8e65-15ea0c74fe03" wsaVersion="NONE" name="AMJ_Notify" type="wsdl" bindingName="{http://www.w3.org/2005/08/addressing/}NotificationReceiverBinding" soapVersion="1_1" anonymous="optional" definition="http://192.168.254.100:18040/services/airtel-movies/notification?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="9b05b1b4-5a1f-43c8-8e65-15ea0c74fe03fileName">AMJ_Notify</con:setting></con:settings><con:definitionCache type="TEXT" rootPart="http://192.168.254.100:18040/services/airtel-movies/notification?wsdl"><con:part><con:url>http://192.168.254.100:18040/services/airtel-movies/notification?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="NotificationReceiver" targetNamespace="http://www.w3.org/2005/08/addressing/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.w3.org/2005/08/addressing/" xmlns:sub="http://SubscriptionEngine.ibm.com" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://SubscriptionEngine.ibm.com">
+      <xsd:element name="notificationToCP">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="notificationRespDTO">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="xactionId" type="xsd:string"/>
+                  <xsd:element name="errorCode" type="xsd:string"/>
+                  <xsd:element name="errorMsg" type="xsd:string"/>
+                  <xsd:element name="temp1" type="xsd:string"/>
+                  <xsd:element name="temp2" type="xsd:string"/>
+                  <xsd:element name="temp3">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="ID" type="xsd:string"/>
+                        <xsd:element name="ChargingType" type="xsd:string"/>
+                        <xsd:element name="VCode" type="xsd:string"/>
+                        <xsd:element name="partyB" type="xsd:string"/>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                  <xsd:element name="lowBalance" type="xsd:string"/>
+                  <xsd:element name="amount" type="xsd:string"/>
+                  <xsd:element name="chargingTime" type="xsd:string"/>
+                  <xsd:element name="msisdn" type="xsd:string"/>
+                  <xsd:element name="productId" type="xsd:string"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="NotificationReceiverOperationResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="out" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="notificationToCP"/>
+      <xsd:complexType name="notificationRespDTOType"/>
+      <xsd:complexType name="notificationToCPType"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="notificationToCP">
+    <wsdl:part element="sub:notificationToCP" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="NotificationReceiverOperationResponse">
+    <wsdl:part element="sub:NotificationReceiverOperationResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="NotificationReceiverPortType">
+    <wsdl:operation name="notificationToCP">
+      <wsdl:input message="tns:notificationToCP"></wsdl:input>
+      <wsdl:output message="tns:NotificationReceiverOperationResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NotificationReceiverBinding" type="tns:NotificationReceiverPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="notificationToCP">
+      <soap:operation soapAction="notificationToCP"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="NotificationReceiver">
+    <wsdl:port binding="tns:NotificationReceiverBinding" name="NotificationReceiverPort">
+      <soap:address location="http://192.168.254.100:18040/services/airtel-movies/notification"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://192.168.249.94:18040/services/airtel-movies/notification</con:endpoint><con:endpoint>http://192.168.249.94:18040/vuconnect/webservice/notification</con:endpoint></con:endpoints></con:interface>

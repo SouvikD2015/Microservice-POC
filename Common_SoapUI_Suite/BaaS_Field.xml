@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="33c0f6af-3046-469f-be5b-2159351e45c0" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="BaaS_Field" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="33c0f6af-3046-469f-be5b-2159351e45c0fileName">BaaS_Field</con:setting></con:settings><con:testStep type="groovy" name="Verify BaaS_ACT API Fields" id="14562a29-3e43-47cd-a2b2-e09508b0e3c6"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+import org.apache.poi.ss.usermodel.*
+
+Date date=new Date()
+//Input File object
+def sheet=context.sheetObject
+
+//API execution class object
+def apirunobject=context.apiRun
+
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+//Declare object for test steps 
+stepInitialise=testRunner.testCase.getTestStepByName("BaaS_ACT")
+
+int tc=0
+int pass=0
+int fail=0
+int rowNum= sheet.getLastRowNum()
+for (int i=2;i<14;i++)
+{
+	try{
+	Row rowData=sheet.getRow(i)
+  	if(rowData.getCell(1).toString()=="YES" ) 
+	{
+		tc++
+    		tcName=rowData.getCell(0).toString()
+          DecimalFormat df = new DecimalFormat("#") 
+
+          if(rowData.getCell(2).toString() ==''){userId=rowData.getCell(2).toString()}
+		else{userId= df.format(rowData.getCell(2).getNumericCellValue())}
+		
+		if(rowData.getCell(3).toString() =='' || rowData.getCell(3).getCellType()==1){billingCode=rowData.getCell(3).toString()}
+		else{billingCode= df.format(rowData.getCell(3).getNumericCellValue())}
+
+		if(rowData.getCell(4).toString() =='' || rowData.getCell(4).getCellType()==1){itemId=rowData.getCell(4).toString()}
+		else{itemId= df.format(rowData.getCell(4).getNumericCellValue())}
+		
+
+		if(rowData.getCell(5).toString() =='' || rowData.getCell(5).getCellType()==1){epocTime=rowData.getCell(5).toString()}
+		else{epocTime=df.format(rowData.getCell(5).getNumericCellValue())}		
+		
+		authKey=rowData.getCell(6).toString()
+		cgImgUrl=rowData.getCell(7).toString()
+		source=rowData.getCell(8).toString()
+
+          expStatus=rowData.getCell(9).toString();
+          expCode=rowData.getCell(10).toString();
+          expMessage=rowData.getCell(11).toString();	
+		
+  apirunobject.stepInitiliazer(userId,billingCode,source,itemId,epocTime,authKey,cgImgUrl)
+       //get API Json Response context
+          def  slurperStepInitialise= context.jsonStepInitialise          
+	     def  responseStatus= slurperStepInitialise.result.status
+	     def responseCode=slurperStepInitialise.result.code
+	     def responseMessage= slurperStepInitialise.result.message
+		
+if(   		
+responseStatus == expStatus &&  	
+responseCode == expCode &&  		
+responseMessage== expMessage	
+ ) 		
+{  
+pass++
+
+def passresult=("\r\n"+"[BaaS_ACT][Mandatory_Fields]"+tcName +"  is passed" +"\r\n")
+log.info passresult
+logFile.append passresult
+} 	  	
+
+else{ 	
+	fail++
+	def failresult=("\r\n"+"[BaaS_ACT][Mandatory_Fields]"+tcName +"  is failed" +"\r\n")
+def expected=("\r\n"+ "Expected Values: expStatus=" +expStatus+",expCode="+expCode+",expMessage="+expMessage+"\r\n")
+def actual=("\r\n"+"But Found : Status="+slurperStepInitialise.result.status +",Code="+slurperStepInitialise.result.code+",Message="+slurperStepInitialise.result.message+"\r\n")
+logFile.append failresult
+log.error failresult
+logFile.append expected
+log.error expected
+logFile.append actual
+log.error actual	
+	}} }
+catch(Exception ex){
+               fail++
+			def errormsg= tcName+">>>API Response is not proper<<<"
+			logFile.append errormsg
+			log.error errormsg
+		                    }
+
+}
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+log.info summary
+logFile.append summary]]></script></con:config></con:testStep><con:testStep type="groovy" name="Verify BaaS_DCT API Fields" id="9a5828b5-150f-47d6-b502-5061e3bc4b38"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.util.XmlParser
+import java.io.*
+import java.text.*
+import java.util.*
+import org.apache.poi.*
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+Date date=new Date()
+//Input File object
+def sheet=context.sheetObject
+//API execution class object
+def apirunobject=context.apiRun
+def logFile=context.resultfile
+
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+
+
+//Declare object for test steps 
+stepInitialise=testRunner.testCase.getTestStepByName("BaaS_DCT")
+
+int tc=0
+int pass=0
+int fail=0
+
+int rowNum= sheet.getLastRowNum()
+for (int i=17;i<27;i++)
+{
+	try{
+	Row rowData=sheet.getRow(i)
+  	if(rowData.getCell(1).toString()=="YES" ) 
+	{
+		tc++
+    		tcName=rowData.getCell(0).toString()
+          DecimalFormat df = new DecimalFormat("#") 
+
+          if(rowData.getCell(2).toString() ==''){userId=rowData.getCell(2).toString()}
+		else{userId= df.format(rowData.getCell(2).getNumericCellValue())}
+		
+		if(rowData.getCell(3).toString() =='' || rowData.getCell(3).getCellType()==1){billingCode=rowData.getCell(3).toString()}
+		else{billingCode= df.format(rowData.getCell(3).getNumericCellValue())}
+
+		if(rowData.getCell(4).toString() =='' || rowData.getCell(4).getCellType()==1){itemId=rowData.getCell(4).toString()}
+		else{itemId= df.format(rowData.getCell(4).getNumericCellValue())}
+		
+
+		if(rowData.getCell(5).toString() =='' || rowData.getCell(5).getCellType()==1){epocTime=rowData.getCell(5).toString()}
+		else{epocTime=df.format(rowData.getCell(5).getNumericCellValue())}		
+		
+		authKey=rowData.getCell(6).toString()
+         expStatus=rowData.getCell(9).toString();
+          expCode=rowData.getCell(10).toString();
+          expMessage=rowData.getCell(11).toString();
+		
+apirunobject.stepBaasDCT(userId,billingCode,itemId,epocTime,authKey)
+  //get API Json Response context
+          def  parsedResponse= context.jsonStepDCT           
+	     def  responseStatus= parsedResponse.result.status
+	     def responseCode=parsedResponse.result.code
+	     def responseMessage= parsedResponse.result.message
+		
+if(   		
+responseStatus == expStatus &&  	
+responseCode == expCode &&  		
+responseMessage== expMessage	
+ ) 		
+{  
+	pass++
+def passresult=("\r\n"+"[BaaS_DCT][Mandatory_Fields]"+tcName +"  is passed" +"\r\n")
+log.info passresult
+logFile.append passresult
+} 	  	
+
+else{ 	
+	fail++
+def failresult=("\r\n"+ "[BaaS_DCT][Mandatory_Fields]"+tcName +"  is failed" +"******************************************"+"\r\n")
+def expected=("\r\n"+"Expected Values: expStatus=" +expStatus+",expCode="+expCode+",expMessage="+expMessage+"\r\n")
+def actual=("\r\n"+ "But Found : Status="+parsedResponse.result.status +",Code="+parsedResponse.result.code+",Message="+parsedResponse.result.message+"\r\n")
+logFile.append failresult
+log.info failresult
+logFile.append expected
+log.info expected
+logFile.append actual
+log.info actual	
+	}
+	} }
+	catch(Exception ex){
+              fail++
+			def errormsg= tcName+">>>API Response is not proper<<<"
+			logFile.append errormsg
+			log.error errormsg
+		                    }
+		                    }
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+log.info summary
+logFile.append summary]]></script></con:config></con:testStep><con:testStep type="groovy" name="Verify BaaS_GetsStatus API Fields" id="39bac54f-430b-4da5-8f89-97722580c3d2"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.util.XmlParser
+import java.io.*
+import java.text.*
+import java.util.*
+import org.apache.poi.*
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+Date date=new Date()
+//API execution class object
+def apirunobject=context.apiRun
+
+//Input File object
+def sheet=context.sheetObject
+
+def logFile=context.resultfile
+
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+
+int tc=0
+int pass=0
+int fail=0
+int rowNum= sheet.getLastRowNum()
+for (int i=30;i<36;i++)
+{
+	try{
+	Row rowData=sheet.getRow(i)
+  	if(rowData.getCell(1).toString()=="YES" ) 
+	{
+		tc++
+    		tcName=rowData.getCell(0).toString()
+          DecimalFormat df = new DecimalFormat("#") 
+
+          if(rowData.getCell(2).toString() ==''){userId=rowData.getCell(2).toString()}
+		else{userId= df.format(rowData.getCell(2).getNumericCellValue())}
+		
+		if(rowData.getCell(5).toString() =='' || rowData.getCell(5).getCellType()==1){epocTime=rowData.getCell(5).toString()}
+		else{epocTime=df.format(rowData.getCell(5).getNumericCellValue())}
+
+		if(rowData.getCell(12).toString() =='' || rowData.getCell(12).getCellType()==1){custId=rowData.getCell(12).toString()}
+		else{custId=df.format(rowData.getCell(12).getNumericCellValue())}	
+
+		authKey=rowData.getCell(6).toString()
+          expStatus=rowData.getCell(9).toString();
+          expCode=rowData.getCell(10).toString();
+          expMessage=rowData.getCell(11).toString();
+          		
+           apirunobject.stepGetUserStatus(userId,custId,epocTime,authKey)
+		
+		  //get API Json Response context
+          def  parsedResponse= context.jsonStepStatus           
+	     def  responseStatus= parsedResponse.result.status
+	     def responseCode=parsedResponse.result.code
+	     def responseMessage= parsedResponse.result.message
+	    
+if(   		
+responseStatus == expStatus &&  	
+responseCode == expCode &&  		
+responseMessage== expMessage	
+ ) 			
+{ 
+	pass++
+def passresult=("\r\n"+"[BaaS_Status][Mandatory_Fields]"+tcName +"  is passed" +"\r\n")
+
+log.info passresult
+logFile.append passresult
+} 	  	
+
+else{ 	
+	fail++
+def failresult=("\r\n"+ "[BaaS_Status][Mandatory_Fields]"+tcName +"  is failed" +"\r\n")
+def expected=("\r\n"+ "Expected Values: expStatus=" +expStatus+",expCode="+expCode+",expMessage="+expMessage+"\r\n")
+def actual=("\r\n"+"But Found : Status="+slurperStepInitialise.result.status +",Code="+slurperStepInitialise.result.code+",Message="+slurperStepInitialise.result.message+"\r\n")	
+logFile.append failresult
+log.info failresult
+logFile.append expected
+log.info expected
+logFile.append actual
+log.info actual	
+	
+	}} }
+	catch(Exception ex){
+               fail++
+			def errormsg= tcName+">>>API Response is not proper<<<"
+			logFile.append errormsg
+			log.error errormsg
+		                    }
+
+}
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+log.info summary
+logFile.append summary]]></script></con:config></con:testStep><con:testStep type="groovy" name="Verify Do BlackList API Fields" id="e5bdfb23-d3a3-433e-bc16-ef639b90ccf6"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.util.XmlParser
+import java.io.*
+import java.text.*
+import java.util.*
+import org.apache.poi.*
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+Date date=new Date()
+//API execution class object
+def apirunobject=context.apiRun
+
+//Input File object
+def sheet=context.sheetObject
+
+def logFile=context.resultfile
+
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+
+int tc=0
+int pass=0
+int fail=0
+int rowNum= sheet.getLastRowNum()
+for (int i=38;i<43;i++)
+{
+	try{
+	Row rowData=sheet.getRow(i)
+  	if(rowData.getCell(1).toString()=="YES" ) 
+	{
+		tc++
+    		tcName=rowData.getCell(0).toString()
+          DecimalFormat df = new DecimalFormat("#") 
+
+          if(rowData.getCell(2).toString() ==''){userId=rowData.getCell(2).toString()}
+		else{userId= df.format(rowData.getCell(2).getNumericCellValue())}
+		
+		if(rowData.getCell(5).toString() =='' || rowData.getCell(5).getCellType()==1){epocTime=rowData.getCell(5).toString()}
+		else{epocTime=df.format(rowData.getCell(5).getNumericCellValue())}
+
+		if(rowData.getCell(12).toString() =='' || rowData.getCell(12).getCellType()==1){custId=rowData.getCell(12).toString()}
+		else{custId=df.format(rowData.getCell(12).getNumericCellValue())}	
+
+		authKey=rowData.getCell(6).toString()
+          expCode=rowData.getCell(10).toString();
+          expMessage=rowData.getCell(11).toString();
+          		
+           apirunobject.doBlackList(userId,custId,epocTime,authKey)
+		
+		  //get API Json Response context
+          def  parsedResponse= context.blackListJson           
+	     def responseCode=parsedResponse.responseCode
+	     def responseMessage= parsedResponse.message
+	    
+if(   		
+responseCode == expCode &&  		
+responseMessage== expMessage	
+ ) 			
+{ 
+	pass++
+def passresult=("\r\n"+"[BaaS_Blacklist][Mandatory_Fields]"+tcName +"  is passed" +"\r\n")
+log.info passresult
+logFile.append passresult
+} 	  	
+
+else{ 	
+	fail++
+def failresult=("\r\n"+"[BaaS_Blacklist][Mandatory_Fields]"+tcName +"  is failed"+"\r\n")
+def expected=("\r\n"+ "Expected Values: expStatus=" +expStatus+",expCode="+expCode+",expMessage="+expMessage+"\r\n")
+def actual=("\r\n"+"But Found : Status="+slurperStepInitialise.result.status +",Code="+slurperStepInitialise.result.code+",Message="+slurperStepInitialise.result.message+"\r\n")	
+logFile.append failresult
+log.error failresult
+logFile.append expected
+log.error expected
+logFile.append actual
+log.error actual	
+}} }
+catch(Exception ex){
+                fail++
+			def errormsg= tcName+">>>API Response is not proper<<<"
+			logFile.append errormsg
+			log.error errormsg
+		                    }
+
+}
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+log.info summary
+logFile.append summary]]></script></con:config></con:testStep><con:setupScript>import groovy.sql.Sql
+import java.io.*
+import java.text.*
+import java.util.*
+import org.apache.poi.*
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+//Input File Property
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+try {
+FileInputStream fis = new FileInputStream(inputFile);
+Workbook workbook = new XSSFWorkbook(fis);
+Sheet sheet= workbook.getSheet(testRunner.testCase.name);
+context.setProperty("sheetObject", sheet)
+}
+ catch (Exception e)
+  {
+    log.error "Could not find test data input file ."
+  }
+
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

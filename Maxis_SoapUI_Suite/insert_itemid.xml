@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="87ee58d7-ea3f-4312-bcbb-e3740e81a724" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="insert_itemid" searchProperties="true" disabled="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="87ee58d7-ea3f-4312-bcbb-e3740e81a724fileName">insert_itemid</con:setting></con:settings><con:testStep type="groovy" name="Insert item id mapping" id="822f52a4-3e68-45cd-9bfc-1d98fb60c257"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+
+def datasetobject = context.dataSet
+// backend job context
+def backendjob = context.backendJob
+
+Map dataset  = new HashMap();
+
+for (int i=1;i&lt;= context.rowCount;i++)
+{	
+	dataset=datasetobject.getRowDataMap(i)
+
+  
+datasetobject.insertItemId(dataset.get("name"),dataset.get("application_id"),dataset.get("id"), dataset.get("price"), dataset.get("billingcode"))
+	}
+</script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["NextBillingDate"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

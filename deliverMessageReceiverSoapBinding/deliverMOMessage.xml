@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:operation id="9f62a106-c973-4def-a401-c60bdc91d6c9" isOneWay="false" action="" name="deliverMOMessage" bindingOperationName="deliverMOMessage" type="Request-Response" outputName="deliverMOMessageResponse" inputName="deliverMOMessageRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="9f62a106-c973-4def-a401-c60bdc91d6c9fileName">deliverMOMessage</con:setting></con:settings><con:call id="2f45d5e0-be2c-4013-8794-ca754bce6056" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://192.168.249.94:18040/services/maxis-wap/ussd</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+<soapenv:Body><ns1:deliverMTMessage xmlns:ns1="http://tempuri.org/message/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><ApplicationId type="xsd:int">52665</ApplicationId><Login type="xsd:string">1623</Login><Password type="xsd:string">1623</Password><MessageTerminatingID type="xsd:double">6.995575344247918</MessageTerminatingID>
+<MessageOriginatingLinkID type="xsd:double">79.06198630044346</MessageOriginatingLinkID>
+<ChargeMSISDN type="xsd:string">60173351061</ChargeMSISDN>
+<ReceiverMSISDN type="xsd:string">60173351062</ReceiverMSISDN>
+<ShortCode type="xsd:string">23280</ShortCode>
+<MessageCount type="xsd:short">1</MessageCount>
+<DateTime type="xsd:string">08042016000000</DateTime>
+<MessageScheduleFlag type="xsd:short">0</MessageScheduleFlag>
+<MessageScheduleTime type="xsd:string" nil="true"/>
+<BillType type="xsd:short">0</BillType>
+<BillServiceId type="xsd:int">50340</BillServiceId>
+<BillPrice type="xsd:short">0</BillPrice>
+<IsFlash type="xsd:short">0</IsFlash>
+<MessageContentType type="xsd:string">G</MessageContentType>
+<MessageType type="xsd:string">D</MessageType>
+<Message soapenc="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="soapenc:string">RM2 (Excl. GST) TQ for subscribing to Yoga Sutra. You are charged RM2 (Excl. GST)for 13 videos. To cancel http://aoc.maxis.com.my/WAPAOC/ . No data charges</Message>
+<MessageExpiryTime type="xsd:short">60</MessageExpiryTime>
+</ns1:deliverMTMessage>
+</soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://maxisbilling.vuclip.com:2503/services/deliverMessageReceiver/ServiceProvider/deliverMOMessageRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation>

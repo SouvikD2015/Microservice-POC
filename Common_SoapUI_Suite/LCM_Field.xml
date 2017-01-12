@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="b0bd3d39-02a3-4c6f-91de-e56876ac6891" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="LCM_Field" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="b0bd3d39-02a3-4c6f-91de-e56876ac6891fileName">LCM_Field</con:setting></con:settings><con:testStep type="groovy" name="Verify LCM_All APIs Fields" id="88056da5-816e-418c-9231-a3c8daa05d14"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.util.XmlParser
+import java.io.*
+import java.text.*
+import java.util.*
+import org.apache.poi.*
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+Date date=new Date()
+//Input File object
+def sheet=context.sheetObject
+
+
+//API execution class object
+def apirunobject=context.apiRun
+def lcmobject=context.lcmRun
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+
+int rowNum= sheet.getLastRowNum()
+int tc=0
+int pass=0
+int fail=0
+for (int i=1;i<rowNum+1;i++)
+{
+	Row rowData=sheet.getRow(i)
+  	if(rowData.getCell(1).toString()=="YES" ) 
+	{
+		try{
+		
+		tc++
+    		tcName=rowData.getCell(0).toString()
+    		stepName=rowData.getCell(8).toString()
+		DecimalFormat df = new DecimalFormat("#") 
+		
+		if(rowData.getCell(3).toString() =='')
+		{billingCode=rowData.getCell(3).toString()}
+		else{billingCode= df.format(rowData.getCell(3).getNumericCellValue())}
+		
+		if(rowData.getCell(2).toString() =='')
+		{msisdn=rowData.getCell(2).toString()}
+		else{msisdn= df.format(rowData.getCell(2).getNumericCellValue())}
+		
+          activityResult=rowData.getCell(4).toString()
+          trnxId=rowData.getCell(5).toString()
+          expCode=rowData.getCell(6).toString()
+          expMessage=rowData.getCell(7).toString()
+	  
+lcmobject.stepLcmCommon(stepName,msisdn,billingCode,activityResult,trnxId)
+
+     def  parsedResponse= context.jsonLcmCommon
+
+if(stepName!="LCM_DCT_INIT")
+{
+
+if(parsedResponse.responseMessage == expMessage && parsedResponse.responseCode == expCode ) 		
+   {     
+   	pass++     
+            def passresult=("\r\n"+"["+stepName+"][Mandatory_Fields]"+tcName +"  is passed" +"\r\n")
+log.info passresult
+logFile.append passresult
+    } 	  	
+
+      else{ 	
+	        fail++     
+log.info("\r\n"+ "["+stepName+"][Mandatory_Fields]"+tcName +"  is Failed" +"******************************************"+"\r\n")
+log.info("\r\n"+"Expected Values: expCode="+expCode+",expMessage="+expMessage+"\r\n")
+log.info("\r\n"+"But Found : Code="+parsedResponse.responseCode+",Message="+parsedResponse.responseMessage+"\r\n")
+	      } 	
+}
+else
+{
+if(parsedResponse.result.message == expMessage && parsedResponse.result.code == expCode ) 		
+   {  
+   	pass++
+          def passresult=("\r\n"+"[LCM_DCT_INIT][Mandatory_Fields]"+tcName +"  is passed" +"\r\n")
+log.info passresult
+logFile.append passresult
+    } 	  	
+
+ else{ 	
+ 	fail++
+	          
+def failresult=("\r\n"+"[LCM_DCT_INIT][Mandatory_Fields]"+tcName +"  is failed"+"\r\n")
+def expected=("\r\n"+"Expected Values: expCode="+expCode+",expMessage="+expMessage+"\r\n")
+def actual=("\r\n"+"But Found : Code="+parsedResponse.result.code+",Message="+parsedResponse.result.message+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+} }}
+catch (Exception e)
+{
+	       fail++
+			def errormsg= tcName+">>>API Response is not proper<<<"+"\r\n"
+	log.error errormsg
+	logFile.append errormsg
+	}
+	}
+	} 
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+log.info summary
+logFile.append summary
+]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['LCM Run'].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

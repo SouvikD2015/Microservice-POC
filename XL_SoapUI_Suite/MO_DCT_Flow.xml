@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="f6e666d1-94f0-4e13-a59c-d861938366a8" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="MO_DCT_Flow" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="f6e666d1-94f0-4e13-a59c-d861938366a8fileName">MO_DCT_Flow</con:setting></con:settings><con:testStep type="groovy" name="MO Deactivation Flow" id="9239bf27-84c7-48c1-aacb-55964e1a3f44"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing >>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+
+// get a reference to the common util  TestSuite
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+
+Map dataset  = new HashMap();
+Map usersubmap  = new HashMap();
+int tc=0
+int pass=0
+int fail=0
+long timeoutPeriod=5000
+
+for (int i=1;i&lt;= context.rowCount;i++)
+{
+	dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable") ) 
+	{
+		tc++		
+           msisdn= dataset.get("userid")
+         //reset user 		
+		datasetobject.resetUser(msisdn)
+	    
+	
+//Create Test User
+datasetobject.createUser(dataset.get("customerid"),dataset.get("providerid"),msisdn,dataset.get("billingcode"),dataset.get("subbillingcode"),dataset.get("currbillingcode"),dataset.get("substate"),
+       dataset.get("startdate"),dataset.get("enddate"),dataset.get("subdate"),dataset.get("source"),'null','1000',msisdn,dataset.get("itemid"),"4","1","kp=test")
+          
+        //Mo Rx api execution     
+	  talendobject.XL_MOReceiver(msisdn,dataset.get("keyword"))	 
+        
+
+
+def startTime=System.currentTimeMillis();
+while(true){
+//validate DB values
+usersubmap= datasetobject.getUserData(msisdn,dataset.get("itemid"))
+if(usersubmap.get("subscription_status_id").toString() ==dataset.get("expid") )
+	{
+		break;
+	}
+	else{
+		long currentTime = System.currentTimeMillis();
+		if((currentTime-startTime)&lt;timeoutPeriod){
+				sleep(500);
+				log.info "waiting for request to process"
+				
+			}else
+			{
+				log.error "Queue is taking too long to process record or last billing response status id did not match"
+				break;
+			}
+	}}
+	
+	if( 	usersubmap.get("subscription_status_id").toString() == dataset.get("expid")  &amp;&amp; 		
+ 		usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode")  
+ 		)
+ 	 {		 	
+  	
+  	def baas_api_log= logapi.assertBaaSLogAPI(msisdn,dataset.get("logtype"),dataset.get("activitytype"),dataset.get("activitytype"),dataset.get("activityres"),dataset.get("expid"),
+  	dataset.get("expbillcode"),dataset.get("substate"),dataset.get("currbillingcode"),dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("isfreetrial").toString()
+  	,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"90",null)
+  	
+  def passresult=("\r\n"+"[XLCom][MO][DCT]"+dataset.get("tcname")+" bass test: passed"+">>> user_baas_logAPI log: "+baas_api_log+"\r\n")
+logFile.append passresult
+log.info passresult
+
+  	if (baas_api_log=="passed") {pass++}
+  	else if (baas_api_log=="failed") {fail++
+  def expected= "Expected >>>" +context.expected
+   def actual= "Found >>>" + context.actual
+log.error expected
+log.error actual
+logFile.append "\r\n"+expected +"\r\n" + actual
+   }
+   else{fail++}
+	}	 
+	else{
+		fail++
+def failresult=  ("\r\n"+"[DVS][MO][DCT]"+dataset.get("tcname")+"  is failed"+"\r\n")
+def expected= ("\r\n"+"Expected Values:"+"sub_status_id=11 ,Validity=0 "+"\r\n")
+def actual=  ("\r\n"+"But Found:  sub_status_id="+usersubmap.get("subscription_status_id")+",Validity="+usersubmap.get("validity")+" credits"+usersubmap.get("credits")+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+}}
+}
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary</script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

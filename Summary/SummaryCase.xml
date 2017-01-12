@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="dc7ef346-cf01-416f-8a43-f2edbae2adbd" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="SummaryCase" searchProperties="true" timeout="0" wsrmEnabled="false" wsrmVersion="1.0" wsrmAckTo="" amfAuthorisation="false" amfEndpoint="" amfLogin="" amfPassword="" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="dc7ef346-cf01-416f-8a43-f2edbae2adbdfileName">SummaryCase</con:setting></con:settings><con:testStep type="groovy" name="Master Summary" id="cc3e58e9-04ad-41de-88dd-6347d2afd568"><con:settings/><con:config><script><![CDATA[import javax.mail.*;
+import javax.activation.*
+import javax.mail.internet.*;
+import java.util.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+
+	Properties prop = new Properties();
+	File propertiesFile = new File(context.expand('${#Global#output_path}')+"/master.properties")
+
+	propertiesFile.withInputStream {
+		prop.load(it)
+	}
+
+	int total_t=0
+	int total_f=0
+	int total_p=0
+	long total_time=0
+
+
+	// Recipient's email ID needs to be mentioned.
+	String to = context.expand('${#Global#global_recipients}')
+
+	// Sender's email ID needs to be mentioned
+	String from = "vuclipjenkinsuser@gmail.com";//change accordingly	
+
+	final String username = "vuclipjenkinsuser";//change accordingly
+	final String password = "Vuclip123";//change accordingly
+
+	// Assuming you are sending email through relay.jangosmtp.net
+	String host = "smtp.gmail.com";
+
+	def props = new Properties();
+	props.put("mail.smtp.auth", "true");
+	props.put("mail.smtp.starttls.enable", "true");
+	props.put("mail.smtp.host", host);
+	props.put("mail.smtp.port", "587");
+
+	// Get the Session object.
+	Session session = Session.getInstance(props,
+			new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username, password);
+				}
+			});
+
+	try {
+
+
+		String comment="OK"
+
+		Message message = new MimeMessage(session);
+
+		// Set From: header field of the header.
+		message.setFrom(new InternetAddress(from));
+
+		// Set To: header field of the header.
+		message.setRecipients(Message.RecipientType.TO,
+				InternetAddress.parse(to));
+
+		// Set Subject: header field
+		message.setSubject("BaaS Automaiton:Master Test Execution Summary ");
+
+		// Create the message part
+		BodyPart messageBodyPart = new MimeBodyPart();
+		StringBuffer emailMessage = new StringBuffer("Dear All,");
+		emailMessage.append("<br>")
+		emailMessage.append("<p><i>Find Below Master Report:</i></p>");
+		// <img src='https://www.soapui.org/soapui/media/images/stories/homepage/soapui_logo.png' height='100' width='100' align=''right'>
+		emailMessage.append("<h4>Description:</h4><p>SoapUI test automaiton suites verifies all the billing related flows.It includes Talend, Backend Jobs, Log_API, SM modules. Verificaiton done based on API responses, DB validaitons , LOG_API generated json logs. </p>");
+
+		// Server Details
+		emailMessage.append("<p><b>BaaS Server:</b>"+context.expand('${#Global#baas_endpoint}')+"</p>");
+		emailMessage.append("<p><b>Talend Server:</b>"+context.expand('${#Global#talend_endpoint}')+"</p>");
+
+		// Master Execution Summary
+		def workspace = testRunner.testCase.testSuite.project.workspace
+		def projectResource = (workspace==null) ?
+				ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-soapui-project.xml") :  workspace.getProjectByName("BaaS_Automation")
+		if(!projectResource.open && workspace!=null)
+		{workspace.openProject(projectResource)
+		}
+		//def projectResource=projectResource
+		def suite=projectResource.testSuiteList
+		
+		emailMessage.append("<!DOCTYPE html><html><head><style>"+
+				"table, th, td {    border: 1px solid black;}</style></head><body> <table style='width:42%' ; frame=box ><tr><th>Suite Name</th><th>Total</th><th>Pass</th><th>Fail</th><th>Pass%</th><th>Fail%</th><th>Time(ms)</th><th>Comments</th></tr>")
+		for (int i=0; i < suite.size()-2;i++)
+		{
+			String suiteName= suite[i].name
+			log.info suiteName
+			def suiteProperties= prop.getProperty(suiteName)
+			if(suiteProperties!=null){
+				def record= suiteProperties.split("[*]")
+				int t= record[0].toInteger()
+				int p= record[1].toInteger()
+				int f= record[2].toInteger()
+				float passPercent=Float.valueOf(record[3])
+				float failPercent= Float.valueOf(record[4])
+				long time=Long.parseLong(record[5])
+				String filename=record[6]
+
+				total_t=total_t+t
+				total_p=total_p+p
+				total_f=total_f+f
+				total_time=total_time+time
+
+				if(passPercent==100)
+				{
+					comment="You Rocked!!"
+				}
+				else if( passPercent > 90)
+				{
+					comment="Something Fishy"
+				}
+				else if(50 < passPercent || passPercent==50 )
+				{
+					comment="Please check!!"
+				}
+				else if( passPercent <50)
+				{
+					comment="I am dead!!"
+				}
+
+
+				if(f!=0){
+					emailMessage.append("<tr><td align='left'>"+suiteName+"</td><td align='center'>"+t+"</td><td bgcolor='##00ff00' ; align='center'>"+p+"</td> <td bgcolor='#FF0000' ; align='center'>"+f+"</td><td bgcolor='##00ff00' ; align='center'>"+passPercent+"</td><td bgcolor='#FF0000' ; align='center'>"+failPercent+"</td><td align='center'>"+time+"</td><td align='center'>"+comment+"</td></tr>")
+
+				}
+				else
+				{
+					emailMessage.append("<tr><td align='left'>"+suiteName+"</td><td align='center'>"+t+"</td><td bgcolor='##00ff00' ; align='center'>"+p+"</td> <td align='center'>"+f+"</td><td bgcolor='##00ff00' ; align='center'>"+passPercent+"</td><td  align='center'>"+failPercent+"</td><td align='center'>"+time+"</td><td align='center'>"+comment+"</td></tr>")
+				}
+
+			}
+		}
+		float tmp1= (total_p/total_t)*100
+		float tmp2=(total_f/total_t)*100
+
+
+		def total_failPercent=   Math.round(tmp2 * 100) / 100
+
+		def total_passPercent=    Math.round(tmp1 * 100) / 100
+
+
+		emailMessage.append("<tr><td align='left'>Total</td><td align='center'>"+total_t+"</td><td bgcolor='##00ff00' ; align='center'>"+total_p+"</td> <td align='center'>"+total_f+"</td><td bgcolor='##00ff00' ; align='center'>"+total_passPercent+"</td><td  align='center'>"+total_failPercent+"</td><td align='center'>"+total_time+"</td><td align='center'>NA</td></tr>")
+		emailMessage.append("</table>")
+
+		//Now append failed TCs Summary
+		emailMessage.append("<h4>Failed Test Cases Summary:</h4>")		
+		int n=0
+		emailMessage.append("<table  frame=box ><tr><th>S.R.</th><th>Test Case Name</th><th>Status</th></tr>")
+		for (int j=0; j < suite.size()-2;j++)
+		{
+			String suiteName= suite[j].name
+			def suiteProperties= prop.getProperty(suiteName)
+			if(suiteProperties!=null){
+				def record= suiteProperties.split("[*]")
+				String filename=record[6]
+				File outputfile=new File(filename)
+				BufferedReader br  = new BufferedReader(new FileReader(outputfile));
+				String sCurrentLine;
+
+				while ((sCurrentLine = br.readLine()) != null) {
+
+					if(sCurrentLine.contains("no record found in log api db")){
+						n++
+						emailMessage.append("<tr><td align='center'>"+n+"</td><td bgcolor='#D3D3D3'>"+sCurrentLine+"</td><td bgcolor='#D3D3D3'>FAIL</td></tr>")
+
+
+
+					}
+					else if (sCurrentLine.contains("failed")  || sCurrentLine.contains("API Response is not proper") )
+					{
+						n++
+						emailMessage.append("<tr><td align='center'>"+n+"</td><td bgcolor='#FF0000'>"+sCurrentLine+"</td><td bgcolor='#FF0000'>FAIL</td></tr>")
+
+
+					}
+
+					else if(sCurrentLine.contains("Expected"))
+					{
+						String failresult=("<tr>Expected<td></td>"+sCurrentLine+"<td></td></tr>");
+						emailMessage.append(failresult)
+
+					}
+					else if( sCurrentLine.contains("Found"))
+					{
+						String failresult=("<tr>Found<td></td>"+sCurrentLine+"<td></td></tr>");
+						emailMessage.append(failresult)
+
+					}
+
+
+				}
+			}
+		}
+		emailMessage.append("</table>")
+
+
+		//Signature of the email body
+		emailMessage.append("<br>");
+		emailMessage.append("Thanks & Regards");
+		emailMessage.append("<br>");
+		emailMessage.append("Vuclip QA");
+		emailMessage.append("<br>");
+
+
+		emailMessage.append("<p>*** This is an automatically generated email, please do not reply. For any query  please write to <href><a>akshay.gupta@vuclip.com</a></href> ***</p>");
+
+		// Create a multipar message
+		Multipart multipart = new MimeMultipart();
+
+
+		// Part two is attachment
+		messageBodyPart = new MimeBodyPart();
+		messageBodyPart.setContent(emailMessage.toString(),"text/html")
+
+		multipart.addBodyPart(messageBodyPart);
+		//String filename = context.getProperty("resultfile")
+
+		// Send the complete message parts
+		message.setContent(multipart);
+
+		// Send message
+
+		Transport.send(message);
+
+
+	} catch (MessagingException e) {
+		throw new RuntimeException(e);
+}
+]]></script></con:config></con:testStep><con:testStep type="groovy" name="tmp" id="6890df4d-4dfd-4e3c-9168-c03033b90201" disabled="true"><con:settings/><con:config><script>//def workspace = testRunner.testCase.testSuite.project.workspace
+//def projectResource = (workspace==null) ? 
+//  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-soapui-project.xml") :  workspace.getProjectByName("BaaS_Automation")
+//if(!projectResource.open &amp;&amp; workspace!=null) 
+//{workspace.openProject(projectResource)
+//}
+////def projectResource=projectResource
+// def suite=projectResource.testSuiteList
+// log.info suite[0].name
+
+
+
+log.info "in calsee"</script></con:config></con:testStep><con:properties/><con:reportParameters/></con:testCase>

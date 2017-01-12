@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:operation id="485b3916-1e11-49ff-9ae4-7464934229ee" isOneWay="false" action="" name="deliverDNMessage" bindingOperationName="deliverDNMessage" type="Request-Response" outputName="deliverDNMessageResponse" inputName="deliverDNMessageRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="485b3916-1e11-49ff-9ae4-7464934229eefileName">deliverDNMessage</con:setting></con:settings><con:call id="3e33fccd-8b46-47ff-87fc-b6f16fbf6153" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://192.168.249.27:18040/services/maxis-wap/ussd</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:jax="http://jaxrpcstyle.server.webservice.maxis.vuclip.com">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <jax:deliverDNMessage soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">\r
+         <appID xsi:type="xsd:int">?</appID>\r
+         <loginID xsi:type="xsd:string">?</loginID>\r
+         <passwd xsi:type="xsd:string">?</passwd>\r
+         <authCode xsi:type="xsd:string">?</authCode>\r
+         <dateTime xsi:type="xsd:string">?</dateTime>\r
+         <dnid xsi:type="xsd:double">?</dnid>\r
+         <mtid xsi:type="xsd:double">?</mtid>\r
+         <status xsi:type="xsd:int">?</status>\r
+      </jax:deliverDNMessage>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://maxisbilling.vuclip.com:2503/services/deliverMessageReceiver/ServiceProvider/deliverDNMessageRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation>

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:interface xsi:type="con:RestService" id="6bd3d866-84a0-4a51-a4f5-7ce6bb3a805f" wadlVersion="http://wadl.dev.java.net/2009/02" name="EVS_Notify" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="6bd3d866-84a0-4a51-a4f5-7ce6bb3a805ffileName">EVS_Notify</con:setting></con:settings><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://192.168.249.94:8088</con:endpoint></con:endpoints></con:interface>

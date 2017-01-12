@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="44e978a9-2ca8-4701-b7c8-0e51eaf91b0b" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Verify DN_TYPES" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="44e978a9-2ca8-4701-b7c8-0e51eaf91b0bfileName">Verify-DN_TYPES</con:setting></con:settings><con:testStep type="groovy" name="Verify DN Response Types" id="9f0920f2-f4a7-40a5-bf5d-1b8146ee965a"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+
+Date date=new Date()
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>[OOVS][BACKEND]"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+def logFile=context.resultfile
+
+Properties properties = new Properties()
+File propertiesFile = new File(context.expand('${#Global#property_file}'))
+propertiesFile.withInputStream {
+    properties.load(it)
+}
+
+
+// get a reference to the common util  TestSuite
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+// backend job context
+def backendjob = context.backendJob
+def talendobject=context.talendApiRun
+
+Map dataset  = new HashMap();
+Map usersubmap  = new HashMap();
+int tc=0
+int pass=0
+int fail=0
+def baas_api_log
+
+Calendar cal = Calendar.getInstance();
+TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+cal.setTimeZone(gmtTime);
+ int hour = cal.get(Calendar.HOUR_OF_DAY);
+log.info "Current Hour in GMT Is "+hour
+
+for (int i=1;i&lt;= context.rowCount;i++)
+{
+	dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")) 
+	{
+		tc++					  
+		msisdn= dataset.get("userid")
+		ppid=dataset.get("ppid");
+ 		deliStatusId=dataset.get("deliStatusId");
+ 		trnxid=dataset.get("txid");
+ 		extTrnxId=dataset.get("exttxid");
+//reset user 		
+datasetobject.resetUser(msisdn)
+
+//Create Test User
+datasetobject.freeTrialHisotry(msisdn,"1",dataset.get("lastfreetrialtime"),"1202000024")
+datasetobject.createUser(dataset.get("customerid"),dataset.get("providerid"),msisdn,dataset.get("billingcode"),dataset.get("subbillingcode"),dataset.get("currbillingcode"),dataset.get("substate"),
+       dataset.get("startdate"),dataset.get("enddate"),dataset.get("subdate"),dataset.get("source"),dataset.get("nbd"),dataset.get("currcredit"),msisdn,"1","2","1","kp=test_oovs",dataset.get("lastreqtxid"),dataset.get("lastnottrnxid"),"0","1","1","1")
+
+sleep(1000)
+//Notify DN request
+talendobject.OOVS_DN_Rx(ppid,msisdn,extTrnxId,trnxid,deliStatusId);
+ if (dataset.get("tcname")=="Verify DN post Deactivation")
+ {
+ baas_api_log= logapi.assertBaaSLogAPI(msisdn,dataset.get("logtype"),dataset.get("activitytype"),dataset.get("billingactionid"),dataset.get("activityres").toString(),"0" ,"null","0", "null",dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("freetrialflag").toString()
+  	,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),dataset.get("sequence").toString(),null)
+ 	
+ }
+ else{
+//Verify DN response log
+ baas_api_log= logapi.assertBaaSLogAPI(msisdn,dataset.get("logtype"),dataset.get("activitytype"),dataset.get("billingactionid"),dataset.get("activityres").toString(),dataset.get("expid") ,dataset.get("expbillcode"),
+  	dataset.get("substate"), dataset.get("currbillingcode"),dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("freetrialflag").toString()
+  	,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),dataset.get("sequence").toString(),null)
+ } 
+    
+   def passresult= ("\r\n"+"[OOVS][DN]"+dataset.get("tcname") +" DN log: "+baas_api_log+"\r\n")
+logFile.append passresult
+log.info passresult
+  	
+  	if (baas_api_log=="passed"){pass++} 
+  	else if (baas_api_log=="failed") {
+  		fail++
+   log.error "Expected >>>" +context.expected
+   log.error "Found >>>" + context.actual
+  		} 
+  		else {fail++
+  }
+  	}
+		 
+
+} 
+
+def summary=  ("\r\n"+date+" Execution Summary of [OOVS][DN]"+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary
+
+
+
+</script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+//read excel data column index
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+com.eviware.soapui.impl.wsdl.support.http.HttpClientSupport.httpClient.params.setParameter( "http.protocol.allow-circular-redirects", true )
+
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

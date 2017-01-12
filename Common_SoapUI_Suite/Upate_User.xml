@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="d7e62964-17f7-4240-ab88-c8951f87fb3e" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Upate_User" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="d7e62964-17f7-4240-ab88-c8951f87fb3efileName">Upate_User</con:setting></con:settings><con:testStep type="groovy" name="Update_User" id="b61726c0-7ced-4cf1-b56a-987b2dc2beae"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.sql.Sql
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+
+logFile.append title
+
+
+// get db connection object
+def sql = context.dbConn
+//Dataset class object
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+
+Map dataset  = new HashMap();
+int subid=0
+String  dbcredit
+String  db_perf_lang_id
+String  db_com_lang_id
+String db_video_date=null
+int tc=0
+int pass=0
+int fail=0
+ 
+for (int i=1;i<= context.rowCount;i++)
+
+{         
+	dataset=datasetobject.getRowDataMap(i)		
+  	  	if(dataset.get("isexecutable"))
+	{	
+tc++
+msisdn= dataset.get("userid")
+ //reset user 		
+datasetobject.resetUser(msisdn)  
+
+//Create Test User
+datasetobject.createUser(dataset.get("customerid"),dataset.get("providerid"),msisdn,dataset.get("billingcode"),dataset.get("subbillingcode"),dataset.get("currbillingcode"),dataset.get("substate"),
+       dataset.get("startdate"),dataset.get("enddate"),dataset.get("subdate"),dataset.get("source"),dataset.get("nbd"),dataset.get("currcredit"),msisdn,"1","2","1","kp=test") 
+
+// get subscription id
+query="select subscription_id from user_subscription where msisdn='"+msisdn+"'"
+sql.eachRow(query)	
+	 { row ->  
+	 subid=row[0]
+	 
+	 }	
+	 try
+	 {	
+	 		 	
+apirunobject.stepUpdateUserInfo(subid.toString(),dataset.get("creditcount"),dataset.get("topup"),"2016-05-11 09:44:26",dataset.get("perflanguage"), dataset.get("comlanguage"))
+
+          def updateUserResponse=context.jsonUpdateUser          
+          def responsesubid=updateUserResponse.userStatuses.subscriptionId
+	     def responseupdatecredit=updateUserResponse.userStatuses.credits
+	     def responsestatus= updateUserResponse.result.status
+	     def responsecode=updateUserResponse.result.code
+	     def responsemessage= updateUserResponse.result.message	   
+		
+//get updated credit count for the user
+query1="select credits, user_preferred_language,user_communication_language , last_video_watch_date from user_subscription where subscription_id='"+subid+"'"
+
+sql.eachRow(query1)	
+	 { row1 ->  
+	dbcredit=row1[0]
+	db_perf_lang_id=row1[1]
+	db_com_lang_id=row1[2]
+	db_video_date=row1[3]
+
+	 }	 
+if (
+ dbcredit.toString()== dataset.get("expcredits")
+ &&db_perf_lang_id.toString()== dataset.get("perflanguage")
+ &&db_com_lang_id.toString()== dataset.get("comlanguage")
+ &&db_video_date.toString()=="2016-05-11 09:44:26.0"
+&& responsestatus==dataset.get("status")
+&& responsecode==dataset.get("code")
+&& responsemessage==dataset.get("message")
+)
+{
+	pass++
+	//print result
+def passresult= ("\r\n"+"[UpdateCredit]"+dataset.get("tcname") +">>>>>: passed"+"\r\n")
+logFile.append passresult
+log.info passresult
+}
+
+else{
+	fail++
+	def failresult=("\r\n"+"[UpdateCredit]"+dataset.get("tcname") +">>>>>: failed"+"\r\n")
+
+	StringBuffer expected=new StringBuffer("\r\n"+"Expected Values:")
+	expected.append(" subid="+subid)
+	expected.append(" |credits="+dataset.get("expcredits"))
+	expected.append(" |user_oreferred_language="+dataset.get("perflanguage"))
+	expected.append(" |communication_language_id="+dataset.get("comlanguage"))
+	expected.append(" |last_video_access_date=2016-05-11 09:44:26.0")
+	expected.append(" |status="+dataset.get("status"))
+	expected.append(" |code="+dataset.get("code"))
+	expected.append(" |message="+dataset.get("message")+"\r\n")
+
+	StringBuffer actual=new StringBuffer("\r\n"+"   But Found     : ")
+	actual.append(" subid="+subid)
+	actual.append(" |credits="+dbcredit)
+	actual.append(" |user_oreferred_language="+db_perf_lang_id)
+	actual.append(" |communication_language_id="+db_com_lang_id)
+	actual.append(" |last_video_access_date="+db_video_date)
+	actual.append(" |status="+responsestatus)
+	actual.append(" |code="+responsecode)
+	actual.append(" |message="+responsemessage+"\r\n")	
+	
+logFile.append failresult
+log.error failresult
+logFile.append expected
+log.error expected
+logFile.append actual
+log.error actual
+	}
+}
+catch(Exception ex){
+
+			def errmsg= dataset.get("tcname")+">>>API Response is not proper<<<"
+			log.error errmsg
+			logFile.append errmsg
+ }
+ }	 
+	}
+	
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary
+]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+//read excel data column index
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

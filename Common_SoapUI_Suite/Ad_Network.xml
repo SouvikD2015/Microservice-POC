@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="abc554ad-b01f-47a6-83eb-02de50f14365" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Ad_Network" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="abc554ad-b01f-47a6-83eb-02de50f14365fileName">Ad_Network</con:setting></con:settings><con:testStep type="groovy" name="VerifyAdNetworkByCustomerId" id="451c04ee-8046-4f84-bfb1-394550b7f8e7"><con:settings/><con:config><script><![CDATA[import groovy.sql.Sql
+import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+
+//API execution class object
+def apirunobject=context.apiRun
+
+Date date=new Date()
+
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info  title
+logFile.append title
+
+
+Integer customerCounts;
+TreeMap adNetworkMap=new TreeMap()
+TreeMap adNetworkJson=new TreeMap()
+int tc=0
+int pass=0
+int fail=0
+
+def sql = context.dbConn
+try{
+//String querycustomers="select count(distinct(customer_id)) from product_adnetwork_map"
+String querycustomers="SELECT provider_id FROM provider_info;"
+sql.eachRow(querycustomers)
+{
+	row->
+	 customerid=row[0]
+	 
+	
+
+	tc++
+  String	query="SELECT ad_network.ad_network_id,ad_network.notification_url FROM product_adnetwork_map JOIN ad_network ON "+ 
+ "  product_adnetwork_map.ad_network_id=ad_network.ad_network_id where product_adnetwork_map.customer_id="+customerid+" and ad_network.status='ACTIVE';"
+		sql.eachRow(query)
+		{
+		row1->		
+		adNetworkMap.put(row1[0],row1[1])
+		}
+		apirunobject.adNetworkByCustomerIdName("ID",customerid.toString())	
+		def  jsonResponse=context.adNetworkByCustomerIdNameJson    		
+	   	
+	for(int i=0 ;i< jsonResponse.adNetworkResponseList.adNetworkId.size();i++){
+
+adNetworkJson.put(jsonResponse.adNetworkResponseList.adNetworkId[i],jsonResponse.adNetworkResponseList.notificationUrl[i])
+	   }
+	   	   
+if(adNetworkJson==adNetworkMap)
+{
+	def passresult= ("\r\n"+"AdNetwork By CustomerID for customer id ="+customerid +" is passed"+"\r\n")
+	log.info passresult
+	logFile.append passresult
+     
+     pass++
+}
+else{ 
+	def failresult= ("\r\n"+"AdNetwork By CustomerID for customer id ="+customerid +" is failed"+"\r\n")
+	log.info failresult
+	logFile.append failresult
+     
+     fail++
+	}
+}
+}
+catch(Exception ex){
+
+			def err=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>API Response is not proper<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+			log.error err
+			 logFile.append err
+		                    }
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary
+	   ]]></script></con:config></con:testStep><con:testStep type="groovy" name="VerifyAdNetworkByCustomerName" id="e0401097-ec4d-4067-ab7a-9cf8eba336b7"><con:settings/><con:config><script><![CDATA[import groovy.sql.Sql
+import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info  title
+logFile.append title
+
+//API execution class object
+def apirunobject=context.apiRun
+
+Integer customerCounts;
+TreeMap adNetworkMap=new TreeMap()
+TreeMap adNetworkJson=new TreeMap()
+Map customerIdNameMap=new HashMap()
+int tc=0
+int pass=0
+int fail=0
+def sql = context.dbConn
+
+try{
+
+//get customer id and names mapping
+String cust_id_name_map="SELECT customer_id,customer_name FROM customer;"
+sql.eachRow(cust_id_name_map)
+{
+	row-> 	 
+	tc++
+   String	query="SELECT ad_network.ad_network_id,ad_network.notification_url FROM product_adnetwork_map JOIN ad_network ON "+ 
+  "  product_adnetwork_map.ad_network_id=ad_network.ad_network_id where product_adnetwork_map.customer_id="+row[0]+" and ad_network.status='ACTIVE';"
+  
+		sql.eachRow(query)
+		{
+		row1->		
+		adNetworkMap.put(row1[0],row1[1])	
+		}
+		
+		apirunobject.adNetworkByCustomerIdName("NAME",row[1].toString())	 		
+	   	
+	  	   def  jsonResponse= context.adNetworkByCustomerIdNameJson
+
+	   for(int i=0 ;i< jsonResponse.adNetworkResponseList.adNetworkId.size();i++){
+
+adNetworkJson.put(jsonResponse.adNetworkResponseList.adNetworkId[i],jsonResponse.adNetworkResponseList.notificationUrl[i])
+	   }
+if(adNetworkJson==adNetworkMap)
+{
+	pass++
+	def passresult=("\r\n"+ "AdNetwork By CustomerName API for customer="+row[1] +" is passed"+"\r\n")
+	log.info passresult
+	logFile.append passresult
+     
+}
+
+else{ 
+	fail++
+	def failresult= ("\r\n"+"AdNetwork By CustomerName API for customer="+customerIdNameMap.get(k) +" is failed"+"\r\n")
+	log.info failresult
+	logFile.append failresult
+     
+	}
+}
+}
+
+catch(Exception ex){
+
+			def err= ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>API Response is not proper<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+			log.error err
+			logFile.append err
+		                    }
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary
+	   ]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:tearDownScript>//// get db connection object
+def sql = context.dbConn
+
+sql.execute("delete from ad_network where name='TestAdNetwork';")
+</con:tearDownScript><con:properties/><con:reportParameters/></con:testCase>

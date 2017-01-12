@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="bd757c5c-b42f-49e6-94c1-905761b9d95b" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="BlackList" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="bd757c5c-b42f-49e6-94c1-905761b9d95bfileName">BlackList</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="VerifyDoBlackList" id="7384a7ae-8aae-47a3-a661-a972589185bd"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info  title
+logFile.append  title
+
+def logapi = context.logAPI
+def lcmobject=context.lcmRun
+def datasetobject = context.dataSet
+def apirunobject=context.apiRun
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  blacklistmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable") && !dataset.get("whitelist")  )
+	{	
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.removeBlackList(msisdn.toString(),dataset.get("customerid").toString())
+		datasetobject.resetUser(msisdn)
+	
+	try {			
+			
+	     //baas do blacklist api execution 	
+          apirunobject.doBlackList(msisdn.toString(),dataset.get("customerid").toString(),"false")
+          
+          //get API Json Response context
+          def  responseJson= context.blackListJson          
+	     def responseCode=responseJson.responseCode
+	     def responseMessage= responseJson.message
+	     def responseUserid= responseJson.userId	    
+	
+	//get blacklist user status
+	apirunobject.getBlackListStatus(msisdn.toString(),dataset.get("customerid").toString())
+	//get API Json Response context
+          def  statusJson= context.blackListStatusJson           
+	     def statusCode=statusJson.responseCode	     
+	     def statusMessage= statusJson.message	     
+	     def statusUserid= statusJson.userId
+	     def startdate=statusJson.startDate
+	     def enddate=statusJson.endDate
+
+//call LCM activation API for blacklisted user and verify response
+ lcmobject.stepLcmACT(msisdn,dataset.get("billingcode"),"Success","TX47937493934739")
+      jsonResponse= context.jsonStepLcmACT	
+
+//validate DB values       	
+ blacklistmap= datasetobject.getBlackListStatus(msisdn.toString(),dataset.get("customerid").toString())
+
+//assert the response & db values
+if(
+	jsonResponse.responseMessage==dataset.get("apimessage")
+	&&jsonResponse.responseCode==dataset.get("apicode")
+	&&responseCode==dataset.get("responsecode")
+	&&statusCode==dataset.get("responsecode")
+	&& responseMessage==dataset.get("message")
+	&&statusMessage==dataset.get("message")
+	&&startdate!=enddate
+	&& responseUserid==msisdn
+	&&statusUserid==msisdn
+	&& blacklistmap.get("period").toString()==dataset.get("expperiod")
+	&& blacklistmap.get("unit")==dataset.get("expunit")
+      && blacklistmap.get("validity").toString()==dataset.get("expvalidity")	
+){
+	pass++
+def passresult= ("\r\n"+"[Blacklist]"+dataset.get("tcname")+ " for customer id="+dataset.get("customerid")+"  is passed" +"\r\n")
+log.info passresult
+logFile.append passresult}
+
+else { 	
+    fail++
+    def failresult=  ("\r\n"+"[Blacklist]"+dataset.get("tcname") + " for customer id="+dataset.get("customerid")+"  is failed"+"\r\n")
+
+def actual="Actual: responseMessage=" +jsonResponse.responseMessage +" jsonResponse="+jsonResponse.responseCode  +" responseCode="+responseCode +"statusCode="+ statusCode +"responseMessage="+ responseMessage +" statusMessage="+ statusMessage +"period="+  blacklistmap.get("period")+"unit="+ blacklistmap.get("unit") +"validity="+blacklistmap.get("validity")
+def expected="Expected: responseMessage=" +dataset.get("apimessage") +" jsonResponse="+dataset.get("apicode") +" responseCode"+dataset.get("responsecode") +"statusCode="+ dataset.get("responsecode") +"responseMessage="+ dataset.get("message")  +" statusMessage="+ dataset.get("message")+"period"+  dataset.get("expperiod") +"unit"+ dataset.get("expunit") +"validity"+dataset.get("expvalidity")	
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+}
+}
+		catch(Exception ex){
+
+			def errormsg="\r\n" +">>>>>>>>>>>>>>>>>>>>>>>>>>>>>API Response is not proper<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"+"\r\n" 
+			logFile.append errormsg
+			log.error errormsg
+		     }
+	}
+	}
+	
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary
+]]></script></con:config></con:testStep><con:testStep type="groovy" name="VerifyDoWhiteList" id="5b66554f-4f08-472d-98bf-01f2b5003ae0"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info  title
+logFile.append  title
+
+//Log API class object
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  blacklistmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable") && dataset.get("whitelist") )
+	{	
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.removeBlackList(msisdn.toString(),dataset.get("customerid").toString())
+	
+	try {			
+//black list the user first
+
+     apirunobject.doBlackList(msisdn.toString(),dataset.get("customerid").toString(),"false")
+     
+     
+	     //baas do whitelist api execution 	
+          apirunobject.doBlackList(msisdn.toString(),dataset.get("customerid").toString(),"true")
+          
+          
+          //get API Json Response context
+          def  responseJson= context.blackListJson          
+	     def responseCode=responseJson.responseCode
+	     def responseMessage= responseJson.message
+	     def responseUserid= responseJson.userId	    
+	     
+	//get whitelist user status
+	apirunobject.getBlackListStatus(msisdn.toString(),dataset.get("customerid").toString())
+	
+	//get API Json Response context
+          def  statusJson= context.blackListStatusJson           
+	     def statusCode=statusJson.responseCode	     
+	     def statusMessage= statusJson.message	     
+	     def statusUserid= statusJson.userId
+	     def startDate=statusJson.startDate
+	     def endDate=statusJson.endDate
+	     
+//validate DB values       	
+ blacklistmap= datasetobject.getBlackListStatus(msisdn.toString(),dataset.get("customerid").toString())
+
+//assert the response & db values
+if(
+	startDate==endDate
+	&&responseCode==dataset.get("responsecode")
+	&&statusCode==dataset.get("responsecode")
+	&& responseMessage==dataset.get("message")
+	&&statusMessage==dataset.get("message")
+	&& responseUserid==msisdn
+	&& statusUserid==msisdn
+	&& blacklistmap.get("period").toString()==dataset.get("expperiod")
+	&& blacklistmap.get("unit")==dataset.get("expunit")
+	&& blacklistmap.get("validity").toString()==dataset.get("expvalidity")		
+){
+	pass++
+def passresult= ("\r\n"+"[Whitelist]"+dataset.get("tcname")+ " for customer id="+dataset.get("customerid")+"  is passed" +"\r\n")
+log.info passresult
+logFile.append passresult}
+
+else { 	
+    fail++
+def failresult=  ("\r\n"+"[Whitelist]"+dataset.get("tcname") + " for customer id="+dataset.get("customerid")+"  is failed"+"\r\n")
+log.info "Expected: responseCode=" +dataset.get("responsecode") +" statusCode="+dataset.get("responsecode") +"responseMessage="+ dataset.get("message")  +" statusMessage="+ dataset.get("message") +"period"+  dataset.get("expperiod") +"unit"+ dataset.get("expunit") +"validity"+dataset.get("expvalidity")
+log.info "Actual: responseCode=" +responseCode +" statusCode="+statusCode +"responseMessage="+ responseMessage  +" statusMessage="+ statusMessage +"period"+  blacklistmap.get("period") +"unit"+ blacklistmap.get("unit") +"validity"+blacklistmap.get("validity")
+
+logFile.append failresult
+log.error failresult
+}
+}
+		catch(Exception ex){
+
+			def errormsg=dataset.get("tcname")+">>>API Response is not proper<<<"
+			logFile.append errormsg
+			log.error errormsg
+		     }
+	}
+	}
+	
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['LCM Run'].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

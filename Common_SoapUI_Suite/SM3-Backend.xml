@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="0f1372b9-0fcf-43ee-aa4c-a9e6e5a38562" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="SM3-Backend" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="0f1372b9-0fcf-43ee-aa4c-a9e6e5a38562fileName">SM3-Backend</con:setting></con:settings><con:testStep type="groovy" name="SM3-Backend" id="183f300b-e525-4a4c-821d-6cef4f352a18"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+
+Date date=new Date()
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>[SM3][BACKEND]"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+def logFile=context.resultfile
+
+// get a reference to the common util  TestSuite
+def logapi = context.logAPI
+def apirunobject=context.apiRun
+def datasetobject = context.dataSet
+def lcmobject=context.lcmRun
+def backendjob = context.backendJob
+def talendobject=context.talendApiRun
+
+Map dataset  = new HashMap();
+Map usersubmap  = new HashMap();
+int tc=0
+int pass=0
+int fail=0
+long timeoutPeriod=5000;
+
+for (int i=1;i<= context.rowCount;i++)
+{
+	dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")) 
+	{
+		tc++					  
+		msisdn= dataset.get("userid")
+//reset user 		
+datasetobject.resetUser(msisdn)
+
+//Create Test User
+datasetobject.freeTrialHisotry(msisdn,"1",dataset.get("lastfreetrialtime"),"1202000024")
+datasetobject.createUser(dataset.get("customerid"),dataset.get("providerid"),msisdn,dataset.get("billingcode"),dataset.get("subbillingcode"),dataset.get("currbillingcode"),dataset.get("substate"),
+       dataset.get("startdate"),dataset.get("enddate"),dataset.get("subdate"),dataset.get("source"),dataset.get("nbd"),dataset.get("currcredit"),msisdn,"1","2","1","kp=test_oovs",dataset.get("lastreqtxid"),dataset.get("lastnottrnxid"),"0","1","1","1")
+
+lcmobject.stepLcmCommon(dataset.get("apiname"),msisdn.toString(),dataset.get("billingcode"), dataset.get("activityres"), dataset.get("lastreqtxid"))
+
+long startTime = System.currentTimeMillis();
+while(true){
+//validate DB values       	
+ usersubmap= datasetobject.getUserData(msisdn,"1")
+
+ 	if(usersubmap.get("subscription_status_id").toString()==dataset.get("expid"))
+
+					{
+						break;
+					}
+					else
+					{
+						long currentTime = System.currentTimeMillis();
+						if((currentTime-startTime)<timeoutPeriod){
+							sleep(200);
+							log.info "waiting for request to  process"
+						}else{
+							break;
+
+						}}}
+
+
+
+	if(usersubmap.get("subscription_status_id").toString() ==dataset.get("expid") 
+	&& usersubmap.get("validity").toString() == dataset.get("expval") 
+	&& usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode") 
+	&& usersubmap.get("credits").toString()==dataset.get("expcredits"))
+  
+ {//print result
+ 	pass++
+def passresult= ("\r\n"+"[SM3][Backend]"+dataset.get("tcname") +" bass test: passed")
+log.info passresult
+logFile.append passresult
+ }
+  
+		 
+	else{
+		fail++
+def failresult=  ("\r\n"+"[SM3][BACKEND]"+dataset.get("tcname") +"  is failed"+"\r\n")
+def expected= ("\r\n"+"Expected Values:"+"sub_status_id="+dataset.get("expid")+" ,Validity="+dataset.get("expval")+" exp billcode="+dataset.get("expbillcode")+" expcredits="+dataset.get("expcredits")+"\r\n")
+def actual=  ("\r\n"+"But Found:  sub_status_id="+usersubmap.get("subscription_status_id")+",validity="+usersubmap.get("validity")+",billcode="+usersubmap.get("current_billing_code")+",credits="+usersubmap.get("credits")+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+} }}
+
+def summary=  ("\r\n"+date+" Execution Summary of [SM3][BACKEND]"+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['LCM Run'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testSuite id="55408de7-42f8-482a-b1fa-2dbf466e499f" name="AMJ_SoapUI_Suite" disabled="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="55408de7-42f8-482a-b1fa-2dbf466e499ffileName">AMJ_SoapUI_Suite</con:setting></con:settings><con:runType>SEQUENTIAL</con:runType><con:properties><con:property><con:name>outputfile</con:name><con:value>F://baas_workspace/Output/airt_movie_jn/airtel_movie_jn_suite_2016_06_16-13-57.txt</con:value></con:property><con:property><con:name>filePrefix</con:name><con:value>airt_movie_jn/airtel_movie_jn_suite_</con:value></con:property><con:property><con:name>total</con:name><con:value>0</con:value></con:property><con:property><con:name>pass</con:name><con:value>0</con:value></con:property><con:property><con:name>fail</con:name><con:value>0</con:value></con:property><con:property><con:name>duration</con:name><con:value>197914</con:value></con:property></con:properties><con:setupScript>import java.text.*
+import java.util.*
+long startTime = System.currentTimeMillis();
+context.setProperty("start",startTime)
+
+Properties properties = new Properties()
+File propertiesFile = new File(context.expand('${#Global#property_file}'))
+propertiesFile.withInputStream {
+    properties.load(it)
+}
+context.setProperty("propobject",properties)
+
+testSuite.setPropertyValue( "duration","0")
+testSuite.setPropertyValue( "total","0")
+testSuite.setPropertyValue( "pass","0")
+testSuite.setPropertyValue( "fail","0")
+
+
+def path=context.expand('${#Global#output_path}')
+
+Date date = new Date();
+DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd-HH-mm");
+def df = dateFormat.format(date);
+def prefix=testSuite.getPropertyValue("filePrefix")+df+".txt"
+
+def resultFile = path+prefix
+ File file = new File(resultFile)
+testSuite.setPropertyValue( "outputfile", resultFile )
+context.setProperty("resultfile",file)
+</con:setupScript><con:tearDownScript><![CDATA[import javax.mail.*;
+import javax.activation.*
+import javax.mail.internet.*;
+import java.util.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+long endTime = System.currentTimeMillis();
+long duration=endTime-context.start
+
+testSuite.setPropertyValue( "duration",duration.toString())
+
+ // Recipient's email ID needs to be mentioned.
+        String to = context.expand('${#Global#recipients}')
+        
+       // Sender's email ID needs to be mentioned
+      String from = "vuclipqauser@gmail.com";//change accordingly
+      final String username = "vuclipqauser";//change accordingly
+      final String password = "vucliP@123";//change accordingly
+
+      // Assuming you are sending email through relay.jangosmtp.net
+      String host = "smtp.gmail.com";
+
+      def props = new Properties();
+      props.put("mail.smtp.auth", "true");
+      props.put("mail.smtp.starttls.enable", "true");
+      props.put("mail.smtp.host", host);
+      props.put("mail.smtp.port", "587");
+
+      // Get the Session object.
+      Session session = Session.getInstance(props,
+      new javax.mail.Authenticator() {
+         protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(username, password);
+         }
+      });
+
+      try {
+      	int total=0
+      	int pass=0
+      	int fail=0
+       String filename = testSuite.getPropertyValue( "outputfile")
+      
+           File outputfile=new File(filename)
+         // Create a default MimeMessage object.
+         Message message = new MimeMessage(session);
+
+         // Set From: header field of the header.
+         message.setFrom(new InternetAddress(from));
+
+         // Set To: header field of the header.
+         message.setRecipients(Message.RecipientType.TO,
+         InternetAddress.parse(to));
+
+         // Set Subject: header field
+         message.setSubject(testSuite.name +" :BaaS Automaiton Test Execution Report");
+     
+         // Create the message part
+            BodyPart messageBodyPart = new MimeBodyPart();
+            StringBuffer emailMessage = new StringBuffer("Dear All,");
+            emailMessage.append("<br>");
+            emailMessage.append("<h3>Find below "+testSuite.name+" Test Excecution Report.</h3>");
+                                 
+               BufferedReader br = null;	
+			String sCurrentLine;
+			br = new BufferedReader(new FileReader(outputfile));
+			br2 = new BufferedReader(new FileReader(outputfile));
+
+         while ((sCurrentLine = br.readLine()) != null) {
+			if(sCurrentLine.contains("Total Executed"))
+			{
+				total=total+(sCurrentLine.split("=")[1]).toInteger()
+			}
+			else if(sCurrentLine.contains("Total Pass"))
+			{
+				pass=pass+(sCurrentLine.split("=")[1]).toInteger()
+			}
+			else if(sCurrentLine.contains("Total Fail"))
+			{
+				fail=fail+(sCurrentLine.split("=")[1]).toInteger()
+			}}
+
+			float passPercent= (pass/total)*100
+			float failPercent=(fail/total)*100
+			
+			def p=   Math.round(passPercent * 100) / 100
+			def f=    Math.round(failPercent * 100) / 100
+		 Properties prop = new Properties();
+		 FileInputStream fis = new FileInputStream(context.expand('${#Global#output_path}')+"/master.properties");
+           prop.load(fis);
+            fis.close();
+	       OutputStream output = new FileOutputStream(context.expand('${#Global#output_path}')+"/master.properties");	          
+	       prop.setProperty(testSuite.name, total+"*"+pass+"*"+fail+"*"+p+"*"+f+"*"+duration+"*"+filename);	
+		    // save properties to project root folder
+		     prop.store(output, null);
+		
+			 int n=1
+			//Summary
+			 emailMessage.append("<!DOCTYPE html><html><head><style>table, th, td {    border: 1px solid black;}</style></head><body> <table style='width:25%' ; frame=box ><tr><th>Total Executed</th><th>Passed</th><th>Failed</th><th>Pass %</th><th>Fail %</th></tr><tr><td align='center'>"+total+"</td><td bgcolor='##00ff00' ; align='center'>"+pass+"</td> <td bgcolor='#FF0000' ; align='center'>"+fail+"</td><td bgcolor='##00ff00' ; align='center'>"+p+"</td> <td bgcolor='#FF0000' ; align='center'>"+f+"</td>  </tr></table>")
+		
+             // Server Details
+		    emailMessage.append("<p><b>BaaS Server:</b>"+context.expand('${#Global#baas_endpoint}')+"</p>");
+              emailMessage.append("<p><b>Talend Server:</b>"+context.expand('${#Global#talend_endpoint}')+"</p>");
+			
+			emailMessage.append("<table  frame=box ><tr><th>S.R.</th><th>Test Case Name</th><th>Status</th></tr>")
+			while ((sCurrentLine = br2.readLine()) != null) {
+
+	                if(sCurrentLine.contains("no record found in log api db")){
+      		
+      		 emailMessage.append("<tr><td align='center'>"+n+"</td><td bgcolor='#D3D3D3'>"+sCurrentLine+"</td><td bgcolor='#D3D3D3'>FAIL</td></tr>")
+      			 
+      			  
+      			  n++
+      			 }
+      			 		else if (sCurrentLine.contains("failed")  || sCurrentLine.contains("API Response is not proper") )
+				{
+					
+					 emailMessage.append("<tr><td align='center'>"+n+"</td><td bgcolor='#FF0000'>"+sCurrentLine+"</td><td bgcolor='#FF0000'>FAIL</td></tr>")
+				      			  
+					 n++
+					
+				}	
+				 else if(sCurrentLine.contains("passed")){
+      		
+      			 emailMessage.append("<tr><td align='center'>"+n+"</td><td>"+sCurrentLine+"</td><td bgcolor='##00ff00'>PASS</td></tr>");
+      			  n++
+      			 }
+				
+			
+                     else if(sCurrentLine.contains("Expected"))
+      			 {
+      			 String failresult=("<tr>Expected<td></td>"+sCurrentLine+"<td></td></tr>");
+      			  emailMessage.append(failresult)
+      			 	
+      			 }
+      			   else if( sCurrentLine.contains("Found"))
+      			 {
+      			 String failresult=("<tr>Found<td></td>"+sCurrentLine+"<td></td></tr>");
+      			  emailMessage.append(failresult)
+      			 	
+      			 }
+      		
+			}
+			emailMessage.append("</table>")
+		//Signature of the email body	
+		   emailMessage.append("<br>");
+            emailMessage.append("Thanks & Regards");
+            emailMessage.append("<br>");
+            emailMessage.append("Vuclip QA");
+             emailMessage.append("<br>");
+            
+
+            emailMessage.append("<p>*** This is an automatically generated email, please do not reply ***</p>");
+
+         // Create a multipar message
+         Multipart multipart = new MimeMultipart();
+         
+
+         // Part two is attachment
+         messageBodyPart = new MimeBodyPart();
+         messageBodyPart.setContent(emailMessage.toString(),"text/html")
+         
+         multipart.addBodyPart(messageBodyPart);
+         //String filename = context.getProperty("resultfile")
+
+         // Send the complete message parts
+         message.setContent(multipart);
+
+      // Send message
+         if (context.expand('${#Global#is_mail_sent}').toUpperCase()=='TRUE')
+         {
+         Transport.send(message);
+         }
+         else{log.info "No Email Sent"}
+      } catch (MessagingException e) {
+            throw new RuntimeException(e);
+      }
+
+
+]]></con:tearDownScript><con:reportParameters/></con:testSuite>

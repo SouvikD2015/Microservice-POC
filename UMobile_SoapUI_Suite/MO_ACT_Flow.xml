@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="61d0c313-f1d7-4dab-a8e9-59137dbe12e4" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="MO_ACT_Flow" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="61d0c313-f1d7-4dab-a8e9-59137dbe12e4fileName">MO_ACT_Flow</con:setting></con:settings><con:testStep type="groovy" name="MO Activation FLow" id="7411383b-c833-4af7-9d79-d43f8ee7ade9"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info  title
+
+//Log API class object
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  usersubmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+def expected2ndConf
+def actual2ndConf
+def expectedActNotification
+def actualActNotification
+long timeoutPeriod=5000
+
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+def isFreeTrial
+def cgBillCode
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  )
+	{	
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.resetUser(msisdn)
+
+	try{		
+		
+		
+	        //Mo Rx api execution     
+	    def 	propertyMO= testRunner.testCase.getTestStepByName("properties")
+	     //To set Parameter Values  of Activation API 	
+      	propertyMO.setPropertyValue("msisdn",msisdn)	 	
+		propertyMO.setPropertyValue("message",dataset.get("keyword"))
+		propertyMO.setPropertyValue("date",date.toString())
+		
+		def 	stepMORx= testRunner.testCase.getTestStepByName("UMobile_MO")	 
+		stepMORx.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))    	 
+	   	stepMORx.run(testRunner,testRunner.getRunContext())	
+       
+ def startTime=System.currentTimeMillis();
+//validate DB values
+while(true)
+{
+	usersubmap= datasetobject.getUserData(msisdn,dataset.get("itemid"))
+	if( usersubmap.get("subscription_status_id").toString() ==dataset.get("expid") )
+	{
+		break;
+	}
+	else{
+		long currentTime = System.currentTimeMillis();
+		if((currentTime-startTime)<timeoutPeriod){
+				sleep(500);
+				log.info "waiting for record to process"
+				
+			}else
+			{
+				log.error "Queue is taking too long to process record or last billing response status id did not match"
+				break;
+			}
+	}
+}
+
+
+//assert the response & db values
+if(
+usersubmap.get("subscription_status_id").toString() == dataset.get("expid")
+&& usersubmap.get("validity").toString() == dataset.get("expval")
+&& usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode")
+&& usersubmap.get("user_source").toString() == dataset.get("source")
+&& usersubmap.get("credits").toString()==dataset.get("expcredits")
+&& usersubmap.get("last_billing_response_status_id").toString()==dataset.get("activityres")
+&& usersubmap.get("item_id").toString()==dataset.get("itemid")
+&& usersubmap.get("item_type_id").toString()=="4"
+) 
+{   
+	//calling log api test method	
+def log_act_notify= logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_CHARGING_NOTIFICATION","3","3",dataset.get("activityres").toString(),dataset.get("expid"),
+dataset.get("expbillcode"),"1","null",dataset.get("expaccmode"),dataset.get("expchargemode"),"false"
+,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"40",null) 
+if (log_act_notify=="failed"){
+ expectedActNotification=context.expected
+ actualActNotification=context.actual}
+
+//print result
+def passresult= ("\r\n"+"[UMobile][MO][ACT]"+dataset.get("tcname") +" bass test: passed"+">>> act_charging_notification_log: "+log_act_notify+"\r\n")
+ logFile.append passresult
+log.info passresult
+
+if (log_act_notify=="passed" ) {pass++} 
+else {fail++
+  	if(log_act_notify=="failed"){
+   log.error "Expected_ACT_Notification>>>>>>>>>>" +expectedActNotification
+   log.error "Found_ACT_Notification>>>>>>>>>>" + actualActNotification}  
+   
+}}  	
+
+else{ 	
+    fail++
+def failresult=  ("\r\n"+"[UMobile][MO][ACT]"+dataset.get("tcname") +"  is failed"+"\r\n")
+def  expected= ( "\r\n"+"Expected Values:  sub_status_id="+dataset.get("expid")+",Validity="+dataset.get("expval")+",curr_billing_code="+dataset.get("expbillcode")+",user_source=" +dataset.get("source")+" credits="+dataset.get("expcredits")+"last_billing_response_status_id="+dataset.get("activityres")+"itemId="+dataset.get("itemid")+" itemTypeId=4"+"\r\n")
+def actual=  ("\r\n"+"But Found:  sub_status_id="+usersubmap.get("subscription_status_id")+",Validity="+usersubmap.get("validity")+ ",curr_billing_code="+usersubmap.get("current_billing_code")+",user_source=" +usersubmap.get("user_source")+"credits="+usersubmap.get("credits")+" last_billing_response_status_id"+ usersubmap.get("last_billing_response_status_id")+"itemId="+usersubmap.get("item_id")+" itemTypeId="+usersubmap.get("item_type_id")+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+
+ }}
+	
+		catch(Exception ex){
+
+			def errmsg= dataset.get("tcname")+">>>API Response is not proper<<<"
+			log.error errmsg
+			logFile.append errmsg
+			
+		                    }
+	}}
+	
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:testStep type="properties" name="properties" id="66fd7da2-50a0-42c1-aac7-705054bc005f"><con:settings/><con:config xsi:type="con:PropertiesStep" saveFirst="true" createMissingOnLoad="true" discardValuesOnSave="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:properties><con:property><con:name>msisdn</con:name><con:value>6077000020</con:value></con:property><con:property><con:name>message</con:name><con:value>DAFTAR IW</con:value></con:property><con:property><con:name>date</con:name><con:value>Thu Jun 30 13:33:43 IST 2016</con:value></con:property></con:properties></con:config></con:testStep><con:testStep type="restrequest" name="UMobile_MO" id="53e7b440-7e16-492d-9326-49ddb055ed88" disabled="true"><con:settings/><con:config service="UMobile_MO" resourcePath="/umobmy/moreceiver" methodName="Moreceiver" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="UMobile_MO" id="951d6996-7209-42a0-933a-38e77b5f5292" mediaType="application/x-www-form-urlencoded" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request><![CDATA[MoMsgId=1101&Shortcode=28282&Msisdn=${properties#msisdn}&DataCoding=0&Message=${properties#message}&DateTime=${properties#date}&Channel=SMS]]></con:request><con:originalUri>http://192.168.250.92/umobmy/moreceiver</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:restRequest></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

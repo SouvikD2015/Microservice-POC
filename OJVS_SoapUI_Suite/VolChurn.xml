@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="bebf935a-0a11-4de8-8b22-74705f4e2df3" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="VolChurn" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:description>url to clear provider info cache '192.168.254.9/baas/monitoring?action=clear_cache&amp;cacheId=com.vuclip.mint.persistence.api.entites.ProviderInfo'</con:description><con:settings><con:setting id="bebf935a-0a11-4de8-8b22-74705f4e2df3fileName">VolChurn</con:setting></con:settings><con:testStep type="groovy" name="Verify Deactivaiton Flow" id="dc23fb58-d113-435b-b890-72a62640e3eb"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.sql.Sql 
+import java.io.*
+import java.text.*
+import java.util.*
+
+//Log API class object
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+
+Date date=new Date()
+def logFile=context.resultfile
+
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  usersubmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+def expected2ndConf
+def actual2ndConf
+def expectedActNotification
+def actualActNotification
+long timeoutPeriod=5000
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+try{
+def baas_api_log
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  )
+	{	
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.resetUser(msisdn)
+
+//Create Test User
+datasetobject.createUser(dataset.get("customerid"),dataset.get("providerid"),msisdn,dataset.get("billingcode"),dataset.get("subbillingcode"),dataset.get("currbillingcode"),dataset.get("substate"),
+       dataset.get("startdate"),dataset.get("enddate"),dataset.get("subdate"),dataset.get("source"),dataset.get("nbd"),dataset.get("currcredit"),msisdn,"1","2","1","kp=test_ojvs","0","0",dataset.get("contractid"),"1","1","1")
+
+//calling baas deactiavtion API end point
+apirunobject.stepBaasDCT(msisdn,dataset.get("billingcode"),"1","2")
+
+//Notify on Talend end point
+  talendobject.OJVS_Notify_Rx(dataset.get("action"), dataset.get("contractid"), dataset.get("status"),"" , "0.0","")
+
+   long startTime = System.currentTimeMillis();
+while(true){
+//validate DB values       	
+ usersubmap= datasetobject.getUserData(msisdn,"1")
+
+ 	if(	usersubmap.get("subscription_status_id").toString()== dataset.get("expid"))
+
+					{
+						break;
+					}
+					else
+					{
+						long currentTime = System.currentTimeMillis();
+						if((currentTime-startTime)<timeoutPeriod){
+							sleep(200);
+							log.info "waiting for notification to  process"
+						}else{
+							log.error 'wiaitng timeout for notification processing'
+							break;
+
+						}}}
+	if( 	usersubmap.get("subscription_status_id").toString() ==  dataset.get("expid") &&
+ 		usersubmap.get("validity").toString() ==  dataset.get("expval") &&
+ 		usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode")  				
+ 		)
+	{
+		
+	if(! (dataset.get("logtype").toString()=="NA")){	
+		
+      baas_api_log= logapi.assertBaaSLogAPI(msisdn,dataset.get("logtype"),dataset.get("activitytype"),dataset.get("billingactionid"),dataset.get("activityres").toString(),dataset.get("expid") ,dataset.get("expbillcode"),
+  	dataset.get("previousstate"), dataset.get("expbillcode"),dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("freetrialflag").toString()	,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),
+  	dataset.get("providerid").toString(),'90',null)
+  	}
+  	
+  	else
+  	{
+  		baas_api_log="NA"
+  		pass++
+  		}
+     def passresult=("\r\n"+"[OJVS][WAP][CHURN]"+dataset.get("tcname") +" bass test: passed"+">>>>>>>>>> user_baas_logAPI log: "+baas_api_log+"\r\n")
+log.info passresult
+logFile.append passresult
+  	
+  	if (baas_api_log=="passed"){pass++} 
+  	else if(baas_api_log=="failed"){
+  		fail++
+   log.error "Expected>>>>>>>>>>" +context.expected+"\r\n"
+   log.error "Found>>>>>>>>>>" + context.actual+"\r\n"
+  	}
+	}	 
+	else{
+		   fail++
+ def failresult= ("\r\n"+"***********************************"+"[OJVS][WAP][CHURN]"+dataset.get("tcname") +"  is failed" +"******************************************"+"\r\n")
+log.info failresult
+logFile.append failresult
+ldef expected=  ( "\r\n"+"Expected Values:sub_status_id="+dataset.get("expid")+",Validity="+dataset.get("expval")+",curr_billing_code="+dataset.get("expbillcode")+"\r\n")
+log.error expected
+logFile.append  expected
+def actual=  ("\r\n"+"But Found: sub_status_id="+usersubmap.get("subscription_status_id")+",Validity="+usersubmap.get("validity")+ ",curr_billing_code="+usersubmap.get("current_billing_code")+"\r\n")
+log.error  actual
+logFile.append   actual	
+	} }
+	}
+
+	 catch (Exception ex)
+{
+	def errormsg= dataset.get("tcname")+">>>API Response is not proper<<<"
+			logFile.append errormsg
+			log.error errormsg
+}
+}
+
+
+
+def summary=  ("\r\n"+date+" Execution Summary of [OJVS][WAP][CHURN]"+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary
+
+]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:tearDownScript>import groovy.sql.Sql
+def url = testRunner.testCase.testSuite.project.getPropertyValue("billing_url")
+
+String query="UPDATE baas.provider_info SET billing_url="+ url +" WHERE provider_id='1';"
+//context.dbConn.execute(query)</con:tearDownScript><con:properties/><con:reportParameters/></con:testCase>

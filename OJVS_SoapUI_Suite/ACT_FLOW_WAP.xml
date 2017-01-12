@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="85cdca80-2842-4a12-a009-cb5f11725434" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="ACT_FLOW_WAP" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.panels.testcase.JTestRunLog$OptionsForm@max_rows">1000</con:setting><con:setting id="com.eviware.soapui.impl.wsdl.panels.testcase.JTestRunLog$OptionsForm@errors_only">false</con:setting><con:setting id="85cdca80-2842-4a12-a009-cb5f11725434fileName">ACT_FLOW_WAP</con:setting></con:settings><con:testStep type="groovy" name="Verify OJVS Activation Flow" id="db824225-8a94-44ae-924f-e3fdfbd616e6"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.sql.Sql 
+import java.io.*
+import java.text.*
+import java.util.*
+
+//Log API class object
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+def controllerobject=context.controllers
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+
+Date date=new Date()
+def logFile=context.resultfile
+
+def title=("\r\n"+date+"Executing>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  usersubmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+def expected2ndConf
+def actual2ndConf
+def expectedActNotification
+def actualActNotification
+long timeoutPeriod = 5000;
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+def callbackResponse
+def notifyResponse
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  && !dataset.get("iserror"))
+	{	
+	try {
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.resetUser(msisdn)
+
+		//make user entry in free trial history
+          datasetobject.freeTrialHisotry(msisdn,"1",dataset.get("lastfreetrialtime"),"1920920074")
+     if(dataset.get("isotp"))
+     {
+		//baas activation api execution 	
+          apirunobject.stepInitiliazer(msisdn,dataset.get("billingcode"),dataset.get("source"),dataset.get("trnxid") ,dataset.get("adnetid"),
+          dataset.get("adtrnxid"),dataset.get("languageid"),dataset.get("itemid"),"4","null",dataset.get("dirthash"),"OTP_GEN")
+     }
+     else
+     {
+     	//baas activation api execution 	
+          apirunobject.stepInitiliazer(msisdn,dataset.get("billingcode"),dataset.get("source"),dataset.get("trnxid") ,dataset.get("adnetid"),
+          dataset.get("adtrnxid"),dataset.get("languageid"),dataset.get("itemid"),"4","null",dataset.get("dirthash")," ")
+            	
+     }
+          //get API Json Response context
+          def  slurperStepInitialise= context.jsonStepInitialise          
+	     def  responseStatus= slurperStepInitialise.result.status
+	     def responseCode=slurperStepInitialise.result.code
+	     def responseMessage= slurperStepInitialise.result.message
+	     def responseMsisdn=slurperStepInitialise.userStatus.msisdn
+	     def custtrnxid=slurperStepInitialise.userStatus.customerTransactionId
+	     
+           def cgUrl=slurperStepInitialise.cgURL
+           
+           
+	            	
+  String cgUrlDecoded = URLDecoder.decode(cgUrl, "UTF-8");
+  def param=cgUrlDecoded.split("[?]")
+     tmp = (param[2]).split("&")[0]
+      
+      transid=tmp.split("=")[1]   
+      
+      
+               if(!dataset.get("isotp"))
+     {  
+ //baas Cg controller execution 
+controllerobject.CGController(transid,dataset.get('providerid'))
+     }
+
+   else
+     {
+     	controllerobject.OTPController(transid,dataset.get('providerid'),dataset.get("pin"),custtrnxid)
+     }
+
+if(!dataset.get("isfreetrial"))
+{
+	talendobject.OJVS_Notify_Rx(dataset.get("action"), dataset.get("contractid"), dataset.get("status"),dataset.get("paymentstatus"),dataset.get("amount").substring(1, 5),"")
+}
+
+  	if(i==1)
+{
+	tc--;
+	continue;
+	
+}
+ 
+   long startTime = System.currentTimeMillis();
+while(true){
+//validate DB values       	
+ usersubmap= datasetobject.getUserData(msisdn,dataset.get("itemid"))
+
+ 	if(	usersubmap.get("subscription_status_id").toString()== dataset.get("expid"))
+
+					{
+						break;
+					}
+					else
+					{
+						long currentTime = System.currentTimeMillis();
+						if((currentTime-startTime)<timeoutPeriod){
+							sleep(200);
+							log.info "waiting for notification to  process"
+						}else{
+							break;
+
+						}}}
+if(responseStatus=="OK"
+&&responseMsisdn==msisdn
+&& responseCode=="VE002"
+&& responseMessage=="Consent Redirect"
+&& usersubmap.get("subscription_status_id").toString() == dataset.get("expid")
+&& usersubmap.get("validity").toString() == dataset.get("expval")
+&& usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode")
+&& usersubmap.get("user_source").toString() == dataset.get("source")
+&& usersubmap.get("credits").toString()==dataset.get("expcredits")
+&& usersubmap.get("last_notification_status_id").toString()==dataset.get("activityres")
+&& usersubmap.get("customer_transaction_id").toString()==dataset.get("contractid")
+) 
+{   
+//calling log api test method	
+
+def log_2nd_conf= logapi.assertBaaSLogAPI(msisdn,"PAGEVIEW_LOG_2nd_CONF","2","2",dataset.get("2ndconfactivityres").toString(),"1",
+dataset.get("prebillcode"),"1",dataset.get("prebillcode"),"WAP",dataset.get("expchargemode"),dataset.get("isfreetrial").toString(),
+ dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),'30',dataset.get("dirthash"))  	
+
+if (log_2nd_conf=="failed"){
+ expected2ndConf=context.expected
+ actual2ndConf=context.actual}
+//dataset.get("expchargemode")
+def log_act_notify= logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_CHARGING_NOTIFICATION","3","3",dataset.get("activityres").toString(),dataset.get("expid"),
+dataset.get("expbillcode"),"1",dataset.get("prebillcode"),"NOTIFICATION",dataset.get("expchargemode"),dataset.get("isfreetrial").toString()
+,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),'40',dataset.get("dirthash")) 
+if (log_act_notify=="failed"){
+ expectedActNotification=context.expected
+ actualActNotification=context.actual}
+
+// validate ad network logs
+if(dataset.get("adnetinfo")){
+ad_network_log=logapi.assertAdNetworkInfo(msisdn,"ACTIVATION_CHARGING_NOTIFICATION",dataset.get("adnetid"),dataset.get("adtrnxid"))
+
+}
+else {ad_network_log= "NA"}
+
+//print result
+def passresult=("\r\n"+"[OJVS][WAP][ACT]"+dataset.get("tcname") +" bass test: passed"+">>>2nd_conf_log:"+log_2nd_conf+">>> act_charging_notification_log: "+log_act_notify+">>> adnetwork_info_log: "+ad_network_log+"\r\n")
+//def passresult=("\r\n"+"[OJVS][WAP][ACT]"+dataset.get("tcname") +" bass test: passed")
+logFile.append passresult
+log.info passresult
+
+if (log_act_notify=="passed" &&  log_2nd_conf=="passed" && (ad_network_log=="passed"  || ad_network_log=="NA" )) {pass++} 
+else {fail++
+   if(log_2nd_conf=="failed"){
+   def Expected= "Expected_2nd_Conf >>>" +expected2ndConf+"\r\n"
+  def actual= "Found_2nd_Conf >>>" + actual2ndConf+"\r\n"
+log.error Expected
+logFile.append  Expected
+log.error actual
+logFile.append  actual
+   }
+	
+if(log_act_notify=="failed"){
+ def Expected="Expected_ACT_Notification >>>" +expectedActNotification+"\r\n"
+ def actual= "Found_ACT_Notification >>>" + actualActNotification+"\r\n"
+log.error Expected
+logFile.append  Expected
+log.error actual
+logFile.append  actual
+}  
+   
+   if(ad_network_log=="failed"){
+def Expected= "Expected_Ad_Notification >>>" +context.expectedAdLog
+ def Actual= "Found_Ad_Notification >>>" + context.actualAdLog
+ log.error Expected
+logFile.append  Expected
+log.error Actual
+logFile.append  Actual}
+}  	
+}
+else{ 	
+    fail++
+ def failresult= ("\r\n"+"[OJVS][WAP][ACT]"+dataset.get("tcname") +"  is failed"+"\r\n")
+ StringBuilder expected = new StringBuilder("\r\n"+"Expected Values: ");
+ expected.append("sub_status_id="+dataset.get("expid"))
+ expected.append("|validity="+dataset.get("expval"))
+ expected.append("|currentBillingCode="+dataset.get("expbillcode"))
+ expected.append("|source="+dataset.get("source"))
+ expected.append("|credits="+dataset.get("expcredits"))
+ expected.append("|lastnotificationstatusid="+dataset.get("activityres"))
+ expected.append("|customerTransactionId="+dataset.get("contractid"))
+ expected.append("responseStatus==OK | responseCode==VE002 | responseMessage=Consent Redirect")
+
+  StringBuilder actual = new StringBuilder("\r\n"+"   But Found:   ");
+ actual.append("sub_status_id="+usersubmap.get("subscription_status_id"))
+ actual.append("|validity="+usersubmap.get("validity"))
+ actual.append("|currentBillingCode="+usersubmap.get("current_billing_code"))
+ actual.append("|source="+usersubmap.get("user_source"))
+ actual.append("|credits="+usersubmap.get("credits"))
+ actual.append("|lastnotificationstatusid="+usersubmap.get("last_notification_status_id"))
+ actual.append("|customerTransactionId="+usersubmap.get("customer_transaction_id"))
+ actual.append("responseStatus="+responseStatus)
+ actual.append("| responseCode="+responseCode)
+ actual.append("| responseMessage="+responseMessage)
+ 
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+
+	} }
+	catch(Exception ex){
+			def err= dataset.get("tcname")+">>>[OJVS][WAP][ACT]API Response is not proper<<<"
+			log.error err
+			logFile.append err
+			
+ }}
+	} 
+def summary=  ("\r\n"+date+" Execution Summary of [OJVS][WAP][ACT]"+context.getCurrentStep().getLabel()+ "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:testStep type="groovy" name="Verify OJVS Activation Flow Error Handling" id="c05e0f09-5a3a-4a23-86a7-1dde39568400"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.sql.Sql 
+import java.io.*
+import java.text.*
+import java.util.*
+
+//Log API class object
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+def controllerobject=context.controllers
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+
+Date date=new Date()
+def logFile=context.resultfile
+
+def title=("\r\n"+date+"Executing>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  usersubmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+def expected2ndConf
+def actual2ndConf
+def expectedActNotification
+def actualActNotification
+long timeoutPeriod = 5000;
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+def callbackResponse
+def notifyResponse
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  && dataset.get("iserror"))
+	{	
+	try {
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.resetUser(msisdn)
+
+		//make user entry in free trial history
+          datasetobject.freeTrialHisotry(msisdn,"1",dataset.get("lastfreetrialtime"),"1920920074")
+     if(dataset.get("isotp"))
+     {
+		//baas activation api execution 	
+          apirunobject.stepInitiliazer(msisdn,dataset.get("billingcode"),dataset.get("source"),dataset.get("trnxid") ,dataset.get("adnetid"),
+          dataset.get("adtrnxid"),"1","1","2","null",dataset.get("dirthash"),"OTP_GEN")
+     }
+     else
+     {
+     	//baas activation api execution 	
+          apirunobject.stepInitiliazer(msisdn,dataset.get("billingcode"),dataset.get("source"),dataset.get("trnxid") ,dataset.get("adnetid"),
+          dataset.get("adtrnxid"),"1","1","2","null",dataset.get("dirthash")," ")
+     	
+     }
+          //get API Json Response context
+          def  slurperStepInitialise= context.jsonStepInitialise          
+	     def  responseStatus= slurperStepInitialise.result.status
+	     def responseCode=slurperStepInitialise.result.code
+	     def responseMessage= slurperStepInitialise.result.message
+	     def responseMsisdn=slurperStepInitialise.userStatus.msisdn
+	     def custtrnxid=slurperStepInitialise.userStatus.customerTransactionId
+	     
+           def cgUrl=slurperStepInitialise.cgURL
+           
+	            	
+  String cgUrlDecoded = URLDecoder.decode(cgUrl, "UTF-8")
+  def param=cgUrlDecoded.split("[?]")
+       tmp = (param[2]).split("&")[0]
+      transid=tmp.split("=")[1]     
+      
+               if(!dataset.get("isotp"))
+     {  
+ //baas Cg controller execution 
+controllerobject.CGController(transid,dataset.get('providerid'))
+     }
+
+   else
+     {
+     	controllerobject.OTPController(transid,dataset.get('providerid'),dataset.get("pin"),custtrnxid)
+     }
+
+if(!dataset.get("isfreetrial"))
+{
+	talendobject.OJVS_Notify_Rx(dataset.get("action"), dataset.get("contractid"), dataset.get("status"),dataset.get("paymentstatus") , "0.30","")
+}
+
+  	if(i==1)
+{
+	tc--;
+	continue;
+	
+}
+ 
+   long startTime = System.currentTimeMillis();
+while(true){
+//validate DB values       	
+ usersubmap= datasetobject.getUserData(msisdn,"1")
+
+ 	if(	usersubmap.get("subscription_status_id").toString()== dataset.get("expid"))
+
+					{
+						break;
+					}
+					else
+					{
+						long currentTime = System.currentTimeMillis();
+						if((currentTime-startTime)<timeoutPeriod){
+							sleep(200);
+							log.info "waiting for notification to  process"
+						}else{
+							break;
+
+						}}}
+if(responseStatus=="OK"
+&&responseMsisdn==msisdn
+&& responseCode=="VE002"
+&& responseMessage=="Consent Redirect"
+&& usersubmap.get("subscription_status_id").toString() == dataset.get("expid")
+&& usersubmap.get("validity").toString() == dataset.get("expval")
+&& usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode")
+&& usersubmap.get("user_source").toString() == dataset.get("source")
+&& usersubmap.get("last_billing_response_status_id").toString()==dataset.get("responsestatusid")
+) 
+{   
+//calling log api test method	
+
+def log_2nd_conf= logapi.assertBaaSLogAPI(msisdn,"PAGEVIEW_LOG_2nd_CONF","2","2",dataset.get("2ndconfactivityres").toString(),"1",
+dataset.get("prebillcode"),"1",dataset.get("prebillcode"),"WAP",dataset.get("expchargemode"),dataset.get("isfreetrial").toString(),
+ dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),'30',dataset.get("dirthash"))  	
+
+if (log_2nd_conf=="failed"){
+ expected2ndConf=context.expected
+ actual2ndConf=context.actual}
+//dataset.get("expchargemode")
+//def log_act_notify= logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_CHARGING_NOTIFICATION","3","3",dataset.get("activityres").toString(),dataset.get("expid"),
+//dataset.get("expbillcode"),"1",dataset.get("prebillcode"),"NOTIFICATION",dataset.get("expchargemode"),dataset.get("isfreetrial").toString()
+//,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),'40',dataset.get("dirthash")) 
+//if (log_act_notify=="failed"){
+// expectedActNotification=context.expected
+// actualActNotification=context.actual}
+
+
+
+//print result
+def passresult=("\r\n"+"[OJVS][WAP][ACT][Error_Handling]"+dataset.get("tcname") +" bass test: passed"+">>>2nd_conf_log:"+log_2nd_conf+"\r\n")
+//">>> act_charging_notification_log: "+log_act_notify+"\r\n")
+//def passresult=("\r\n"+"[OJVS][WAP][ACT]"+dataset.get("tcname") +" bass test: passed")
+logFile.append passresult
+log.info passresult
+
+if ( log_2nd_conf=="passed" ) {pass++} 
+else {fail++
+   if(log_2nd_conf=="failed"){
+   def Expected= "Expected_2nd_Conf >>>" +expected2ndConf+"\r\n"
+  def actual= "Found_2nd_Conf >>>" + actual2ndConf+"\r\n"
+log.error Expected
+logFile.append  Expected
+log.error actual
+logFile.append  actual
+   }
+	
+}  	
+}
+else{ 	
+    fail++
+def failresult= ("\r\n"+"[OJVS][WAP][ACT][Error_Handling]"+dataset.get("tcname") +"  is failed"+"\r\n")
+def expected= ( "\r\n"+"Expected Values:sub_status_id="+dataset.get("expid")+",Validity="+dataset.get("expval")+",curr_billing_code="+dataset.get("expbillcode")+",user_source=" +dataset.get("source")+" last_billing_response_status_id="+dataset.get("responsestatusid")+" responseStatus==OK, responseCode==VE002"+"responseMessage=Consent Redirect"+"\r\n")
+def actual=  ("\r\n"+"But Found: sub_status_id="+usersubmap.get("subscription_status_id")+",Validity="+usersubmap.get("validity")+ ",curr_billing_code="+usersubmap.get("current_billing_code")+",user_source=" +usersubmap.get("user_source")+"last_billing_response_status_id="+usersubmap.get("last_billing_response_status_id")+"responsestatus="+responseStatus+"responseCode= "+responseCode+"responseMessage="+responseMessage+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+
+	} 
+	}
+	catch(Exception ex){
+			def err= dataset.get("tcname")+">>>[OJVS][WAP][ACT][Error_Handling] API Response is not proper<<<"
+			log.error err
+			logFile.append err
+			
+ }
+ }
+	} 
+def summary=  ("\r\n"+date+" Execution Summary of [OJVS][WAP][ACT]"+context.getCurrentStep().getLabel()+ "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['Controllers'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:tearDownScript/><con:properties/><con:reportParameters/></con:testCase>

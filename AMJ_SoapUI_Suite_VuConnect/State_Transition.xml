@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="0e040986-e8ed-4170-8b5b-a4e056258435" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="State_Transition" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="0e040986-e8ed-4170-8b5b-a4e056258435fileName">State_Transition</con:setting></con:settings><con:testStep type="groovy" name="[VuConnect]Verify User State Transition" id="d55bcd3e-6cdb-4eaa-b640-a44a06c96b34"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.sql.Sql 
+import java.io.*
+import java.text.*
+import java.util.*
+
+//Log API class object
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+def properties=context.propobject
+
+Date date=new Date()
+def logFile=context.resultfile
+
+
+def title=("\r\n"+date+"Executing >>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  usersubmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+def expected2ndConf
+def actual2ndConf
+def expectedActNotification
+def actualActNotification
+long timeoutPeriod=5000;
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+
+def notifyResponse
+def baas_api_log
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  )
+	{	
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.resetUser(msisdn)
+		
+//check if old records are cleared from DB
+		//long startTime = System.currentTimeMillis();
+//		while(true){
+//		Boolean flag=datasetobject.checkUserExists(msisdn)
+//		if(flag)
+//		{
+//			break;
+//		}else
+//		{
+//			long currentTime = System.currentTimeMillis();
+//			if((currentTime-startTime)<timeoutPeriod){
+//						sleep(200);
+//		}}}
+
+
+//Create Test User
+datasetobject.createUser(dataset.get("customerid"),dataset.get("providerid"),msisdn,dataset.get("billingcode"),dataset.get("subbillingcode"),dataset.get("currbillingcode"),dataset.get("substate"),
+       dataset.get("startdate"),dataset.get("enddate"),dataset.get("subdate"),dataset.get("source"),"NULL","100",msisdn,"1","2","1","kp=test")
+
+//Call Airtel Notify Receiver
+def 	propertyNotify=testRunner.testCase.getTestStepByName("AMJProp")
+	     //To set Parameter Values  of Activation API 	
+
+	    	propertyNotify.setPropertyValue("msisdn",msisdn.substring(2))	 	
+		propertyNotify.setPropertyValue("productid",dataset.get("productid"))
+		propertyNotify.setPropertyValue("errorcode",dataset.get("errorcode"))
+		propertyNotify.setPropertyValue("errormsg",dataset.get("errormsg"))
+		propertyNotify.setPropertyValue("amount",dataset.get("amount")+".0")
+		
+	def 	stepNotifyRx= testRunner.testCase.getTestStepByName("AMJ_Notify")
+	
+		stepNotifyRx.getHttpRequest().setEndpoint(properties.AMJ_VUCONNECT)
+	
+   	stepNotifyRx.run(testRunner,testRunner.getRunContext())
+
+long startTime = System.currentTimeMillis();
+while(true){
+//validate DB values       	
+ usersubmap= datasetobject.getUserData(msisdn,"1")
+
+ 	if(usersubmap.get("last_notification_status_id").toString()==dataset.get("notifyid"))
+
+					{
+						break;
+					}
+					else
+					{
+						long currentTime = System.currentTimeMillis();
+						if((currentTime-startTime)<timeoutPeriod){
+							sleep(200);
+							log.info "waiting for notification to  process"
+						}else{
+							break;
+
+						}
+					}
+}	
+	if( 	usersubmap.get("subscription_status_id").toString() ==  dataset.get("expid") &&
+ 		usersubmap.get("validity").toString() ==  dataset.get("expval") &&
+ 		usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode") &&
+ 		usersubmap.get("last_notification_status_id").toString()==dataset.get("notifyid") 
+   		)
+	{
+	if(! (dataset.get("logtype").toString()=="NA")){	
+      baas_api_log= logapi.assertBaaSLogAPI(msisdn,dataset.get("logtype"),dataset.get("activitytype"),dataset.get("billingactionid"),dataset.get("activityres").toString(),dataset.get("expid") ,dataset.get("expbillcode"),
+  	dataset.get("substate"), dataset.get("currbillingcode"),dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("freetrialflag").toString()
+  	,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),dataset.get("sequence").toString(),null)}
+  	
+  	else
+  	{
+  		baas_api_log="NA"
+  		pass++
+  		}
+     def passresult=("\r\n"+"[AMJ][BACKEND]"+dataset.get("tcname") +" bass test: passed"+">>> user_baas_logAPI log: "+baas_api_log+"\r\n")
+       log.info passresult
+       logFile.append passresult
+  	
+  	if (baas_api_log=="passed"){pass++} 
+  	else if(baas_api_log=="failed"){
+  		fail++
+   def expected= "Expected>>>" +context.expected
+   def actual= "Found>>>" + context.actual
+     log.error expected
+     log.error actual
+     logFile.append "\r\n"+expected +"\r\n" + actual+"\r\n"
+  	}else{fail++}
+	}	 
+	else{
+		   fail++
+ def failresult= ("\r\n"+dataset.get("tcname") +" is failed"+"\r\n")
+def expected=  ( "\r\n"+"Expected:sub_status_id="+dataset.get("expid")+",Validity="+dataset.get("expval")+",curr_billing_code="+dataset.get("expbillcode")+"last_notification_status_id="+dataset.get("notifyid")+"\r\n")
+ def actual= ("\r\n"+"Found: sub_status_id="+usersubmap.get("subscription_status_id")+",Validity="+usersubmap.get("validity")+ ",curr_billing_code="+usersubmap.get("current_billing_code")+"last_notification_status_id="+usersubmap.get("last_notification_status_id")+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+	} }} 
+	
+
+def summary=  ("\r\n"+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary
+
+]]></script></con:config></con:testStep><con:testStep type="properties" name="AMJProp" id="bfcbbd87-1e41-45cc-bbeb-57fccee690de" disabled="true"><con:settings/><con:config xsi:type="con:PropertiesStep" saveFirst="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:properties><con:property><con:name>amount</con:name><con:value>0.0</con:value></con:property><con:property><con:name>errorcode</con:name><con:value>1013</con:value></con:property><con:property><con:name>errormsg</con:name><con:value>Successful Deprovisioning</con:value></con:property><con:property><con:name>productid</con:name><con:value>542224</con:value></con:property><con:property><con:name>msisdn</con:name><con:value>66000041</con:value></con:property></con:properties></con:config></con:testStep><con:testStep type="request" name="AMJ_Notify" id="91bc5619-8982-413b-842e-20b9fbf21cfb" disabled="true"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>AMJ_Notify</con:interface><con:operation>notificationToCP</con:operation><con:request name="AMJ_Notify" id="7b030b2c-3dad-446c-9879-d0834493f715"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://192.168.249.94:8090/vuconnect/webservice/notification</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sub="http://SubscriptionEngine.ibm.com">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <sub:notificationToCP>
+         <notificationRespDTO>
+            <xactionId>1664372658</xactionId>
+            <errorCode>${AMJProp#errorcode}</errorCode>
+            <errorMsg>${AMJProp#errormsg}</errorMsg>
+            <temp1>140102</temp1>
+            <temp2>31729143730</temp2>
+            <temp3>
+               <ID>null</ID>
+               <ChargingType>null</ChargingType>
+               <VCode>null</VCode>
+               <partyB>null</partyB>
+            </temp3>
+            <lowBalance>0.0</lowBalance>
+            <amount>${AMJProp#amount}</amount>
+            <chargigTime>2015-12-02T12:00:58.706Z</chargigTime>
+            <msisdn>${AMJProp#msisdn}</msisdn>
+            <productId>${AMJProp#productid}</productId>
+         </notificationRespDTO>
+      </sub:notificationToCP>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="SOAP Response" id="e7a9c450-906a-4837-bcfd-d718229317b2"/><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+def properties=context.propobject
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

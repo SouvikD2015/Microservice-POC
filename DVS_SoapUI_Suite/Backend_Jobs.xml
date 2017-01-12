@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="c99131ad-a6ea-4395-a7fc-523fb2f42296" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Backend_Jobs" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="c99131ad-a6ea-4395-a7fc-523fb2f42296fileName">Backend_Jobs</con:setting></con:settings><con:testStep type="groovy" name="Verify DVS Backend Jobs" id="8e8c3bae-d4a1-44a6-91da-c37857312793"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+long timeoutPeriod=60000;
+
+// get a reference to the common util  TestSuite
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+// backend job context
+def backendjob = context.backendJob
+def nbdobject=context.nbdObject
+
+Map dataset  = new HashMap();
+Map usersubmap  = new HashMap();
+int tc=0
+int pass=0
+int fail=0
+
+for (int i=1;i<= context.rowCount;i++)
+{
+	dataset=datasetobject.getRowDataMap(i)	
+ 	
+  	if(dataset.get("isexecutable")) 
+	{
+		tc++					  
+		msisdn= dataset.get("userid")
+		datasetobject.resetUser(msisdn)
+  
+//Create Test User
+datasetobject.freeTrialHisotry(msisdn,"1",dataset.get("lastfreetrialtime"),"1808000074")
+datasetobject.createUser(dataset.get("customerid"),dataset.get("providerid"),msisdn,dataset.get("billingcode"),dataset.get("subbillingcode"),dataset.get("currbillingcode"),dataset.get("substate"),
+       dataset.get("startdate"),dataset.get("enddate"),dataset.get("subdate"),dataset.get("source"),dataset.get("nbd"),dataset.get("currcredit"),msisdn,dataset.get("itemid"),"4","1","kp=test")
+	}}
+Properties properties = new Properties()
+File propertiesFile = new File(context.expand('${#Global#property_file}'))
+propertiesFile.withInputStream {
+    properties.load(it)
+}
+String sshHost=properties.BACKEND_SERVER
+String sshUser=properties.BACKEND_USER
+String sshPass=properties.BACKEND_PASSWD
+
+String renJobQuery=properties.DVS_REN_JOB
+String autoChurnQuery=properties.DVS_CHURN_JOB
+
+sleep(5000)
+backendjob.startJob(renJobQuery ,sshHost,sshUser,sshPass )
+backendjob.startJob(autoChurnQuery ,sshHost,sshUser,sshPass )
+
+	sleep (5000)
+
+//Calulate expected NBD
+String failNBD=nbdobject.CalculateDVS_NBD("fail");
+String passNBD=nbdobject.CalculateDVS_NBD("pass");
+
+for (int i=1;i<= context.rowCount;i++)
+{
+def NBD_CHECK="NA"
+
+	dataset=datasetobject.getRowDataMap(i)	
+
+  	if(dataset.get("isexecutable")) 
+	{
+		msisdn= dataset.get("userid")
+		
+def startTime=System.currentTimeMillis();
+while(true){
+//validate DB values
+usersubmap= datasetobject.getUserData(msisdn,dataset.get("itemid"))
+if(usersubmap.get("last_billing_response_status_id").toString()==dataset.get("lastbillresponsesstatusid") && usersubmap.get("subscription_status_id").toString() ==dataset.get("expid") )
+	{
+		break;
+	}
+	else{
+		long currentTime = System.currentTimeMillis();
+		if((currentTime-startTime)<timeoutPeriod){
+				sleep(500);
+				log.info "waiting for record to process"
+				
+			}else
+			{
+				log.error "Queue is taking too long to process record or last billing response status id did not match"
+				break;
+			}
+	}}
+
+	if(usersubmap.get("subscription_status_id").toString() ==dataset.get("expid") 
+	&& usersubmap.get("validity").toString() == dataset.get("expval") 
+	&& usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode") 
+	&& usersubmap.get("credits").toString()==dataset.get("expcredits")
+	&&usersubmap.get("last_billing_response_status_id").toString()==dataset.get("lastbillresponsesstatusid"))
+  {		
+	if(dataset.get("nbdcheck")=="talendDate")
+  	{
+  		if(usersubmap.get("next_billing_date").toString()==failNBD)
+  		{
+  			log.info "NBD Test is passed"
+  			NBD_CHECK="passed"
+  		}
+  		else
+  		{
+  		 	log.error "NBD Test is failed"
+  			def expected= "Expected="+failNBD+"\r\n"
+  			log.error expected
+  			def actual= "Found="+usersubmap.get("next_billing_date")+"\r\n"
+  			log.error actual
+  			logFile.append expected
+  			logFile.append actual
+  			NBD_CHECK="failed"
+  		}
+  		}
+  	
+  	else	if(dataset.get("nbdcheck")=="enddate")
+  	{
+  		if(usersubmap.get("next_billing_date").toString()==passNBD)
+  		{
+  			log.info "NBD Test is passed"
+  			NBD_CHECK="passed"
+  		}
+  		else
+  		{
+  			log.error "NBD Test is failed"
+  			def expected= "Expected="+passNBD
+  			def actual= "Found="+usersubmap.get("next_billing_date")
+  			logFile.append expected
+  			log.error expected
+  			logFile.append actual
+  			log.error actual
+  			NBD_CHECK="failed"
+  		}
+  	}  	
+  	def baas_api_log= logapi.assertBaaSLogAPI(msisdn,dataset.get("logtype"),dataset.get("activitytype"),dataset.get("billingactionid"),dataset.get("activityres").toString(),dataset.get("expid") ,dataset.get("expbillcode"),
+  	dataset.get("substate"), dataset.get("currbillingcode"),dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("isfreetrial").toString()
+  	,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),dataset.get("sequence").toString(),null)
+  	
+  	//print result
+ def passresult= ("\r\n"+"[DVS][Backend][Jobs]"+dataset.get("tcname") +" bass test: passed"+">>> user_baas_logAPI log: "+baas_api_log+" >>>next_billing_date:"+NBD_CHECK+"\r\n")
+logFile.append passresult
+log.info passresult
+  	
+  	if (baas_api_log=="passed"  && (NBD_CHECK=="passed" || NBD_CHECK=="NA") ){pass++} 
+  	else if(baas_api_log=="failed") {
+  		fail++
+  def expected= "Expected >>>" +context.expected
+  def actual= "Found >>>" + context.actual
+log.error expected
+log.error actual
+logFile.append "\r\n"+expected +"\r\n" + actual
+
+  		} 
+  		else {fail++}
+  	}
+		 
+	else{
+		fail++
+def failresult=  ("\r\n"+"[DVS][Backend][Jobs]"+dataset.get("tcname") +"  is failed" +"\r\n")
+def expected= ("\r\n"+"Expected Values:"+"sub_status_id="+dataset.get("expid")+" ,Validity="+dataset.get("expval")+" exp billcode="+dataset.get("expbillcode")+" expcredits="+dataset.get("expcredits")+"last_billing_response_status_id="+dataset.get("lastbillresponsesstatusid")+"\r\n")
+def actual=  ("\r\n"+"But Found:  sub_status_id="+usersubmap.get("subscription_status_id")+",validity="+usersubmap.get("validity")+",billcode="+usersubmap.get("current_billing_code")+",credits="+usersubmap.get("credits")+"last_billing_response_status_id="+usersubmap.get("last_billing_response_status_id")+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+} }
+}
+
+def summary=  ("\r\n"+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:testStep type="groovy" name="Verify DVS Backend Jobs With API" id="9044dc02-546b-4c7a-ab8a-30591bdb71c6" disabled="true"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+long timeoutPeriod=60000;
+
+// get a reference to the common util  TestSuite
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+// backend job context
+def backendjob = context.backendJob
+def apirunobject=context.apiRun
+def nbdobject=context.nbdObject
+
+Map dataset  = new HashMap();
+Map usersubmap  = new HashMap();
+int tc=0
+int pass=0
+int fail=0
+
+//for (int i=1;i<= context.rowCount;i++)
+for (int i=1;i<= 1;i++)
+{
+	dataset=datasetobject.getRowDataMap(i)	
+ 	
+  	if(dataset.get("isexecutable")) 
+	{
+		tc++					  
+		msisdn= dataset.get("userid")
+		datasetobject.resetUser(msisdn)
+  
+//Create Test User
+datasetobject.freeTrialHisotry(msisdn,"1",dataset.get("lastfreetrialtime"),"1808000074")
+datasetobject.createUser(dataset.get("customerid"),dataset.get("providerid"),msisdn,dataset.get("billingcode"),dataset.get("subbillingcode"),dataset.get("currbillingcode"),dataset.get("substate"),
+       dataset.get("startdate"),dataset.get("enddate"),dataset.get("subdate"),dataset.get("source"),dataset.get("nbd"),dataset.get("currcredit"),msisdn,dataset.get("itemid"),"4","1","kp=test")
+	}}
+Properties properties = new Properties()
+File propertiesFile = new File(context.expand('${#Global#property_file}'))
+propertiesFile.withInputStream {
+    properties.load(it)
+}
+
+String renJobQuery=properties.DVS_REN_PARAMS
+String autoChurnQuery=properties.DVS_CHURN_PARAMS
+
+apirunobject.inputProducerInvoke(renJobQuery)
+apirunobject.inputProducerInvoke(autoChurnQuery)
+
+	sleep (5000)
+//Calulate expected NBD
+String failNBD=nbdobject.CalculateDVS_NBD("fail");
+String passNBD=nbdobject.CalculateDVS_NBD("pass");
+
+for (int i=1;i<= context.rowCount;i++)
+{
+def NBD_CHECK="NA"
+
+	dataset=datasetobject.getRowDataMap(i)	
+
+  	if(dataset.get("isexecutable")) 
+	{
+		msisdn= dataset.get("userid")
+		
+def startTime=System.currentTimeMillis();
+while(true){
+//validate DB values
+usersubmap= datasetobject.getUserData(msisdn,dataset.get("itemid"))
+if(usersubmap.get("last_billing_response_status_id").toString()==dataset.get("lastbillresponsesstatusid"))
+	{
+		break;
+	}
+	else{
+		long currentTime = System.currentTimeMillis();
+		if((currentTime-startTime)<timeoutPeriod){
+				sleep(500);
+				log.info "waiting for record to process"
+				
+			}else
+			{
+				log.error "Queue is taking too long to process record or last billing response status id did not match"
+				break;
+			}
+	}}
+
+	if(usersubmap.get("subscription_status_id").toString() ==dataset.get("expid") 
+	&& usersubmap.get("validity").toString() == dataset.get("expval") 
+	&& usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode") 
+	&& usersubmap.get("credits").toString()==dataset.get("expcredits")
+	&&usersubmap.get("last_billing_response_status_id").toString()==dataset.get("lastbillresponsesstatusid"))
+  {		
+	if(dataset.get("nbdcheck")=="talendDate")
+  	{
+  		if(usersubmap.get("next_billing_date").toString()==failNBD)
+  		{
+  			log.info "NBD Test is passed"
+  			NBD_CHECK="passed"
+  		}
+  		else
+  		{
+  		 	log.error "NBD Test is failed"
+  			def expected= "Expected="+failNBD+"\r\n"
+  			log.error expected
+  			def actual= "Found="+usersubmap.get("next_billing_date")+"\r\n"
+  			log.error actual
+  			logFile.append expected
+  			logFile.append actual
+  			NBD_CHECK="failed"
+  		}
+  		}
+  	
+  	else	if(dataset.get("nbdcheck")=="enddate")
+  	{
+  		if(usersubmap.get("next_billing_date").toString()==passNBD)
+  		{
+  			log.info "NBD Test is passed"
+  			NBD_CHECK="passed"
+  		}
+  		else
+  		{
+  			log.error "NBD Test is failed"
+  			def expected= "Expected="+passNBD
+  			def actual= "Found="+usersubmap.get("next_billing_date")
+  			logFile.append expected
+  			log.error expected
+  			logFile.append actual
+  			log.error actual
+  			NBD_CHECK="failed"
+  		}
+  	}  	
+  	def baas_api_log= logapi.assertBaaSLogAPI(msisdn,dataset.get("logtype"),dataset.get("activitytype"),dataset.get("billingactionid"),dataset.get("activityres").toString(),dataset.get("expid") ,dataset.get("expbillcode"),
+  	dataset.get("substate"), dataset.get("currbillingcode"),dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("isfreetrial").toString()
+  	,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),dataset.get("sequence").toString(),null)
+  	
+  	//print result
+ def passresult= ("\r\n"+"[DVS][Backend][Jobs]"+dataset.get("tcname") +" bass test: passed"+">>> user_baas_logAPI log: "+baas_api_log+" >>>next_billing_date:"+NBD_CHECK+"\r\n")
+logFile.append passresult
+log.info passresult
+  	
+  	if (baas_api_log=="passed"  && (NBD_CHECK=="passed" || NBD_CHECK=="NA") ){pass++} 
+  	else if(baas_api_log=="failed") {
+  		fail++
+  def expected= "Expected >>>" +context.expected
+  def actual= "Found >>>" + context.actual
+log.error expected
+log.error actual
+logFile.append "\r\n"+expected +"\r\n" + actual
+
+  		} 
+  		else {fail++}
+  	}
+	 
+	else{
+		fail++
+def failresult=  ("\r\n"+"[DVS][Backend][Jobs]"+dataset.get("tcname") +"  is failed" +"\r\n")
+def expected= ("\r\n"+"Expected Values:"+"sub_status_id="+dataset.get("expid")+" ,Validity="+dataset.get("expval")+" exp billcode="+dataset.get("expbillcode")+" expcredits="+dataset.get("expcredits")+"last_billing_response_status_id="+dataset.get("lastbillresponsesstatusid")+"\r\n")
+def actual=  ("\r\n"+"But Found:  sub_status_id="+usersubmap.get("subscription_status_id")+",validity="+usersubmap.get("validity")+",billcode="+usersubmap.get("current_billing_code")+",credits="+usersubmap.get("credits")+"last_billing_response_status_id="+usersubmap.get("last_billing_response_status_id")+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+} }
+}
+
+def summary=  ("\r\n"+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["NextBillingDate"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

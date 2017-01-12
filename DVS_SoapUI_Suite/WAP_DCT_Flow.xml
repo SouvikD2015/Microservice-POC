@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="060eb751-199c-4c8e-b155-1f242896be0e" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="WAP_DCT_Flow" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="060eb751-199c-4c8e-b155-1f242896be0efileName">WAP_DCT_Flow</con:setting></con:settings><con:testStep type="groovy" name="Verify WAP Dct Flow" id="cac92ddc-273c-4b00-9fdd-28a4ab3b09e9"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.sql.Sql 
+import java.io.*
+import java.text.*
+import java.util.*
+
+//Log API class object
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+
+Date date=new Date()
+def logFile=context.resultfile
+
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  usersubmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+def expectedActNotification
+def actualActNotification
+long timeoutPeriod=5000
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+try{
+def baas_api_log
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  )
+	{	
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.resetUser(msisdn)
+		
+		//check if old records are cleared from DB
+		long startTime = System.currentTimeMillis();
+		while(true){
+		Boolean flag=datasetobject.checkUserExists(msisdn)
+		if(flag)
+		{
+			break;
+		}else
+		{
+			long currentTime = System.currentTimeMillis();
+			if((currentTime-startTime)<timeoutPeriod){
+						sleep(200);
+		}}}
+
+//Create Test User
+datasetobject.createUser(dataset.get("customerid"),dataset.get("providerid"),msisdn,dataset.get("billingcode"),dataset.get("billingcode"),dataset.get("currbillingcode"),dataset.get("substate"),
+       dataset.get("startdate"),dataset.get("enddate"),dataset.get("subdate"),dataset.get("source"),"NULL","100",msisdn,dataset.get("itemid"),"4")
+
+//calling baas deactiavtion API end point
+apirunobject.stepBaasDCT(msisdn,dataset.get("billingcode"),dataset.get("itemid"),"4")
+
+//validate DB values       	
+ usersubmap= datasetobject.getUserData(msisdn,dataset.get("itemid"))
+	if( 	usersubmap.get("subscription_status_id").toString() ==  dataset.get("expid") &&
+ 		//usersubmap.get("validity").toString() ==  dataset.get("expval") &&
+ 		usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode")  				
+ 		)
+	{
+	
+      baas_api_log= logapi.assertBaaSLogAPI(msisdn,"DEACTIVATION_NOTIFICATION",dataset.get("activitytype"),dataset.get("billingactionid"),dataset.get("activityres").toString(),dataset.get("expid") ,dataset.get("expbillcode"),
+  	dataset.get("substate"), dataset.get("currbillingcode"),dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("isfreetrial").toString()
+  	,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"90",null)
+  	
+ def passresult=("\r\n"+"[DVS][WAP][DCT]"+dataset.get("tcname") +" bass test: passed"+">>> user_baas_logAPI log: "+baas_api_log+"\r\n")
+logFile.append passresult
+log.info passresult
+  	
+  	if (baas_api_log=="passed"){pass++} 
+  	else if(baas_api_log=="failed"){
+  		fail++
+ def expected= "Expected >>>" +context.expected
+def actual= "Found >>>" + context.actual
+log.error expected
+log.error actual
+logFile.append "\r\n"+expected +"\r\n" + actual
+  	}
+  	else{fail++}
+	}	 
+	else{
+		   fail++
+ def failresult= ("\r\n"+"[DVS][WAP][DCT]"+dataset.get("tcname") +"  is failed"+"\r\n")
+def expected=  ( "\r\n"+"Expected Values:sub_status_id="+dataset.get("expid")+",Validity="+dataset.get("expval")+",curr_billing_code="+dataset.get("expbillcode")+"\r\n")
+def actual= ("\r\n"+"But Found: sub_status_id="+usersubmap.get("subscription_status_id")+",Validity="+usersubmap.get("validity")+ ",curr_billing_code="+usersubmap.get("current_billing_code")+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual	
+	} }
+}
+catch(Exception ex){
+
+			def error= ">>>API Response is not proper<<<"+dataset.get("tcname")+"\r\n"
+			log.error error
+			logFile.append error
+		                    }
+	
+	}
+	
+
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary
+
+]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

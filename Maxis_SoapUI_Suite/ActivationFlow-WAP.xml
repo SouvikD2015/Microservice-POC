@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="0c48c4cf-e510-42fb-9098-e4c7bc04170c" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="ActivationFlow-WAP" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="0c48c4cf-e510-42fb-9098-e4c7bc04170cfileName">ActivationFlow-WAP</con:setting></con:settings><con:testStep type="groovy" name="Verify Maxis Activation Flow" id="787993df-7f57-418b-bdee-6d20f2eaa3c9"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.sql.Sql 
+import java.io.*
+import java.text.*
+import java.util.*
+
+//Log API class object
+def logapi = context.logAPI
+def controllerobject=context.controllers
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+
+Date date=new Date()
+def logFile=context.resultfile
+
+def title=("\r\n"+date+"Executing>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+logFile.append title
+
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  usersubmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+def expected2ndConf
+def actual2ndConf
+def expectedActNotification
+def actualActNotification
+long timeoutPeriod = 10000;
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+def callbackResponse
+def notifyResponse
+def log_act_notify="NA"
+def ad_network_log= "NA"
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  )
+	{	
+	try {
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.resetUser(msisdn)
+     
+		//baas activation api execution 	
+          apirunobject.stepInitiliazer(msisdn,dataset.get("billingcode"),dataset.get("source"),dataset.get("trnxid") ,dataset.get("adnetid"),
+          dataset.get("adtrnxid"),"1",dataset.get("itemid"),"4","null",dataset.get("dirthash")," ")
+          //get API Json Response context
+          def  slurperStepInitialise= context.jsonStepInitialise          
+	     def  responseStatus= slurperStepInitialise.result.status
+	     def responseCode=slurperStepInitialise.result.code
+	     def responseMessage= slurperStepInitialise.result.message
+	     def responseMsisdn=slurperStepInitialise.userStatus.msisdn
+          def cgUrl=slurperStepInitialise.cgURL
+	     	    
+String cgUrlDecoded = URLDecoder.decode(cgUrl, "UTF-8");
+//log.info cgUrlDecoded
+
+      def param=cgUrlDecoded.split("[?]")      
+      HashMap hm=new HashMap();
+      List queryparam=param[1].split("[&]")
+      
+for (int k=0 ; k< queryparam.size();k++)
+      {
+      	def tmp=queryparam.get(k).split("[=]")
+      	
+      	def key=tmp[0]
+      	def value=tmp[1]
+         	hm.put(key,value)
+      }
+      
+      def transid=hm.get("ChargeId")
+      //log.info "transid="+transid
+      
+controllerobject.maxisCGController(transid,msisdn,dataset.get("statuscode"), dataset.get("result"))
+
+
+  	if(i==1)
+{
+	tc--;
+	continue;
+	
+}
+ //assert the response & db values
+ usersubmap= datasetobject.getUserData(msisdn,dataset.get("itemid"))
+if(responseStatus=="OK"
+&&responseMsisdn==msisdn
+&& responseCode=="VE002"
+&& responseMessage=="Consent Redirect"
+&& usersubmap.get("subscription_status_id").toString() == dataset.get("expid")
+&& usersubmap.get("validity").toString() == dataset.get("expval")
+&& usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode")
+&& usersubmap.get("user_source").toString() == dataset.get("source")
+&& usersubmap.get("credits").toString()==dataset.get("expcredits")
+&& usersubmap.get("last_billing_response_status_id").toString()==dataset.get("responsestatusid")
+) 
+{   
+//calling log api test method	
+
+def log_2nd_conf= logapi.assertBaaSLogAPI(msisdn,"PAGEVIEW_LOG_2nd_CONF","2","2",dataset.get("2ndconfactivityres").toString(),dataset.get("2ndcurrentstatus"),
+dataset.get("2ndcurrbillcode"),"1","null","WAP",dataset.get("expchargemode"),"false",
+ dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),'30',dataset.get("dirthash"))  	
+
+if (log_2nd_conf=="failed"){
+ expected2ndConf=context.expected
+ actual2ndConf=context.actual}
+//dataset.get("expchargemode")
+if(dataset.get("actnotifylog")){
+log_act_notify= logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_CHARGING_NOTIFICATION","3","3",dataset.get("activityres").toString(),dataset.get("expid"),
+dataset.get("expbillcode"),"1",dataset.get("prebillcode"),"WAP",dataset.get("expchargemode"),"false"
+,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),'40',dataset.get("dirthash")) 
+if (log_act_notify=="failed"){
+ expectedActNotification=context.expected
+ actualActNotification=context.actual}
+}
+
+// validate ad network logs
+if(dataset.get("adnetinfo")){
+ad_network_log=logapi.assertAdNetworkInfo(msisdn,"ACTIVATION_CHARGING_NOTIFICATION",dataset.get("adnetid"),dataset.get("adtrnxid"))
+
+}
+
+
+
+//print result
+def passresult=("\r\n"+"[Maxis][WAP][ACT]"+dataset.get("tcname") +" bass test: passed"+">>>2nd_conf_log:"+log_2nd_conf+">>> act_charging_notification_log: "+log_act_notify+">>> adnetwork_info_log: "+ad_network_log+"\r\n")
+logFile.append passresult
+log.info passresult
+
+if ((log_act_notify=="passed" || log_act_notify=="NA") &&  log_2nd_conf=="passed" && (ad_network_log=="passed"  || ad_network_log=="NA" )) {pass++} 
+else {fail++
+   if(log_2nd_conf=="failed"){
+   def Expected= "Expected_2nd_Conf >>>" +expected2ndConf+"\r\n"
+  def actual= "Found_2nd_Conf >>>" + actual2ndConf+"\r\n"
+log.error Expected
+logFile.append  Expected
+log.error actual
+logFile.append  actual
+   }
+	
+if(log_act_notify=="failed"){
+ def Expected="Expected_ACT_Notification >>>" +expectedActNotification+"\r\n"
+ def actual= "Found_ACT_Notification >>>" + actualActNotification+"\r\n"
+log.error Expected
+logFile.append  Expected
+log.error actual
+logFile.append  actual
+}  
+   
+   if(ad_network_log=="failed"){
+def Expected= "Expected_Ad_Notification >>>" +context.expectedAdLog
+ def Actual= "Found_Ad_Notification >>>" + context.actualAdLog
+ log.error Expected
+logFile.append  Expected
+log.error Actual
+logFile.append  Actual}
+}}  	
+
+else{ 	
+    fail++
+def failresult= ("\r\n"+"[Maxis][WAP][ACT]"+dataset.get("tcname") +"  is failed MSISDN="+msisdn+"\r\n")
+def expected= ( "\r\n"+"Expected Values:sub_status_id="+dataset.get("expid")+",Validity="+dataset.get("expval")+",curr_billing_code="+dataset.get("expbillcode")+",user_source=" +dataset.get("source")+" credits="+dataset.get("expcredits")+" responseStatus==OK, responseCode==VE002"+"responseMessage=Consent Redirect"+" activityResult="+dataset.get("activityres")+"\r\n")
+def actual=  ("\r\n"+"But Found: sub_status_id="+usersubmap.get("subscription_status_id")+",Validity="+usersubmap.get("validity")+ ",curr_billing_code="+usersubmap.get("current_billing_code")+",user_source=" +usersubmap.get("user_source")+"credits="+usersubmap.get("credits")+"responsestatus="+responseStatus+"responseCode= "+responseCode+"responseMessage="+responseMessage+" activityResult="+usersubmap.get("last_notification_status_id")+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+
+	} }
+	catch(Exception ex){
+		fail++
+			def err= "\r\n"+dataset.get("tcname")+">>>[Maxis][WAP][ACT]API Response is not proper<<<"+"\r\n"
+			log.error err
+			logFile.append err
+			
+ }}
+	} 
+def summary=  ("\r\n"+date+" Execution Summary of [Maxis][WAP][ACT]"+context.getCurrentStep().getLabel()+ "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["NextBillingDate"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['Controllers'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

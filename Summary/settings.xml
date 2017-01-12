@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testSuite id="06d3f317-f785-4892-ae03-207200dcb34e" name="Summary" disabled="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="06d3f317-f785-4892-ae03-207200dcb34efileName">Summary</con:setting></con:settings><con:runType>SEQUENTIAL</con:runType><con:properties><con:property><con:name>total</con:name><con:value>10</con:value></con:property></con:properties><con:setupScript>import java.text.*
+import java.util.*
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+Properties properties = new Properties()
+File propertiesFile = new File(context.expand('${#Global#property_file}'))
+propertiesFile.withInputStream {
+    properties.load(it)
+}
+com.eviware.soapui.model.propertyexpansion.PropertyExpansionUtils.globalProperties.setPropertyValue('global_recipients', properties.GLOBAL_RECIPIENTS)
+
+
+
+</con:setupScript><con:tearDownScript/><con:reportParameters/></con:testSuite>

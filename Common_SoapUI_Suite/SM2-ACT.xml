@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="751d7a44-2910-4a63-a542-83ccabcb910c" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="SM2-ACT" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="751d7a44-2910-4a63-a542-83ccabcb910cfileName">SM2-ACT</con:setting></con:settings><con:testStep type="groovy" name="SM2-ActivaitonFlow" id="4af4adcb-641b-49db-b5ad-728f719b7f44"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>[SM2][WAP][ACT]"+context.getCurrentStep().getLabel()+"\r\n")
+log.info  title
+logFile.append  title
+
+//Log API class object
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+def controllerobject=context.controllers
+def lcmobject=context.lcmRun
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  userdump  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+def expected2ndConf
+def actual2ndConf
+def expectedActNotification
+def actualActNotification
+def expnbd=null
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+def isFreeTrial
+def cgBillCode
+
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  )
+	{	
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.resetUser(msisdn)
+	  //make user entry in free trial history
+          datasetobject.freeTrialHisotry(msisdn,"1",dataset.get("lastfreetrialtime"),"98000024")	
+	try {			
+		//baas get Status API execution
+		apirunobject.stepGetUserStatus(msisdn,dataset.get("customerid"))
+		
+		def  slurperStepStatus= context.jsonStepStatus
+		if(slurperStepStatus.additionalInfo !=null)	
+		{
+	      isFreeTrial= slurperStepStatus.additionalInfo.freeTrialEnabled 
+
+	           }
+	     else
+	     {
+	     	isFreeTrial="false"
+	     }
+	     	           
+		//baas activation api execution 	
+          apirunobject.stepInitiliazer(msisdn,dataset.get("billingcode"),dataset.get("source"),dataset.get("trnxid") ,dataset.get("adnetid"),
+          dataset.get("adtrnxid"),dataset.get("languageid"),"1","2",dataset.get("aft").toString(),dataset.get("dirthash"),"NA")
+  
+          
+          //get API Json Response context
+          def  slurperStepInitialise= context.jsonStepInitialise          
+	     def  responseStatus= slurperStepInitialise.result.status
+	     def responseCode=slurperStepInitialise.result.code
+	     def responseMessage= slurperStepInitialise.result.message
+	     def responseMsisdn=slurperStepInitialise.userStatus.msisdn
+	     def cgUrl=slurperStepInitialise.cgURL
+	            	
+  String cgUrlDecoded = URLDecoder.decode(cgUrl, "UTF-8");
+      def param=cgUrlDecoded.split("[?]")
+      def tmp = (param[2]).split("&")[0]     
+      
+      transid=tmp.split("=")[1]     
+      log.info "transid="+transid
+               
+ //baas Cg controller execution 
+controllerobject.CGController(transid,dataset.get('providerid'))
+//validate DB values       	
+ userdump= datasetobject.getUserData(msisdn,"1")
+ int days=Integer.parseInt(dataset.get("day"))
+ Date newdate = new Date(date.getTime() + days*1000 * 60 * 60 * 24);	
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd") ;
+		String str=dataset.get("timestamp") 
+		String timestamp=str.substring(1, 9)
+		expnbd = formatter.format(newdate)+" "+timestamp+".0";
+ //log.info "user dump from DB="+userdump
+  //assert the response & db values
+if(
+isFreeTrial== dataset.get("isfreetrial").toString()
+&& responseStatus=="OK"
+&& responseCode=="VE002"
+&& responseMessage=="Consent Redirect" 
+&&responseMsisdn==msisdn
+&&userdump.get("subscription_status_id").toString()==dataset.get("expid").toString()
+&&userdump.get("validity").toString() == dataset.get("expval")
+&& userdump.get("current_billing_code").toString() == dataset.get("expbillcode")
+&& userdump.get("user_source").toString() == dataset.get("source")
+&& userdump.get("credits").toString()==dataset.get("expcredits")
+&& userdump.get("user_preferred_language").toString()==dataset.get("languageid")
+&& userdump.get("next_billing_date").toString()==expnbd
+
+) 
+{
+	pass++
+ //print result
+def passresult= ("\r\n"+i+"-[SM2][WAP][ACT]"+dataset.get("tcname") +" bass test: passed"+"\r\n")
+log.info passresult
+logFile.append passresult
+}
+else{ 	
+    fail++
+    
+def failresult="\r\n"+i+"-***********************************"+"[SM2][WAP][ACT]"+dataset.get("tcname") +"  is failed" +"******************************************"+"\r\n"
+def expected=( "\r\n"+"Expected Values:"+" isFreeTrial>>"+dataset.get("isfreetrial")+"  sub_status_id="+dataset.get("expid")+",Validity="+dataset.get("expval")+
+",curr_billing_code="+dataset.get("expbillcode")+",user_source=" +dataset.get("source")+" credits="+dataset.get("expcredits")+" expResponseStatus==OK, expResponseCode==VE002,"+
+"expResponseMessage==Consent Redirect"+"responseMsisdn="+msisdn+"user_preferred_language="+dataset.get("languageid")+"next_billing_date="+expnbd+"\r\n")
+
+
+def actual=  ("\r\n"+"But Found:"+"     isFreeTrial>>"+isFreeTrial+"    sub_status_id="+userdump.get("subscription_status_id")+",Validity="+userdump.get("validity")+ 
+",curr_billing_code="+userdump.get("current_billing_code")+",user_source=" +userdump.get("user_source")+"credits="+userdump.get("credits")+"responsestatus="+responseStatus+
+"responseCode= "+responseCode+"responseMessage="+responseMessage+"responseMsisdn="+responseMsisdn+"user_preferred_language="+userdump.get("user_preferred_language")+"next_billing_date="+userdump.get("next_billing_date")+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+	} }
+		catch(Exception ex){
+
+			def errormsg=dataset.get("tcname")+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>API Response is not proper<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"+"\r\n"
+			logFile.append errormsg
+			log.error errormsg
+		                    }
+	}}
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['Controllers'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['LCM Run'].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

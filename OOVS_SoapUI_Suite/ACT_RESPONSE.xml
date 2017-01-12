@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="1682e625-efd7-430f-be76-df332c3b5af7" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="ACT_RESPONSE" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="1682e625-efd7-430f-be76-df332c3b5af7fileName">ACT_RESPONSE</con:setting></con:settings><con:testStep type="groovy" name="verify Response code handling in act flow" id="c46e611f-ea0e-4b9c-b6e5-4a545ae55e39"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>[OOVS][WAP][ACT]"+context.getCurrentStep().getLabel()+"\r\n")
+log.info  title
+logFile.append  title
+
+
+def logapi = context.logAPI
+def datasetobject = context.dataSet
+def apirunobject=context.apiRun
+def controllerobject=context.controllers
+def talendobject=context.talendApiRun
+def nbdobject=context.nbdObject
+
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  userdump  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+String nbd=null
+def expected2ndConf
+def Found2ndConf
+def expectedActNotification
+def FoundActNotification
+long timeoutPeriod=10000
+def NBD_CHECK="NA"
+
+String finalDate=nbdobject.CalculateOOVS_NBD();
+log.info finalDate
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+def isFreeTrial
+def cgBillCode
+String extTrnxId=''
+def DN1_ACT_NOTIFY_LOG="NA"
+def DN2_ACT_NOTIFY_LOG="NA"
+def DN3_ACT_NOTIFY_LOG="NA"
+def ACT_REQ_LOG1="NA"
+def ACT_REQ_LOG2="NA"
+def ACT_REQ_LOG3="NA"
+def expDN1=""
+def expDN2=""
+def expDN3=""
+def actDN1=""
+def actDN2=""
+def actDN3=""
+def expREQ1=""
+def expREQ2=""
+def expREQ3=""
+def actREQ1=""
+def actREQ2=""
+def actREQ3=""
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  )
+	{	
+	try {
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.resetUser(msisdn)
+
+	  //make user entry in free trial history
+          datasetobject.freeTrialHisotry(msisdn,"1",dataset.get("lastfreetrialtime"),"1202000024")	
+			
+		//baas get Status API execution
+		apirunobject.stepGetUserStatus(msisdn,dataset.get("customerid"))
+		
+		def  slurperStepStatus= context.jsonStepStatus
+		if(slurperStepStatus.additionalInfo !=null)	
+		{
+	      isFreeTrial= slurperStepStatus.additionalInfo.freeTrialEnabled 
+
+	           }
+	     else
+	     {
+	     	isFreeTrial="false"
+	     }
+	     	           
+		//baas activation api execution 	
+          apirunobject.stepInitiliazer(msisdn,dataset.get("billingcode"),dataset.get("source"),dataset.get("trnxid") ,dataset.get("adnetid"),
+          dataset.get("adtrnxid"),dataset.get("languageid"),"1","2",dataset.get("aft").toString(),dataset.get("dirthash")," ")
+          
+          
+          //get API Json Response context
+          def  slurperStepInitialise= context.jsonStepInitialise          
+	     def  responseStatus= slurperStepInitialise.result.status
+	     def responseCode=slurperStepInitialise.result.code
+	     def responseMessage= slurperStepInitialise.result.message
+	     def responseMsisdn=slurperStepInitialise.userStatus.msisdn
+	       def transid=slurperStepInitialise.cgTransactionId
+
+ //baas Cg controller execution 
+controllerobject.CGController(transid,dataset.get('providerid'))
+int cnt= dataset.get("dncount").toInteger()
+if(i==1)
+{
+	tc--;
+	continue;
+}
+
+ for (int k=1;k<=cnt;k++)
+ {
+ //get last billing request trnx id
+extTrnxId=  datasetobject.getLastRequestTrnxId(msisdn, dataset.get("customerid"));
+ String ppid;
+ String deliStatusId;
+ String trnxid;
+ log.info "extTrnxId=>>>"+k+">>>>"+extTrnxId 
+
+ 	if (k==1)
+ 	{
+ 		//Verify activaiton request log
+ 		ACT_REQ_LOG1=logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_REQUEST_LOG","9","9","1","1",
+dataset.get("reqcurrbillcode1"),"1",dataset.get("reqprebillcode1"),"WAP",dataset.get("expchargemode"),dataset.get("freetrialflag").toString()
+,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"160",dataset.get("dirthash"),"null","null",dataset.get("reqbillcode1"),dataset.get("reqpp1"),transid) 
+
+
+if (ACT_REQ_LOG1=="failed"){
+ expectedActNotification=context.expected
+ FoundActNotification=context.actual
+ expREQ1="Expected_ACT_REQ_LOG1:"+ expectedActNotification
+ actREQ1= "Found_ACT_REQ_LOG1:"+FoundActNotification
+log.error expREQ1
+log.error actREQ1
+ }
+ 
+ //clear log of activaiton req1
+ //datasetobject.removeLog(msisdn,"ACTIVATION_REQUEST_LOG")
+          
+          // DN notificaiton parameters set
+  		ppid=dataset.get("ppid1");
+ 		deliStatusId=dataset.get("deliStatusId1");
+ 		trnxid=dataset.get("txid1"); 
+ 		//DN notified	
+ 		talendobject.OOVS_DN_Rx(ppid,msisdn,extTrnxId,trnxid,deliStatusId);
+ 
+//Verify Activaiton Charging Notificaiton for DN1
+DN1_ACT_NOTIFY_LOG= logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_CHARGING_NOTIFICATION",dataset.get("activitytype"),dataset.get("billingactionid"),dataset.get("activityres1").toString(),dataset.get("substatusid1"),
+dataset.get("currbillcode1"),"1",dataset.get("prebillcode1"),dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("freetrialflag").toString()
+,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"40",dataset.get("dirthash"),dataset.get("expdnstatus"),dataset.get("expdndesc"),dataset.get("reqbillcode1"),dataset.get("reqpp1"),extTrnxId) 
+
+if (DN1_ACT_NOTIFY_LOG=="failed"){
+ expectedActNotification=context.expected
+ FoundActNotification=context.actual
+  expDN1= "Expected_DN1_ACT_NOTIFY_LOG:"+ expectedActNotification
+ actDN1= "Found_DN1_ACT_NOTIFY_LOG:"+FoundActNotification
+
+log.error expDN1
+log.error actDN1
+ }
+ 		
+	}
+ 	else if (k==2)
+ 	{
+ 		 sleep(2000)
+ 		  //Remove Previous DN1 notificaiton log
+ 		//datasetobject.removeLog(msisdn,"ACTIVATION_CHARGING_NOTIFICATION")
+ 		 
+  		ACT_REQ_LOG2=logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_REQUEST_LOG","9","9","1","1",
+dataset.get("reqcurrbillcode2"),"1",dataset.get("reqprebillcode2"),"WAP",dataset.get("expchargemode"),dataset.get("freetrialflag").toString()
+,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"160",dataset.get("dirthash"),"null","null",dataset.get("reqbillcode2"),dataset.get("reqpp2"),"null") 
+
+if (ACT_REQ_LOG2=="failed"){
+ expectedActNotification=context.expected
+ FoundActNotification=context.actual
+  expREQ2="Expected_ACT_REQ_LOG2:"+ expectedActNotification
+ actREQ2= "Found_ACT_REQ_LOG2:"+FoundActNotification
+log.error expREQ2
+log.error actREQ2
+ }
+ 		//Clear previous log
+ 		//datasetobject.removeLog(msisdn,"ACTIVATION_REQUEST_LOG")
+
+ 		// DN2 Notificaiton params set
+ 		ppid=dataset.get("ppid2");
+ 		deliStatusId=dataset.get("deliStatusId2");
+ 		trnxid=dataset.get("txid2"); 	
+ 		//DN2 notified
+  		talendobject.OOVS_DN_Rx(ppid,msisdn,extTrnxId,trnxid,deliStatusId);
+  		
+//Verify Activaiton Charging Notificaiton for DN2
+DN2_ACT_NOTIFY_LOG= logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_CHARGING_NOTIFICATION",dataset.get("activitytype"),dataset.get("billingactionid"),dataset.get("activityres2").toString(),dataset.get("substatusid2"),
+dataset.get("currbillcode2"),"1",dataset.get("prebillcode2"),dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("freetrialflag").toString()
+,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"40",dataset.get("dirthash"),dataset.get("expdnstatus"),dataset.get("expdndesc"),dataset.get("reqbillcode2"),dataset.get("reqpp2"),extTrnxId) 
+
+if (DN2_ACT_NOTIFY_LOG=="failed"){
+ expectedActNotification=context.expected
+ FoundActNotification=context.actual
+ expDN2== "Expected_DN2_ACT_NOTIFY_LOG:"+ expectedActNotification
+ actDN2= "Found_DN2_ACT_NOTIFY_LOG:"+FoundActNotification
+log.error expDN2
+log.error actDN2
+ }
+ 		
+ 	
+ 	}
+
+else if (k==3)
+ 	{
+ 		 sleep(2000)
+ 		//Remove Previous DN2 notificaiton log
+ 		//datasetobject.removeLog(msisdn,"ACTIVATION_CHARGING_NOTIFICATION")
+ 		
+ 		ACT_REQ_LOG3=logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_REQUEST_LOG","9","9","1","1",
+dataset.get("reqcurrbillcode3"),"1",dataset.get("reqprebillcode3"),"WAP",dataset.get("expchargemode"),dataset.get("freetrialflag").toString()
+,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"160",dataset.get("dirthash"),"null","null",dataset.get("reqbillcode3"),dataset.get("reqpp3"),"null") 
+
+if (ACT_REQ_LOG3=="failed"){
+ expectedActNotification=context.expected
+ FoundActNotification=context.actual
+ expREQ3="Expected_ACT_REQ_LOG3:"+ expectedActNotification
+ actREQ3= "Found_ACT_REQ_LOG3:"+FoundActNotification
+log.error expREQ3
+log.error actREQ3
+ }
+         
+  	   // DN3 Notificaiton params set
+  		ppid=dataset.get("ppid3");
+ 		deliStatusId=dataset.get("deliStatusId3");
+ 		trnxid=dataset.get("txid3");
+ 		//Notified DN3
+ 		talendobject.OOVS_DN_Rx(ppid,msisdn,extTrnxId,trnxid,deliStatusId); 
+  
+ //Verify Activaiton Charging Notificaiton for DN3
+DN3_ACT_NOTIFY_LOG= logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_CHARGING_NOTIFICATION",dataset.get("activitytype"),dataset.get("billingactionid"),dataset.get("activityres3").toString(),dataset.get("substatusid3"),
+dataset.get("currbillcode3"),"1",dataset.get("prebillcode3"),dataset.get("expaccmode"),dataset.get("expchargemode"),dataset.get("freetrialflag").toString()
+,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"40",dataset.get("dirthash"),dataset.get("expdnstatus"),dataset.get("expdndesc"),dataset.get("reqbillcode3"),dataset.get("reqpp3"),extTrnxId) 
+
+if (DN3_ACT_NOTIFY_LOG=="failed"){
+ expectedActNotification=context.expected
+ FoundActNotification=context.actual
+ expDN3= "Expected_DN3_ACT_NOTIFY_LOG:"+ expectedActNotification
+ actDN3="Found_DN3_ACT_NOTIFY_LOG:"+FoundActNotification
+log.error expDN3
+log.error actDN3
+ }
+ 	
+ 	 	}
+ 	 	
+ sleep(2000)
+ 
+ }
+ 
+//validate DB values       	
+ userdump= datasetobject.getUserData(msisdn,"1")
+ //assert the response & db values
+ 
+if(
+isFreeTrial== dataset.get("isfreetrial").toString()
+&& responseStatus=="OK"
+&& responseCode=="VE002"
+&& responseMessage=="Consent Redirect" 
+&&responseMsisdn==msisdn
+&&userdump.get("subscription_status_id").toString()==dataset.get("expid").toString()
+&&userdump.get("validity").toString() == dataset.get("expval")
+&& userdump.get("current_billing_code").toString() == dataset.get("expbillcode")
+&& userdump.get("user_source").toString() == dataset.get("source")
+&& userdump.get("credits").toString()==dataset.get("expcredits")
+&& userdump.get("user_preferred_language").toString()==dataset.get("languageid")
+
+)
+
+{  
+	
+	if(dataset.get("nbdcheck")=="talendDate")
+  	{
+  		if(userdump.get("next_billing_date").toString()==finalDate+".0")
+  		{
+  			log.info "NBD Test is passed"
+  			NBD_CHECK="passed"
+  		}
+  		else
+  		{
+  			log.error "NBD-Test is failed"
+  			def expected= "Expected="+finalDate+"\r\n"
+  			log.error expected
+  			def actual= "Found="+userdump.get("next_billing_date")+"\r\n"
+  			log.error actual
+  			logFile.append expected
+  			logFile.append actual
+  			NBD_CHECK="failed"
+  		}
+  	}
+  	else	if(dataset.get("nbdcheck")=="enddate")
+  	{
+  		int days=Integer.parseInt(dataset.get("expval")) 
+  		
+  	 DateFormat localFormat = new SimpleDateFormat("yyyy-MM-dd");
+  	TimeZone localTime = TimeZone.getTimeZone("GMT+4");    
+    localFormat.setTimeZone(localTime);    
+    Date newdate = new Date(date.getTime() + days*1000 * 60 * 60 * 24);     
+    nbd = localFormat.format(newdate)+" "+"04:00:00.0";
+		 				
+  		if(userdump.get("next_billing_date").toString()==nbd)
+  		{
+  			log.info "NBD Test is passed"
+  			NBD_CHECK="passed"
+  		}
+  		else
+  		{
+  				log.error "NBD Test is failed"
+  			def expected= "Expected="+nbd
+  			def actual= "Found="+userdump.get("next_billing_date")
+  			log.error expected
+  			log.error actual
+  			logFile.append expected
+  			logFile.append actual
+  			NBD_CHECK="failed"
+  		}
+  	}
+
+  	  	else	if(dataset.get("nbdcheck")=="nextday")
+  	{
+    int days=1;
+    
+    DateFormat localFormat = new SimpleDateFormat("yyyy-MM-dd");
+    TimeZone localTime = TimeZone.getTimeZone("GMT+4");
+    localFormat.setTimeZone(localTime);
+    Date newdate = new Date(date.getTime() + days*1000 * 60 * 60 * 24);  	
+		 nbd = localFormat.format(newdate)+" "+"04:00:00.0";
+		 		
+  		if(userdump.get("next_billing_date").toString()==nbd)
+  		{
+  			log.info "NBD Test is passed"
+  			NBD_CHECK="passed"
+  		}
+  		else
+  		{
+  			log.error "NBD Test is failed"
+  			def expected= "Expected="+nbd
+  			log.error expected
+  			def actual= "Found="+usersubmap.get("next_billing_date")
+  			log.error actual
+  			logFile.append expected
+  			logFile.append actual
+  			NBD_CHECK="failed"
+  		}
+  	}
+  	else
+  	{
+  		NBD_CHECK="NA"
+  		log.info "Next Billing Date is NA"
+  		
+  	}
+  	
+
+//print result
+
+def passresult= ("\r\n"+"[OOVS][WAP][ACT]"+dataset.get("tcname") +" >>>next_billing_date:"+NBD_CHECK+"\r\n")
+log.info passresult
+logFile.append passresult
+
+if (NBD_CHECK=="passed" || NBD_CHECK=="NA")
+{
+	pass++
+	} 
+else {fail++   
+}}  	
+
+else{ 	
+    fail++
+    
+def failresult="\r\n"+"[OOVS][WAP][ACT]"+dataset.get("tcname") +"  is failed"+msisdn+"\r\n"
+log.error failresult
+def expected=( "\r\n"+"Expected Values:"+" isFreeTrial>>"+dataset.get("isfreetrial")+"  sub_status_id="+dataset.get("expid")+",Validity="+dataset.get("expval")+
+",curr_billing_code="+dataset.get("expbillcode")+",user_source=" +dataset.get("source")+" credits="+dataset.get("expcredits")+" expResponseStatus==OK, expResponseCode==VE002,"+
+"expResponseMessage==Consent Redirect"+"responseMsisdn="+msisdn+"user_preferred_language="+dataset.get("languageid")+
+"last_notification_transaction_id="+ extTrnxId+"last_notification_status_id="+dataset.get("activityres")+"\r\n")
+log.error expected
+
+  StringBuilder actual = new StringBuilder("\r\n"+"   But Found:   ");
+  actual.append("isFreeTrial="+isFreeTrial)
+ actual.append("sub_status_id="+userdump.get("subscription_status_id"))
+ actual.append("|validity="+userdump.get("validity"))
+ actual.append("|currentBillingCode="+userdump.get("current_billing_code"))
+ actual.append("|source="+userdump.get("user_source"))
+ actual.append("|credits="+userdump.get("credits"))
+ actual.append("|lastnotificationstatusid="+userdump.get("last_notification_status_id"))
+ actual.append("|last_notification_transaction_id="+userdump.get("last_notification_transaction_id"))
+ actual.append("|user_preferred_language="+userdump.get("user_preferred_language"))
+ actual.append("responseStatus="+responseStatus)
+ actual.append("| responseCode="+responseCode)
+ actual.append("| responseMessage="+responseMessage)
+ actual.append("| responseMsisdn="+responseMsisdn)
+
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+	} 
+}
+		catch(Exception ex){
+
+			def errormsg= dataset.get("tcname")+">>>API Response is not proper<<<"
+			logFile.append errormsg
+			log.error errormsg
+		                    }
+	}}
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["NextBillingDate"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['Controllers'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['LCM Run'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+//read excel data column index
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+//com.eviware.soapui.impl.wsdl.support.http.HttpClientSupport.httpClient.params.setParameter( "http.protocol.allow-circular-redirects", true )
+
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

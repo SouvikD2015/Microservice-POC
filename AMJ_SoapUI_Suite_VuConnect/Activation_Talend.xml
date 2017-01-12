@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="240eff0c-3c40-498d-b55a-eb494bf6b959" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Activation_Talend" searchProperties="true" timeout="0" wsrmEnabled="false" wsrmVersion="1.0" wsrmAckTo="" amfAuthorisation="false" amfEndpoint="" amfLogin="" amfPassword="" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="240eff0c-3c40-498d-b55a-eb494bf6b959fileName">Activation_Talend</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="[VuConnect]Verify Activation Flow" id="295392f3-2132-4e84-8efb-a89d426a7fb6"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import java.net.URLDecoder;
+import java.text.*
+
+Date date=new Date()
+def logFile=context.resultfile
+def title=("\r\n"+date+"Executing  >>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info  title
+logFile.append title
+def properties=context.propobject
+
+//Log API class object
+def logapi = context.logAPI
+def controllerobject=context.controllers
+//Dataset class object
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  usersubmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+def expected2ndConf
+def actual2ndConf
+def expectedActNotification
+def actualActNotification
+def  slurperStepInitialise
+def  responseStatus
+def responseCode
+def responseMessage
+def cgUrl
+def transid
+long timeoutPeriod=5000;
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+ try{   
+  dataset=datasetobject.getRowDataMap(i)	
+  
+  	if(dataset.get("isexecutable")  )
+	{	
+		tc++;	
+		
+		msisdn=dataset.get("userid")
+
+		//reset user 		
+		datasetobject.resetUser(msisdn)           
+	     		
+		//baas activation api execution		
+          apirunobject.stepInitiliazer(msisdn,dataset.get("billingcode"),dataset.get("source"),dataset.get("trnxid") ,dataset.get("adnetid"),
+          dataset.get("adtrnxid")," ","1","2","null",dataset.get("dirthash")," ")
+          
+          //get API Json Response context
+            slurperStepInitialise= context.jsonStepInitialise          
+	       responseStatus= slurperStepInitialise.result.status
+	      responseCode=slurperStepInitialise.result.code
+	      responseMessage= slurperStepInitialise.result.message
+	      def responseMsisdn=slurperStepInitialise.userStatus.msisdn
+	       transid=slurperStepInitialise.cgTransactionId
+	      log.info transid
+	      
+ //baas Cg controller execution for AMJ
+  controllerobject.airtelMovieJnCGController(transid,"9f073f5c-73f2-4ddd-80db-7ee73601b94e",transid)
+
+
+//Call Airtel Notify Receiver
+def 	propertyNotify=testRunner.testCase.getTestStepByName("AMJProp")
+ 	     propertyNotify.setPropertyValue("msisdn",msisdn.substring(2))	 	
+		propertyNotify.setPropertyValue("productid",dataset.get("productid"))
+		propertyNotify.setPropertyValue("errorcode",dataset.get("errorcode"))
+		propertyNotify.setPropertyValue("errormsg",dataset.get("errormsg"))
+		propertyNotify.setPropertyValue("amount",dataset.get("amount")+".0")
+				
+	def 	stepNotifyRx= testRunner.testCase.getTestStepByName("AMJ_Notify")
+	stepNotifyRx.getHttpRequest().setEndpoint(properties.AMJ_VUCONNECT)
+	stepNotifyRx.run(testRunner,testRunner.getRunContext())	
+
+if(i==1)
+{
+	tc--;
+	continue;
+	
+}
+
+
+ long startTime = System.currentTimeMillis();
+while(true){
+//validate DB values       	
+ usersubmap= datasetobject.getUserData(msisdn,"1")
+
+ 	if(	usersubmap.get("subscription_status_id").toString()== dataset.get("expid"))
+
+					{
+						break;
+					}
+					else
+					{
+						long currentTime = System.currentTimeMillis();
+						if((currentTime-startTime)<timeoutPeriod){
+							sleep(200);
+							log.info "waiting for notification to  process"
+						}else{
+							break;
+
+						}}}
+ 	 
+//assert the response & db values
+if(responseStatus=="OK"
+&&responseMsisdn==msisdn
+&& responseCode=="VE002"
+&& responseMessage=="Consent Redirect" 
+&& usersubmap.get("subscription_status_id").toString() == dataset.get("expid")
+&& usersubmap.get("validity").toString() == dataset.get("expval")
+&& usersubmap.get("current_billing_code").toString() == dataset.get("expbillcode")
+&& usersubmap.get("user_source").toString() == dataset.get("source")
+&& usersubmap.get("credits").toString()==dataset.get("expcredits")
+) 
+{   
+//calling log api test method	
+def log_2nd_conf= logapi.assertBaaSLogAPI(msisdn,"PAGEVIEW_LOG_2nd_CONF","2","2",dataset.get("2ndconfactivityres").toString(),"1",
+dataset.get("prebillcode"),"1","null",dataset.get("expaccmode"),dataset.get("expchargemode"),"false",
+ dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"30",dataset.get("dirthash"))  	
+
+if (log_2nd_conf=="failed"){
+ expected2ndConf=context.expected
+ actual2ndConf=context.actual}
+
+def log_act_notify= logapi.assertBaaSLogAPI(msisdn,"ACTIVATION_CHARGING_NOTIFICATION","3","3",dataset.get("activityres").toString(),dataset.get("expid"),
+dataset.get("expbillcode"),"1",dataset.get("prebillcode"),"NOTIFICATION",dataset.get("expchargemode"),dataset.get("isfreetrial").toString()
+,dataset.get("integrationtype").toString(),dataset.get("customerid").toString(),dataset.get("providerid").toString(),"40",dataset.get("dirthash")) 
+if (log_act_notify=="failed"){
+ expectedActNotification=context.expected
+ actualActNotification=context.actual}
+
+// validate ad network logs
+//log.info "call to verify ad network logs"
+if(dataset.get("adnetinfo")){
+ad_network_log=logapi.assertAdNetworkInfo(msisdn,"ACTIVATION_CHARGING_NOTIFICATION",dataset.get("adnetid"),dataset.get("adtrnxid"))
+}
+
+else {ad_network_log= "NA"}
+
+//print result
+def passresult=("\r\n"+"[AMJ][WAP][ACT]"+dataset.get("tcname") +" bass test: passed"+" >>>2nd_conf_log:"+log_2nd_conf+" >>> act_charging_notification_log: "+log_act_notify+" >>> adnetwork_info_log: "+ad_network_log+"\r\n")
+logFile.append passresult
+log.info passresult
+
+if (log_act_notify=="passed" &&  log_2nd_conf=="passed" && (ad_network_log=="passed"  || ad_network_log=="NA" )) {pass++} 
+else {fail++
+   if(log_2nd_conf=="failed"){
+   def expected= "Expected_2nd_Conf >>>" +expected2ndConf
+   def actual= "Found_2nd_Conf >>>" + actual2ndConf
+   log.error expected
+   log.error actual
+   logFile.append "\r\n"+expected +"\r\n" + actual+"\r\n"
+   }
+	
+	if(log_act_notify=="failed"){
+   def expected= "Expected_ACT_Notification >>>" +expectedActNotification
+def actual= "Found_ACT_Notification >>>" + actualActNotification
+   log.error expected
+    log.error actual
+     logFile.append "\r\n"+expected +"\r\n" + actual+"\r\n"}  
+   
+   if(ad_network_log=="failed"){
+    def expected= "Expected_Ad_Notification >>>" +context.expectedAdLog
+    def actual= "Found_Ad_Notification >>>" + context.actualAdLog
+    log.error expected
+     log.error actual
+     logFile.append "\r\n"+expected +"\r\n" + actual+"\r\n"}
+}}  	
+
+else{ 	
+    fail++
+ def failresult= ("\r\n"+"[AMJ][WAP][ACT]"+dataset.get("tcname") +"  is failed"+"\r\n")
+def expected=  ( "\r\n"+"Expected Values:sub_status_id="+dataset.get("expid")+",Validity="+dataset.get("expval")+",curr_billing_code="+dataset.get("expbillcode")+",user_source=" +dataset.get("source")+" credits="+dataset.get("expcredits")+"\r\n")
+def actual=  ("\r\n"+"But Found: sub_status_id="+usersubmap.get("subscription_status_id")+",Validity="+usersubmap.get("validity")+ ",curr_billing_code="+usersubmap.get("current_billing_code")+",user_source=" +usersubmap.get("user_source")+"credits="+usersubmap.get("credits")+"\r\n")
+log.error failresult
+log.error expected
+log.error actual
+logFile.append failresult+"\r\n"+expected +"\r\n" + actual
+	} 
+	}
+ }     	
+catch (Exception e){
+	//log.error "Exception handled"
+	log.error e.getStackTrace();
+}
+}
+def summary=  ("\r\n"+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:testStep type="properties" name="AMJProp" id="83eba766-fef6-4af4-8f3a-e742a776b97f" disabled="true"><con:settings/><con:config xsi:type="con:PropertiesStep" saveFirst="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:properties><con:property><con:name>amount</con:name><con:value>0.0</con:value></con:property><con:property><con:name>errorcode</con:name><con:value>0</con:value></con:property><con:property><con:name>errormsg</con:name><con:value>AOC: Request Failed : Subscriber is barred under VAS DND</con:value></con:property><con:property><con:name>productid</con:name><con:value>542220</con:value></con:property><con:property><con:name>msisdn</con:name><con:value>66000011</con:value></con:property></con:properties></con:config></con:testStep><con:testStep type="request" name="AMJ_Notify" id="fca1ca49-8044-461a-bdab-736136ad2eeb" disabled="true"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>AMJ_Notify</con:interface><con:operation>notificationToCP</con:operation><con:request name="AMJ_Notify" id="22bc2fa3-235d-4e33-abeb-0dc68257cff1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://192.168.249.94:8090/vuconnect/webservice/notification</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sub="http://SubscriptionEngine.ibm.com">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <sub:notificationToCP>
+         <notificationRespDTO>
+            <xactionId>43435</xactionId>
+            <errorCode>${AMJProp#errorcode}</errorCode>
+            <errorMsg>${AMJProp#errormsg}</errorMsg>
+            <temp1>?</temp1>
+            <temp2>?</temp2>
+            <temp3>
+               <ID>?</ID>
+               <ChargingType>?</ChargingType>
+               <VCode>?</VCode>
+               <partyB>?</partyB>
+            </temp3>
+            <lowBalance>?</lowBalance>
+            <amount>${AMJProp#amount}</amount>
+            <chargigTime>?</chargigTime>
+            <msisdn>${AMJProp#msisdn}</msisdn>
+            <productId>${AMJProp#productid}</productId>
+         </notificationRespDTO>
+      </sub:notificationToCP>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="SOAP Response" id="453ee0aa-0c1a-4824-8c8e-adcc401ce5c9"/><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="groovy" name="tmp" id="a41398dd-bdc3-4465-9c67-a739b28fab95" disabled="true"><con:settings/><con:config><script><![CDATA[
+
+String cg="http://openapi.airtel.in/services/oauth/authorize?response_type=code&client_id=a513fd23da09f9574754aa05b547b0b4&scope=subscription&pn=MovieJunction&pd=MovieJunction&currency=INR&pc=Video&md=nht&tid=t1&rd=general&cpn=Vuclip&amount=35.00&pid=542220&pv=7&imgurl=http%3A%2F%2F65.49.33.75%2Fimages%2F%2F20141230%2F091844_216x1441115.jpg&redirect_uri=http%3A%2F%2F64.62.166.9%2Fbaas%2FCGController%2FconsentParser%2F6%3Ftransid%3DTX20151201155517294360&state=TX20151201155517294360"
+String cgUrlDecoded = URLDecoder.decode(cg, "UTF-8");
+//log.info cgUrlDecoded
+      def param=cgUrlDecoded.split("[?]")
+      def transid = (param[2].split("[&]")[1]).split("=")[1]
+
+        log.info transid]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['Controllers'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+def properties=context.propobject
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:properties/><con:reportParameters/></con:testCase>

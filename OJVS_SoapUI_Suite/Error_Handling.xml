@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="bae37ad5-1e5a-4362-856c-81410dddc656" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Error_Handling" searchProperties="true" disabled="true" xmlns:con="http://eviware.com/soapui/config"><con:description>url to clear provider info cache '192.168.254.9/baas/monitoring?action=clear_cache&amp;cacheId=com.vuclip.mint.persistence.api.entites.ProviderInfo'</con:description><con:settings><con:setting id="bae37ad5-1e5a-4362-856c-81410dddc656fileName">Error_Handling</con:setting></con:settings><con:testStep type="groovy" name="Verify Error Code Handling in Talend" id="2bb345f1-b7ac-44e2-85d6-98755c1881ca"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.sql.Sql 
+import java.io.*
+import java.text.*
+import java.util.*
+import groovy.util.XmlSlurper;
+
+
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+
+
+Date date=new Date()
+def logFile=context.resultfile
+
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+
+int tc=0;
+int pass=0;
+int fail =0;
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+try{
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  )
+	{	
+		tc++;		
+		msisdn= dataset.get("msisdn")
+		billingcode= dataset.get("billingcode")
+		parentbillcode= dataset.get("parentbillcode")
+		activitytype= dataset.get("activitytype")
+		requestid= dataset.get("requestid")
+		mode= dataset.get("mode")
+		custtrnxid= dataset.get("custtrnxid")
+		currbillcode= dataset.get("currbillingcode")
+		carriersubid= dataset.get("carriersubid")
+talendobject.ojvsBilling(msisdn,billingcode,  parentbillcode, activitytype, requestid,  mode , custtrnxid, currbillcode, carriersubid  )
+
+def  talendResponse= context.talendResponse
+if(talendResponse.billingActionId==dataset.get("billingactionid")
+//&& talendResponse.responseCode==dataset.get("responsecode").toString()
+)
+{
+		
+		pass++
+}else
+{
+	fail++
+}
+
+	}
+}
+ catch (Exception ex)
+{
+	fail++
+	def errormsg= dataset.get("tcname")+">>>API Response is not proper<<<"
+			logFile.append errormsg
+			log.error errormsg
+}
+
+}
+
+def summary=  ("\r\n"+date+" Execution Summary of [OJVS][WAP][CHURN]"+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary
+
+]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:tearDownScript>import groovy.sql.Sql
+def url = testRunner.testCase.testSuite.project.getPropertyValue("billing_url")
+
+String query="UPDATE baas.provider_info SET billing_url="+ url +" WHERE provider_id='1';"
+//context.dbConn.execute(query)</con:tearDownScript><con:properties/><con:reportParameters/></con:testCase>

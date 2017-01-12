@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="c3117796-5923-49e0-abcc-a2b40542acdb" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="ActFlowExisitngUser" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="c3117796-5923-49e0-abcc-a2b40542acdbfileName">ActFlowExisitngUser</con:setting></con:settings><con:testStep type="groovy" name="Verify Activation of Already Exisiting User" id="8e0da797-6641-48c3-bfb0-e33ae452ace8"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.sql.Sql 
+import java.io.*
+import java.text.*
+import java.util.*
+
+//Log API class object
+def logapi = context.logAPI
+//Dataset class object
+def datasetobject = context.dataSet
+//API execution class object
+def apirunobject=context.apiRun
+def talendobject=context.talendApiRun
+
+Date date=new Date()
+def logFile=context.resultfile
+
+def title=("\r\n"+date+"Executing>>>>>>>>>>>>>>>>>>>"+context.getCurrentStep().getLabel()+"\r\n")
+log.info title
+
+Map<String,String>  dataset  = new HashMap<String,String> ();
+Map<String,String>  usersubmap  = new HashMap<String,String> ();
+int tc=0
+int pass=0
+int fail=0
+def expected2ndConf
+def actual2ndConf
+def expectedActNotification
+def actualActNotification
+
+ //iteratig excel sheet rows to execute the test case 
+for (int i=1;i<= context.rowCount;i++)
+{
+def callbackResponse
+def notifyResponse
+  dataset=datasetobject.getRowDataMap(i)	
+  	if(dataset.get("isexecutable")  )
+	{	
+		tc++;		
+		msisdn= dataset.get("userid")
+		//reset user 		
+		datasetobject.resetUser(msisdn)
+
+//Create Test User
+datasetobject.createUser("1","1",msisdn,dataset.get("billingcode"),dataset.get("billingcode"),dataset.get("currbillingcode"),dataset.get("substate"),
+       dataset.get("startdate"),dataset.get("enddate"),dataset.get("subdate"),dataset.get("source"),"NULL","100",msisdn,"1","2","1","kp=test","0","0","123","1","1","1")
+       
+       try{     	           
+		//baas activation api execution 	
+          apirunobject.stepInitiliazer(msisdn,dataset.get("billingcode"),dataset.get("source"),dataset.get("trnxid") ,"0","","1","1","2","null","1000"," ")
+            
+          
+          //get API Json Response context
+          def  slurperStepInitialise= context.jsonStepInitialise          
+	     def  responseStatus= slurperStepInitialise.result.status
+	     def responseCode=slurperStepInitialise.result.code
+	     def responseMessage= slurperStepInitialise.result.message
+	     
+
+//assert the response & db values
+if(responseStatus==dataset.get("expstatus")
+&& responseCode==dataset.get("expcode")
+&& responseMessage==dataset.get("expmsg")
+
+) 
+{   pass++
+	def passresult=("\r\n"+"[AIRCEL][WAP][RETRY]"+dataset.get("tcname")+" is passed"+"\r\n")
+logFile.append passresult
+log.info passresult
+}
+
+else{ 	
+    fail++
+ def failresult= ("\r\n"+"[AIRCEl][WAP][RETRY]"+dataset.get("tcname") +"  is failed"+"\r\n")
+log.info failresult
+logFile.append failresult
+log.error  ( "\r\n"+"Expected: responseStatus==OK, responseCode==VE002"+"responseMessage=Consent Redirect"+"\r\n")
+log.error  ("\r\n"+"But Found: responsestatus="+responseStatus+"responseCode= "+responseCode+"responseMessage="+responseMessage+"\r\n")
+	} 
+	}
+	catch(Exception ex){
+
+			log.error ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+dataset.get("tcname")+"API Response is not proper<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+		            }
+		            }} 
+def summary=  ("\r\n"+date+" Execution Summary of "+context.getCurrentStep().getLabel()+"\r\n" + "Total Executed="+tc +"\r\n"+"Total Pass="+pass +"\r\n"+"Total Fail="+fail+"\r\n")
+logFile.append summary
+log.info summary]]></script></con:config></con:testStep><con:setupScript>import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+
+def lib = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!lib.open &amp;&amp; workspace!=null) 
+{workspace.openProject(lib)
+}
+
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Log API"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["DataSet"].run(testRunner, context)
+lib.testSuites['Common Util'].testCases['Common Methods'].testSteps["Backend Job"].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['BaaS API'].testSteps['API Run'].run(testRunner, context)
+
+lib.testSuites['Common Util'].testCases['Talend_API'].testSteps["Talend_API_Run"].run(testRunner, context)
+
+def datasetobject = context.dataSet
+
+String inputFile = context.expand('${#Global#input_path}')+ testRunner.testCase.testSuite.name+".xlsx"
+
+datasetobject.getExcelDataIndex(inputFile,testRunner.testCase.name)
+
+//establish db connection
+datasetobject.getDBConnection()
+</con:setupScript><con:tearDownScript>import groovy.sql.Sql
+
+def sql = Sql.newInstance('jdbc:mysql://testdb2.blueapple.mobi:3306/updated_baas_v7', 'root', '11202004ok7lip', 'com.mysql.jdbc.Driver')
+
+ sql.execute("UPDATE updated_baas_v7.provider_info SET billing_url='http://64.71.156.243:18088/unsubscription' WHERE provider_id='1';")	</con:tearDownScript><con:properties/><con:reportParameters/></con:testCase>

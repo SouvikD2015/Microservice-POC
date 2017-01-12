@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:operation id="4c6cc319-0fd6-47e9-8ee6-5688db1d7619" isOneWay="false" action="notificationToCP" name="notificationToCP" bindingOperationName="notificationToCP" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="4c6cc319-0fd6-47e9-8ee6-5688db1d7619fileName">notificationToCP</con:setting></con:settings><con:call id="e02ebb7e-7ca2-4dc0-9889-65ecd4d0b999" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://192.168.249.94:18040/services/airtel-movies/notification</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sub="http://SubscriptionEngine.ibm.com">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <sub:notificationToCP>\r
+         <notificationRespDTO>\r
+            <xactionId>1656480047</xactionId>\r
+            <errorCode>1000</errorCode>\r
+            <errorMsg>Success</errorMsg>\r
+            <temp1>140102</temp1>\r
+            <temp2>31721251119</temp2>\r
+            <temp3>\r
+               <ID>null</ID>\r
+               <ChargingType>null</ChargingType>\r
+               <VCode>null</VCode>\r
+               <partyB>null</partyB>\r
+            </temp3>\r
+            <lowBalance>0.0</lowBalance>\r
+            <amount>35.00</amount>\r
+            <chargingTime>2015-12-02T06:43:38.749Z</chargingTime>\r
+            <msisdn>91660000015</msisdn>\r
+            <productId>542220</productId>\r
+         </notificationRespDTO>\r
+      </sub:notificationToCP>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="notificationToCP"/><con:wsrmConfig version="1.2"/></con:call><con:call id="e6b46c1e-4f1f-4bfc-a4b6-6a542fb02bee" name="VuConnect"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://192.168.249.94:18040/vuconnect/webservice/notification</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sub="http://SubscriptionEngine.ibm.com">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <sub:notificationToCP>\r
+         <notificationRespDTO>\r
+            <xactionId>1656480047</xactionId>\r
+            <errorCode>1000</errorCode>\r
+            <errorMsg>Success</errorMsg>\r
+            <temp1>140102</temp1>\r
+            <temp2>31721251119</temp2>\r
+            <temp3>\r
+               <ID>null</ID>\r
+               <ChargingType>null</ChargingType>\r
+               <VCode>null</VCode>\r
+               <partyB>null</partyB>\r
+            </temp3>\r
+            <lowBalance>0.0</lowBalance>\r
+            <amount>35.00</amount>\r
+            <chargingTime>2015-12-02T06:43:38.749Z</chargingTime>\r
+            <msisdn>91660000015</msisdn>\r
+            <productId>542220</productId>\r
+         </notificationRespDTO>\r
+      </sub:notificationToCP>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="notificationToCP"/><con:wsrmConfig version="1.2"/></con:call></con:operation>

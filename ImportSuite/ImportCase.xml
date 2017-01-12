@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="892b9bbc-4f8a-4e1c-b11f-e2b537cd5fa4" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="ImportCase" searchProperties="true" timeout="0" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="892b9bbc-4f8a-4e1c-b11f-e2b537cd5fa4fileName">ImportCase</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="Groovy Script" id="1c43a27f-0a54-4649-80f6-e1567f7b4506"><con:settings/><con:config><script>
+
+log.info "This Project is Imported!"</script></con:config></con:testStep><con:testStep type="groovy" name="Generic Functions" id="62b06a9b-5b9e-4952-bfe5-4d8f749ba139"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+import static org.codehaus.groovy.runtime.StackTraceUtils.sanitize
+
+
+
+class Test{
+
+	def log
+	def testRunner
+	def context
+	
+
+	def Test(logIn, contextIn, testRunnerIn){
+
+		this.log = logIn;
+		this.testRunner = testRunnerIn;
+		this.context = contextIn
+		
+		}
+
+		public def FuncOne()
+		{
+			return 1;
+		}
+
+		public def FuncTwo()
+		{
+			return 2;
+		}
+
+		public def FuncThree()
+		{
+			return 3;
+		}
+}
+
+context.setProperty("sampleTest", new Test(log, context, testRunner))
+</script></con:config></con:testStep><con:properties/><con:reportParameters/></con:testCase>

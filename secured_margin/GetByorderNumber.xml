@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="08bc52d1-9138-41fa-bfbc-dde2d4ba6120" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="GetByorderNumber" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="08bc52d1-9138-41fa-bfbc-dde2d4ba6120fileName">GetByorderNumber</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="GenerateURL" id="4154f1a0-c149-43b5-b767-88cbedcb54ce"><con:settings/><con:config><script>import jxl.*
+
+def companyCode_no = []
+def proCode = []
+def step_count
+
+def groovyUtils=new  com.eviware.soapui.support.GroovyUtils(context)
+def projectPath = groovyUtils.projectPath
+//log.info projectPath
+
+		//Get Workbook and Relevant Sheets.
+		wb = Workbook.getWorkbook(new File(projectPath+"/"+"TestData.xls"))
+		sheet = wb.getSheet(0)
+		sheet1 = wb.getSheet(1)
+		
+		
+		Domain = sheet.getCell(1,2).getContents()
+		def Port = sheet.getCell(1,3).getContents()
+		def api = sheet.getCell(1,4).getContents()
+          method1 = sheet.getCell(1,5).getContents()
+          method2 = sheet.getCell(1,6).getContents()
+		
+		// log.info Domain+" "+Port+" "+api+" "+method
+            
+              
+              context["host"]= Domain
+              context["port"]= Port
+              context["api"]= api
+              context["colon"] = ":"
+              context["backslash"] = "/"
+              context["method1"] = method1
+              
+		
+
+		if(Domain.contains("apidev2.jci.com"))
+		{
+               log.info "For Apigee Sandbox!"
+               FormApigeeURL()
+		}
+		else if(Domain.contains("10.71.16.100"))
+		{
+              log.info "For Azure"
+              FormAzureURL()
+		}
+		else if(Domain.contains("mum-dev"))
+		{
+              log.info "for mum-dev"
+              FormMumDevURL()
+		}
+
+		public def FormMumDevURL()
+		{	
+			log.info "FormMumDevURL Method"
+			testRunner.testCase.setPropertyValue("method", method1)
+			
+			def cnt =0
+			for( def k=1 ; k&lt;= sheet1.getRows()-1; k++)
+			{
+				def companycode = sheet1.getCell(0,k).getContents().toString()
+				context["companycode"] = companycode
+				def comcode = companycode.toString()
+				testRunner.testCase.setPropertyValue("CompanyCodeVal",comcode)
+
+				def str1 = "http://" + context["host"] + context["colon"] +context["port"] 
+				def str2 = context["backslash"] +context["api"] + context["backslash"]+ context["method1"]+ context["backslash"] +context["companycode"]
+				
+
+				log.info "Test Step "+testRunner.testCase.getTestStepByName("REST Request")
+
+				testRunner.testCase.getTestStepByName("REST Request").getHttpRequest().setEndpoint(str1)
+             	     testRunner.testCase.getTestStepByName("REST Request").getHttpRequest().setPath( str2 )
+
+				def end = testRunner.testCase.getTestStepByName("REST Request").getHttpRequest().getEndpoint()
+				def path = testRunner.testCase.getTestStepByName("REST Request").getHttpRequest().getPath()
+
+				log.info end+path
+
+				testRunner.runTestStepByName("REST Request")
+				
+				cnt++
+			}
+			
+		}
+
+
+
+ wb.close()</script></con:config></con:testStep><con:testStep type="restrequest" name="REST Request" id="7192436b-bab8-46f8-96cb-063cb5725427"><con:settings/><con:config service="REST Service 1" resourcePath="/" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request" id="479876bc-ce27-4891-99dc-494b7baf2325" mediaType="application/json" fullPath="/api/OrderSecureMargin/companycode/na"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://mum-dev:6006</con:endpoint><con:request/><con:originalUri>https://www.google.com/</con:originalUri><con:credentials><con:selectedAuthProfile>Inherit From Parent</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="BusinessUtility" id="b275476a-b66a-4055-acd0-1e7cb0452235"><con:settings/><con:config><script>import groovy.json.JsonSlurper 
+import static com.jayway.jsonpath.JsonPath.parse 
+import com.eviware.soapui.model.project.ProjectFactoryRegistry 
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory 
+import static org.codehaus.groovy.runtime.StackTraceUtils.sanitize
+import jxl.*;
+
+import jxl.write.*
+
+
+
+
+class Test {
+
+     def log
+	def testRunner
+	def context
+	def count =0
+	def cal_margin =[]
+     def count1 =0
+     def var = 0
+	def Test(logIn, contextIn, testRunnerIn)
+	{
+
+		this.log = logIn;
+		this.testRunner = testRunnerIn;
+		this.context = contextIn
+		
+	}
+
+/* ********************************************************************************************** */		
+public def GetExelSheetLocator()
+		{
+			
+			def company = testRunner.testCase.getPropertyValue("CompanyCodeVal")
+			switch(company)
+			{
+				case "na":
+				 var =3;
+				break;
+  
+                    case "b1":
+				 var =4;
+				break;
+
+				case "ea":
+				 var =4;
+				break;
+
+				case "j4":
+				 var =5;
+				break;
+
+				case "l1":
+				 var =6;
+				break;
+
+				case "m1":
+				 var =7;
+				break;
+                    
+				default:
+				log.info "wrong comapny code"
+				break;
+			}
+			
+			def groovyUtils=new  com.eviware.soapui.support.GroovyUtils(context)
+			def projectPath = groovyUtils.projectPath
+			def wb = Workbook.getWorkbook(new File(projectPath+"/"+"TestData.xls"))
+			def test_sheet = wb.getSheet(var)
+			return test_sheet
+		}
+
+
+
+		public def JsonResGenerator(int integer)
+          {
+               def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request").getPropertyValue("Response")
+
+               def groovyUtils=new  com.eviware.soapui.support.GroovyUtils(context)
+			def projectPath = groovyUtils.projectPath
+			def wb = Workbook.getWorkbook(new File(projectPath+"/"+"TestData.xls"))
+			def json_locator_sheet = wb.getSheet(2)
+               def i = integer
+               def locator = json_locator_sheet.getCell(0,i).getContents()
+               def json_res = parse(getAzureResponse).read(locator)
+			return json_res
+                                           
+           } 
+
+
+
+/* *********************************GetByOrderNo*************************************************************************************************** */
+
+
+/* ********************************************************************************************************** */
+public def GetMargin(String order_no)
+{
+	log.error "***************************************************************For order no :"+order_no+"*******************************************************************************************************"
+	def data_sheet =GetExelSheetLocator()
+	def sales_cost =0;
+	def sales_revenue =0;
+	def sales_margin_set;
+	
+     for (def i = 1 ; i&lt;= data_sheet.getRows()-1 ; i++)
+     {
+       count++
+       def order = data_sheet.getCell(0,i).getContents().toString()
+               if(order.trim() == order_no.trim() )
+               {
+               	log.info "got the same code at row number :"+count
+               	// logic goes here
+
+               	                      count1++
+                                           String variable1 = data_sheet.getCell(1,i).getContents()
+                                           def var1 = variable1.isFloat() ? variable1.toFloat() : variable1.toInteger()
+                                           //log.info "var1:unit price:" +var1
+                                          // String variable2 = data_sheet.getCell(2,i).getContents()
+                                          String variable2 = data_sheet.getCell(2,i).getContents()
+                                           def var2 = variable2.isFloat() ? variable2.toFloat() : variable2.toInteger()
+                                            //log.info "var2:unit cost price:" +var2
+                                            
+                                             String variable3 = data_sheet.getCell(3,i).getContents()
+                                           def var3 = variable3.isFloat() ? variable3.toFloat() : variable3.toInteger()
+                                           // log.info "var3:quantity" +var3
+
+                                           sales_revenue = ((var1*var3).toFloat()+sales_revenue).toFloat()
+                                            
+                                            sales_cost = ((var2*var3).toFloat()+sales_cost).toFloat()
+
+               }
+                                          
+     }
+                                            def sales_profit = (sales_revenue - sales_cost).toFloat()
+                                            def sales_margin = ((sales_profit*100)/sales_revenue).toFloat().trunc(3)
+                                            if(sales_margin.toString().contains("Infinity"))
+                                            {
+                                            		 sales_margin_set = 0.0
+                                            		log.info "Updated Sales Margin :"+sales_margin_set
+                                            }
+                                            else 
+                                            {
+                                            		 sales_margin_set = sales_margin
+                                            		log.info "Updated Sales Margin :"+sales_margin_set
+                                            }
+                                            log.info "sales_margin for order id :"+order_no+"is :" +sales_margin_set
+                                           log.info "no of lines with same order no:" +count1
+                                           cal_margin &lt;&lt; sales_margin_set
+									
+								return sales_margin_set	 
+}
+
+
+public def ValidateCompanyMargin()
+{
+	def orderid_json = JsonResGenerator(1)
+	def margin_json = JsonResGenerator(1)
+	log.info orderid_json
+	for(def i = 0; i&lt;= orderid_json.size() -1; i++)
+	{
+		def order_id = orderid_json[i]
+		GetMargin(order_id)
+		if(GetMargin(order_id) == margin_json[i])
+		{
+			log.info "Margin is Valid."
+		}
+		else
+		{
+			log.info "Margin Calculated is wrong!"
+		}
+		
+	}
+	
+}
+
+
+}
+context.setProperty("dk",new Test(log,context,testRunner));</script></con:config></con:testStep><con:testStep type="groovy" name="BusinessValidation" id="22600301-00d2-4aad-8b25-b868369eccc4"><con:settings/><con:config><script>import static org.codehaus.groovy.runtime.StackTraceUtils.sanitize
+ 
+lib = testRunner.testCase.testSuite.project.testSuites["secured_margin"].testCases["GetByorderNumber"].testSteps["BusinessUtility"]
+
+lib.run(testRunner, context)
+def rd = context.dk
+//def param1 = "4937000015"
+def TestStepRuningInfor1 = rd.ValidateCompanyMargin()
+log.info TestStepRuningInfor1</script></con:config></con:testStep><con:properties><con:property><con:name>method</con:name><con:value>companycode</con:value></con:property><con:property><con:name>CompanyCodeVal</con:name><con:value>na</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>4154f1a0-c149-43b5-b767-88cbedcb54ce</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>7192436b-bab8-46f8-96cb-063cb5725427</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="d540091d-8b31-44b3-ba44-f3a912fae3d5" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="GetByMarginRange" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="d540091d-8b31-44b3-ba44-f3a912fae3d5fileName">GetByMarginRange</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="func" id="f933d553-75e9-4b34-b695-1dc93657f1a8"><con:settings/><con:config><script>import groovy.json.JsonSlurper 
+import static com.jayway.jsonpath.JsonPath.parse 
+import com.eviware.soapui.model.project.ProjectFactoryRegistry 
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory 
+import static org.codehaus.groovy.runtime.StackTraceUtils.sanitize
+import jxl.*;
+
+import jxl.write.*
+
+
+
+
+class Test {
+
+     def log
+	def testRunner
+	def context
+	def count =0
+	def arr =[]
+     def count1 =0
+	def Test(logIn, contextIn, testRunnerIn)
+	{
+
+		this.log = logIn;
+		this.testRunner = testRunnerIn;
+		this.context = contextIn
+		
+	}
+
+/* ********************************************************************************************** */		
+public def GetExelSheetLocator()
+		{
+			/*
+			def company = testRunner.testCase.getPropertyValue("CompanyCode1")
+			switch(company)
+			{
+				case "na":
+				 var =2;
+				 //log.info "2"
+				break;
+                  
+
+                    case "j1":
+				 var =3;
+				break;
+
+				case "ea":
+				 var =4;
+				break;
+
+				case "j4":
+				 var =5;
+				break;
+
+				case "l1":
+				 var =6;
+				break;
+
+				case "m1":
+				 var =7;
+				break;
+                    
+				default:
+				log.info "wrong comapny code"
+				break;
+			}
+			*/
+			def groovyUtils=new  com.eviware.soapui.support.GroovyUtils(context)
+			def projectPath = groovyUtils.projectPath
+			def wb = Workbook.getWorkbook(new File(projectPath+"/"+"TestData.xls"))
+			def test_sheet = wb.getSheet(0)
+			return test_sheet
+		}
+
+/* *********************************GetByOrderNo*************************************************************************************************** */
+
+
+
+public def ValidateMargin(String order_no)
+{
+	def data_sheet =GetExelSheetLocator()
+	def sales_cost =0;
+	def sales_revenue =0;
+	
+     for (def i = 1 ; i&lt;= data_sheet.getRows()-1 ; i++)
+     {
+       count++
+       def order = data_sheet.getCell(0,i).getContents().toString()
+               if(order.trim() == order_no.trim() )
+               {
+               	log.info "got the same code at row number :"+count
+               	// logic goes here
+
+               	                      count1++
+                                           String variable1 = data_sheet.getCell(1,i).getContents()
+                                           def var1 = variable1.isFloat() ? variable1.toFloat() : variable1.toInteger()
+                                           log.info "var1:unit price:" +var1
+                                          // String variable2 = data_sheet.getCell(2,i).getContents()
+                                          String variable2 = data_sheet.getCell(2,i).getContents()
+                                           def var2 = variable2.isFloat() ? variable2.toFloat() : variable2.toInteger()
+                                            log.info "var2:unit cost price:" +var2
+                                            
+                                             String variable3 = data_sheet.getCell(3,i).getContents()
+                                           def var3 = variable3.isFloat() ? variable3.toFloat() : variable3.toInteger()
+                                            log.info "var3:quantity" +var3
+
+                                               sales_revenue = ((var1*var3).toFloat()+sales_revenue).toFloat()
+                                            
+                                            sales_cost = ((var2*var3).toFloat()+sales_cost).toFloat()
+
+                                           
+                                          }
+                                          
+                  }
+                                            def sales_profit = (sales_revenue - sales_cost).toFloat()
+                                            def sales_margin = ((sales_profit*100)/sales_revenue).toFloat()
+                                            log.info " total sales_revenue:" +sales_revenue
+                                            log.info " total sales_cost:" +sales_cost
+                                            log.info "sales_profit:" +sales_profit
+                                            log.info "sales_margin:" +sales_margin
+                                           log.info "no of lines with same order no:" +count1
+                                           arr &lt;&lt; sales_margin
+
+return arr	 
+}
+
+/* ****************************************GetByStartandEndCost************************************************************************************************************************************ */
+
+public def ValidateMarginRange(String min_margin,String max_margin)
+{    
+     String var = "4937000015"
+     def array =[] 
+	array = ValidateMargin(var) // to be removed only checking the range of margin
+	String min = array.min()
+	log.info min
+	String max = array.max()
+	log.info max
+	if(min_margin > min || max_margin &lt; max)
+	{
+		log.error "validation falied"
+	}
+	else
+	{
+		log.info "validation succesful"
+	}
+return array;
+}
+
+/* ***************************************GetByCompanyCode**************************************************************************************************** */
+
+public def ValidateCompanyCode()
+{
+	def id
+	def margin_response
+	
+}
+
+
+
+}
+context.setProperty("dk",new Test(log,context,testRunner));</script></con:config></con:testStep><con:testStep type="groovy" name="BusinessValidation" id="010a7159-a04d-4221-a4e5-e35111998d64"><con:settings/><con:config><script>import static org.codehaus.groovy.runtime.StackTraceUtils.sanitize
+ 
+lib = testRunner.testCase.testSuite.project.testSuites["secured_margin"].testCases["GetByMarginRange"].testSteps["func"]
+
+lib.run(testRunner, context)
+def rd = context.dk
+/*
+def param1 = "4937000015"
+def TestStepRuningInfor1 = rd.ValidateMargin(param1)
+log.info TestStepRuningInfor1
+*/
+
+def param2 = "10"
+def param3 = "70"
+def result = rd.ValidateMarginRange(param2,param3)
+log.info result
+
+</script></con:config></con:testStep><con:properties/><con:reportParameters/></con:testCase>

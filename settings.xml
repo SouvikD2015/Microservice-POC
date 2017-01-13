@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="922bd4af-9566-4507-8068-0d617db10f4c" activeEnvironment="Default environment" name="Order_secured_margin" lastOpened="2017-01-13T16:03:13.245+05:30" resourceRoot="" soapui-version="6.0.0" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:savedRecentRuns>1</con:savedRecentRuns><con:requirements/><con:properties/><con:wssContainer/><con:databaseConnectionContainer/><con:oAuth2ProfileContainer/><con:reporting/><con:authRepository/><con:tags/></con:soapui-project>

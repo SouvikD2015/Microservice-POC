@@ -188,6 +188,7 @@ public def GetMargin(String order_no)
 	def sales_cost =0;
 	def sales_revenue =0;
 	def sales_margin_set;
+	def arr_val = 0
 	
      for (def i = 1 ; i&lt;= data_sheet.getRows()-1 ; i++)
      {
@@ -233,6 +234,7 @@ public def GetMargin(String order_no)
                                             log.info "sales_margin for order id :"+order_no+"is :" +sales_margin_set
                                            log.info "no of lines with same order no:" +count1
                                            cal_margin &lt;&lt; sales_margin_set
+                                           arr_val++
 									
 								return sales_margin_set	 
 }

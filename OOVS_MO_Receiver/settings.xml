@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:interface xsi:type="con:WsdlInterface" id="c855069a-de72-4e4f-8202-33b3a6d12736" wsaVersion="NONE" name="OOVS_MO_Receiver" type="wsdl" bindingName="{http://www.csapi.org/schema/parlayx/sms/notification/v2_2/local}DNReceiver" soapVersion="1_1" anonymous="optional" definition="http://192.168.250.92:18040/services/ooredoo/SMSService?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="c855069a-de72-4e4f-8202-33b3a6d12736fileName">OOVS_MO_Receiver</con:setting></con:settings><con:definitionCache type="TEXT" rootPart="http://192.168.250.92:18040/services/ooredoo/SMSService?wsdl"><con:part><con:url>http://192.168.250.92:18040/services/ooredoo/SMSService?wsdl</con:url><con:content><![CDATA[<definitions name="sms_notification_interface" targetNamespace="http://www.csapi.org/schema/parlayx/sms/notification/v2_2/local" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:tns="http://www.csapi.org/schema/parlayx/sms/notification/v2_2/local" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:axis2="http://authentication.webservice.xsgw.canvas.telenity.com" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema targetNamespace="http://www.csapi.org/schema/parlayx/sms/notification/v2_2/local">
+      <xsd:complexType name="SmsMessage">
+        <xsd:sequence>
+          <xsd:element name="message" type="xsd:string"/>
+          <xsd:element name="senderAddress" type="xsd:anyURI"/>
+          <xsd:element name="smsServiceActivationNumber" type="xsd:anyURI"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="dateTime" type="xsd:dateTime"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="DeliveryInformation">
+        <xsd:sequence>
+          <xsd:element name="address" type="xsd:anyURI"/>
+          <xsd:element name="deliveryStatus" type="tns:DeliveryStatus"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="DeliveryStatus">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="DeliveredToNetwork"/>
+          <xsd:enumeration value="DeliveryUncertain"/>
+          <xsd:enumeration value="DeliveryImpossible"/>
+          <xsd:enumeration value="MessageWaiting"/>
+          <xsd:enumeration value="DeliveredToTerminal"/>
+          <xsd:enumeration value="DeliveryNotificationNotSupported"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="ServiceError">
+        <xsd:sequence>
+          <xsd:element name="messageId" type="xsd:string"/>
+          <xsd:element name="text" type="xsd:string"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="variables" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ServiceException" type="tns:ServiceException"/>
+      <xsd:complexType name="ServiceException">
+        <xsd:sequence>
+          <xsd:element name="messageId" type="xsd:string"/>
+          <xsd:element name="text" type="xsd:string"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="variables" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PolicyException" type="tns:PolicyException"/>
+      <xsd:complexType name="PolicyException">
+        <xsd:sequence>
+          <xsd:element name="messageId" type="xsd:string"/>
+          <xsd:element name="text" type="xsd:string"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="variables" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://www.csapi.org/schema/parlayx/sms/notification/v2_2/local">
+      <xsd:element name="notifySmsReception" type="tns:notifySmsReception"/>
+      <xsd:complexType name="notifySmsReception">
+        <xsd:sequence>
+          <xsd:element name="correlator" type="xsd:string"/>
+          <xsd:element name="message" type="tns:SmsMessage"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="notifySmsReceptionResponse" type="tns:notifySmsReceptionResponse"/>
+      <xsd:complexType name="notifySmsReceptionResponse">
+        <xsd:sequence/>
+      </xsd:complexType>
+      <xsd:element name="notifySmsDeliveryReceipt" type="tns:notifySmsDeliveryReceipt"/>
+      <xsd:complexType name="notifySmsDeliveryReceipt">
+        <xsd:sequence>
+          <xsd:element name="correlator" type="xsd:string"/>
+          <xsd:element name="deliveryStatus" type="tns:DeliveryInformation"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="notifySmsDeliveryReceiptResponse" type="tns:notifySmsDeliveryReceiptResponse"/>
+      <xsd:complexType name="notifySmsDeliveryReceiptResponse">
+        <xsd:sequence/>
+      </xsd:complexType>
+    </xsd:schema>
+  </types>
+  <message name="SmsNotification_notifySmsDeliveryReceiptRequest">
+    <part element="tns:notifySmsDeliveryReceipt" name="parameters"></part>
+  </message>
+  <message name="SmsNotification_notifySmsReceptionResponse">
+    <part element="tns:notifySmsReceptionResponse" name="result"></part>
+  </message>
+  <message name="SmsNotification_notifySmsReceptionRequest">
+    <part element="tns:notifySmsReception" name="parameters"></part>
+  </message>
+  <message name="SmsNotification_notifySmsDeliveryReceiptResponse">
+    <part element="tns:notifySmsDeliveryReceiptResponse" name="result"></part>
+  </message>
+  <portType name="SmsNotification">
+    <operation name="notifySmsReceptionReceipt">
+      <input message="tns:SmsNotification_notifySmsReceptionRequest"></input>
+      <output message="tns:SmsNotification_notifySmsReceptionResponse"></output>
+    </operation>
+    <operation name="notifySmsDeliveryReceipt">
+      <input message="tns:SmsNotification_notifySmsDeliveryReceiptRequest"></input>
+      <output message="tns:SmsNotification_notifySmsDeliveryReceiptResponse"></output>
+    </operation>
+  </portType>
+  <binding name="DNReceiver" type="tns:SmsNotification">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="notifySmsReceptionReceipt">
+      <soap:operation soapAction="http://www.csapi.org/schema/parlayx/sms/notification/v2_2/local/MOReceiverBinding" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="notifySmsDeliveryReceipt">
+      <soap:operation soapAction="http://www.csapi.org/schema/parlayx/sms/notification/v2_2/local/notifySmsDeliveryReceipt" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="DNReceiverService">
+    <port binding="tns:DNReceiver" name="DNReceiverPort">
+      <soap:address location="http://192.168.250.92:18040/services/ooredoo/SMSService"/>
+    </port>
+  </service>
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://192.168.250.93:18040/services/ooredoo/SMSService</con:endpoint></con:endpoints></con:interface>

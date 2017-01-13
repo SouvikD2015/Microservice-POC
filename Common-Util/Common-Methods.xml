@@ -1,0 +1,1356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="ff250110-03c2-47b7-872a-ccad041fb8e6" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Common Methods" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="ff250110-03c2-47b7-872a-ccad041fb8e6fileName">Common-Methods</con:setting></con:settings><con:testStep type="groovy" name="Log API" id="cf7d151d-ebce-42c6-b04a-39095247ec50"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import groovy.sql.Sql
+
+import java.text.*
+
+class LogAPI {
+
+	long timeoutPeriod =15000
+	def log
+	def context
+	def testRunner
+	def Sql
+	def conn
+	// Class constructor with same case as Class name
+	def LogAPI(logIn,contextIn,testRunnerIn,SqlIn)
+	{
+		this.log = logIn
+		this.context = contextIn
+		this.testRunner = testRunnerIn
+		this.Sql = SqlIn
+	}
+	def slurper = new JsonSlurper()
+
+	//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+	def String assertBaaSLogAPI(String msisdn, String logtype,String activityType ,String billingactionid, String activityresult,String currentStatus, String currentBillingCode,
+			String previousStatus, String previousBillingCode,String accessmode ,String chargingmode,String isfreetrial, String intergrationtype,
+			String customerid, String providerid, String sequence, String dirthash){
+		// 	log.info "in log api method"
+
+		Map<String,String> expectedValues  = new HashMap<String,String>();
+		Map<String,String> actualValues  = new HashMap<String,String>();
+		String status
+		def activity_info
+		def header_info
+		def billing_info
+		def key_info
+		def user_info
+		def header_info_result
+		def billing_info_result
+		def activity_info_result
+		def key_info_result
+		def user_info_result
+		def sql = context.dbConn
+		long startTime = System.currentTimeMillis();
+		try{
+			while(true){
+				String query="SELECT header_info,billing_info,user_activity_info ,key_info, user_info FROM log_api.logs where msisdn='"+msisdn+"' and header_info like '%"+logtype+"%' "+
+						"order by id desc limit 1"
+						
+				sql.eachRow(query)
+				{ row ->
+
+					header_info=row[0].toString()
+					billing_info=row[1].toString()
+					activity_info=row[2].toString()
+					key_info=row[3].toString()
+					user_info=row[4].toString()
+					
+				}
+				if (header_info != null && billing_info!=null && activity_info!=null && key_info !=null){
+					header_info_result = slurper.parseText(header_info)
+					billing_info_result = slurper.parseText(billing_info)
+					activity_info_result = slurper.parseText(activity_info)
+					key_info_result=slurper.parseText(key_info)
+					user_info_result=slurper.parseText(user_info)
+					break;
+				}else{
+					long currentTime = System.currentTimeMillis();
+					if((currentTime-startTime)<timeoutPeriod){
+						sleep(200);
+						
+
+					}else{
+						return "no record found in log api db"
+
+					}
+				}
+			}
+		}catch(Exception e){
+			log.error e.getMessage();
+		}finally{
+
+		}
+
+		if(header_info_result.accessMode.toString()==accessmode
+		&&header_info_result.sequence.toString()==sequence
+		&&header_info_result.intergrationType.toString()==intergrationtype.toString()
+		&&billing_info_result.chargingMode.toString()==chargingmode
+		&&activity_info_result.activityType.toString()==activityType
+		&& activity_info_result.activityResult.toString()==activityresult
+		&& billing_info_result.billingActionId.toString()==billingactionid
+		&& activity_info_result.currentStatus.toString()==currentStatus
+		&& activity_info_result.currentBillingCode.toString()== currentBillingCode
+		&& activity_info_result.previousStatus.toString()==previousStatus
+		&& activity_info_result.previousBillingCode.toString()==previousBillingCode.toString()
+		&& key_info_result.isFreeTrialUser.toString()==isfreetrial
+		&& key_info_result.customerId.toString()==customerid.toString()
+		&& key_info_result.providerId.toString()==providerid.toString()
+		&& user_info_result.featureId.toString()==dirthash.toString()
+
+		){	status="passed"
+
+		}
+		else {
+			status="failed"
+			expectedValues.put("activityType",activityType)
+			expectedValues.put("billingactionid",billingactionid)
+			expectedValues.put("activityresult",activityresult)
+			expectedValues.put("currentStatus",currentStatus)
+			expectedValues.put("currentBillingCode",currentBillingCode)
+			expectedValues.put("previousStatus",previousStatus)
+			expectedValues.put("previousBillingCode",previousBillingCode)
+			expectedValues.put("accessmode",accessmode)
+			expectedValues.put("chargingmode",chargingmode)
+			expectedValues.put("isfreetrial",isfreetrial)
+			expectedValues.put("intergrationtype",intergrationtype)
+			expectedValues.put("customerid",customerid)
+			expectedValues.put("providerid",providerid)
+			expectedValues.put("sequence",sequence)
+			expectedValues.put("dirthash",dirthash)
+
+			context.setProperty("expected", expectedValues)
+			
+
+			actualValues.put("activityType",activity_info_result.activityType)
+			actualValues.put("billingactionid",billing_info_result.billingActionId)
+			actualValues.put("activityresult",activity_info_result.activityResult)
+			actualValues.put("currentStatus",activity_info_result.currentStatus)
+			actualValues.put("currentBillingCode",activity_info_result.currentBillingCode)
+			actualValues.put("previousStatus",activity_info_result.previousStatus)
+			actualValues.put("previousBillingCode",activity_info_result.previousBillingCode)
+			actualValues.put("accessmode",header_info_result.accessMode)
+			actualValues.put("chargingmode",billing_info_result.chargingMode)
+			actualValues.put("isfreetrial",key_info_result.isFreeTrialUser)
+			actualValues.put("intergrationtype",header_info_result.intergrationType)
+			actualValues.put("customerid",key_info_result.customerId)
+			actualValues.put("providerid",key_info_result.providerId)
+			actualValues.put("sequence",header_info_result.sequence.toString())
+			actualValues.put("dirthash",user_info_result.featureId)
+
+
+
+			context.setProperty("actual", actualValues)
+		}
+
+		return status
+
+	}
+
+	//=====================>>>>>>>>>>>Overloaded 1===================>>>>>>>>>>>>>>
+	def String assertBaaSLogAPI(String msisdn, String logtype,String activityType ,String billingactionid, String activityresult,String currentStatus, String currentBillingCode,
+			String previousStatus, String previousBillingCode,String accessmode ,String chargingmode,String isfreetrial, String intergrationtype,
+			String customerid, String providerid, String sequence, String dirthash, String dnstatus, String dndesc, String reqbillpackage,String pricepoint, String lasttrnxid){
+		// 	log.info "in log api method"
+
+		Map<String,String> expectedValues  = new HashMap<String,String>();
+		Map<String,String> actualValues  = new HashMap<String,String>();
+		String status="Exception"
+		def activity_info
+		def header_info
+		def billing_info
+		def key_info
+		def user_info
+		def header_info_result
+		def billing_info_result
+		def activity_info_result
+		def key_info_result
+		def user_info_result
+		def sql = context.dbConn
+		long startTime = System.currentTimeMillis();
+		try{
+			while(true){
+				String query="SELECT header_info,billing_info,user_activity_info ,key_info, user_info FROM log_api.logs where msisdn='"+msisdn+"' and header_info like '%"+logtype+"%' "+
+						"order by id desc limit 1"
+							//log.info  query
+				sql.eachRow(query)
+					
+				{ row ->
+
+					header_info=row[0].toString()
+					billing_info=row[1].toString()
+					activity_info=row[2].toString()
+					key_info=row[3].toString()
+					user_info=row[4].toString()
+				}
+
+
+				if (header_info != null && billing_info!=null && activity_info!=null && key_info !=null ){
+					header_info_result = slurper.parseText(header_info)
+					billing_info_result = slurper.parseText(billing_info)
+					activity_info_result = slurper.parseText(activity_info)
+					key_info_result=slurper.parseText(key_info)
+					user_info_result=slurper.parseText(user_info)
+					
+					//	      log.info "getting DN id from log="+billing_info_result.notificationTransactionId.toString()
+					//		 log.info "comparing against="+lasttrnxid
+
+					if(billing_info_result.notificationTransactionId.toString()==lasttrnxid )
+
+					{
+						break;
+					}
+					else
+					{
+						long currentTime2 = System.currentTimeMillis();
+						if((currentTime2-startTime)<timeoutPeriod){
+							sleep(200);
+							log.info "waiting for DN log to Update"
+						}else{
+							break;
+
+						}
+					}
+
+				}
+
+
+
+				else{
+					long currentTime = System.currentTimeMillis();
+					if((currentTime-startTime)<timeoutPeriod){
+						sleep(200);
+						log.info "waiting for DN log to generate"
+					}else{
+						return "no record found in log api db"
+
+					}
+				}
+			}
+		}catch(Exception e){
+			log.error e.getMessage();
+		}finally{
+
+		}
+
+		if(
+	     header_info_result.accessMode.toString()==accessmode
+		&&header_info_result.sequence.toString()==sequence
+		&&header_info_result.intergrationType.toString()==intergrationtype.toString()
+		&&billing_info_result.chargingMode.toString()==chargingmode
+		&&activity_info_result.activityType.toString()==activityType
+		&& activity_info_result.activityResult.toString()==activityresult
+		&& billing_info_result.billingActionId.toString()==billingactionid
+		&& activity_info_result.currentStatus.toString()==currentStatus
+		&& activity_info_result.currentBillingCode.toString()== currentBillingCode
+		&& activity_info_result.previousStatus.toString()==previousStatus
+		&& activity_info_result.previousBillingCode.toString()==previousBillingCode.toString()
+		&& key_info_result.isFreeTrialUser.toString()==isfreetrial
+		&& key_info_result.customerId.toString()==customerid.toString()
+		&& key_info_result.providerId.toString()==providerid.toString()
+		&& user_info_result.featureId.toString()==dirthash.toString()
+		&&billing_info_result.deliverNotificationStatus.toString()==dnstatus
+		&&billing_info_result.deliverNotificationDescription.toString()==dndesc
+		&&billing_info_result.requestedBillingPackageId.toString()==reqbillpackage
+		&&billing_info_result.pricePoint.toString()==pricepoint+".0"
+		)
+		{
+			status="passed"
+
+		}
+		else {
+			
+			status="failed"
+			expectedValues.put("activityType",activityType)
+			expectedValues.put("billingactionid",billingactionid)
+			expectedValues.put("activityresult",activityresult)
+			expectedValues.put("currentStatus",currentStatus)
+			expectedValues.put("currentBillingCode",currentBillingCode)
+			expectedValues.put("previousStatus",previousStatus)
+			expectedValues.put("previousBillingCode",previousBillingCode)
+			expectedValues.put("accessmode",accessmode)
+			expectedValues.put("chargingmode",chargingmode)
+			expectedValues.put("isfreetrial",isfreetrial)
+			expectedValues.put("intergrationtype",intergrationtype)
+			expectedValues.put("customerid",customerid)
+			expectedValues.put("providerid",providerid)
+			expectedValues.put("sequence",sequence)
+			expectedValues.put("dirthash",dirthash)
+			expectedValues.put("deliverNotificationStatus",dnstatus)
+			expectedValues.put("deliverNotificationDescription",dndesc)
+			expectedValues.put("requestedBillingPackageId",reqbillpackage)
+			expectedValues.put("pricepoint",pricepoint+".0")
+
+			context.setProperty("expected", expectedValues)
+
+			actualValues.put("activityType",activity_info_result.activityType)
+			actualValues.put("billingactionid",billing_info_result.billingActionId)
+			actualValues.put("activityresult",activity_info_result.activityResult)
+			actualValues.put("currentStatus",activity_info_result.currentStatus)
+			actualValues.put("currentBillingCode",activity_info_result.currentBillingCode)
+			actualValues.put("previousStatus",activity_info_result.previousStatus)
+			actualValues.put("previousBillingCode",activity_info_result.previousBillingCode)
+			actualValues.put("accessmode",header_info_result.accessMode)
+			actualValues.put("chargingmode",billing_info_result.chargingMode)
+			actualValues.put("isfreetrial",key_info_result.isFreeTrialUser)
+			actualValues.put("intergrationtype",header_info_result.intergrationType)
+			actualValues.put("customerid",key_info_result.customerId)
+			actualValues.put("providerid",key_info_result.providerId)
+			actualValues.put("sequence",header_info_result.sequence.toString())
+			actualValues.put("dirthash",user_info_result.featureId)
+			actualValues.put("deliverNotificationStatus",billing_info_result.deliverNotificationStatus)
+			actualValues.put("deliverNotificationDescription",billing_info_result.deliverNotificationDescription)
+			actualValues.put("requestedBillingPackageId",billing_info_result.requestedBillingPackageId)
+			actualValues.put("pricepoint",billing_info_result.pricePoint)
+			context.setProperty("actual", actualValues)
+		}
+
+		return status
+
+	}
+	//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+	def String assertAdNetworkInfo(String msisdn,String logtype,String adnetid,String adtrnxid)
+	{
+
+
+		Map<String,String> expectedValues  = new HashMap<String,String>();
+		Map<String,String> actualValues  = new HashMap<String,String>();
+		String status
+		String adnetwork_info
+		//getConnection()
+		//def sql = context.dbConnLog
+		def sql = context.dbConn
+		def ad_network_info_result
+
+		def query="SELECT ad_network_info  FROM log_api.logs where msisdn='"+msisdn+"' and header_info like '%"+logtype+"%' order by create_date desc limit 1"
+
+		sql.eachRow(query)
+		{ row ->
+			adnetwork_info=row[0].toString()
+
+			//log.info "adnetwork_info of the user "+msisdn+">>>>>>"+adnetwork_info
+
+		}
+		if (  adnetwork_info!=null &&  !"".equals(adnetwork_info) && !"null".equals(adnetwork_info) )
+
+		{
+			ad_network_info_result = slurper.parseText(adnetwork_info)
+		}
+
+
+		else{
+
+			return "no record found in log api db"
+		}
+
+
+		if(ad_network_info_result.adNetworkId.toString() == adnetid
+		&& ad_network_info_result.adNetworkTransactionId.toString() == adtrnxid
+		&& ad_network_info_result.adNetworkNotificationResponse.toString()== "SUCCESS")
+		{
+
+			status="passed"
+
+		}
+		else {
+			status="failed"
+			expectedValues.put("adNetworkId",adnetid)
+			expectedValues.put("adNetworkTrnxId",adtrnxid)
+			expectedValues.put("adNetworkResponse","SUCCESS")
+			context.setProperty("expectedAdLog", expectedValues)
+
+			actualValues.put("adNetworkId",ad_network_info_result.adNetworkId)
+			actualValues.put("adNetworkTrnxId",ad_network_info_result.adNetworkTransactionId)
+			actualValues.put("adNetworkResponse",ad_network_info_result.adNetworkNotificationResponse)
+			context.setProperty("actualAdLog", actualValues)
+
+		}
+
+		return status
+	}}
+context.setProperty( "logAPI", new LogAPI( log, context, testRunner, Sql ) )]]></script></con:config></con:testStep><con:testStep type="groovy" name="DataSet" id="3b70c7c6-7d38-4054-bc27-45a42e6ba63f"><con:settings/><con:config><script><![CDATA[import groovy.sql.Sql
+import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+import org.apache.poi.*
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+ class DataSet {
+   def log
+   def context
+   def testRunner
+   def Sql
+   def conn
+   // Class constructor with same case as Class name
+   def DataSet(logIn,contextIn,testRunnerIn,SqlIn)
+   {
+   	
+       this.log = logIn
+      this.context = contextIn
+      this.testRunner = testRunnerIn
+      this.Sql = SqlIn
+   }
+
+def slurper = new JsonSlurper()
+  
+ //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+def getDBConnection()
+{
+	Properties properties = new Properties()
+File propertiesFile = new File(context.expand('${#Global#property_file}'))
+propertiesFile.withInputStream {
+    properties.load(it)
+}
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+
+def dbUrl=properties.DB_URL
+def passwd=properties.DB_PASSWD
+def driver= properties.DRIVER
+def uname=properties.DB_USER
+try {
+		
+  def  connection = Sql.newInstance(dbUrl, uname, passwd, driver)
+     context.setProperty("dbConn", connection)
+     log.info "DB Successfully connected"
+     
+           } 
+  catch (Exception e)
+  {
+    log.error "Could not establish connection to the database."
+  }
+
+}
+ //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+ 
+def  getExcelDataIndex(String inputFile, String sheetName)
+
+   {
+   	
+Sheet sheet;
+int j=0
+Map<String,Integer> index  = new HashMap<String,Integer>();
+try {
+FileInputStream fis = new FileInputStream(inputFile);
+Workbook workbook = new XSSFWorkbook(fis);
+sheet= workbook.getSheet(sheetName);
+context.setProperty("sheetObject", sheet)
+context.setProperty("rowCount", sheet.getLastRowNum())
+// mapping column index with column name.
+   Row firstRow = sheet.getRow(0);
+      for(Cell cell:firstRow){
+   index.put(cell.getStringCellValue() ,j)
+   j++
+    }
+    context.setProperty("indexObject", index)
+ }
+ catch (Exception e)
+  {
+    log.error "Could not find test data input file ."
+  }
+     } 
+
+   //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+ 
+ def  getExcelDataRowListMap(def inputFile, String sheetName)
+   {
+   	
+Sheet sheet;
+int cellTypeId
+Map<String,Integer> index  = new HashMap<String,Integer>();
+List<Map<String,String>> list=new ArrayList<Map<String,String>>();		
+int j=0
+
+try {
+FileInputStream fis = new FileInputStream(inputFile);
+Workbook workbook = new XSSFWorkbook(fis);
+sheet= workbook.getSheet(sheetName);
+// mapping column index with column name.
+   Row firstRow = sheet.getRow(0);
+      for(Cell cell:firstRow){
+   index.put(cell.getStringCellValue() ,j)
+   j++
+    }
+    for (int i=1;i<= sheet.getLastRowNum();i++)
+{
+       Row rowData=sheet.getRow(i)
+
+  	      
+   		for (String key : index.keySet()) {
+   			log.info "key="+key
+		int columnnum=index.get(key)
+						
+//		cellTypeId=rowData.getCell(columnnum).getCellType()
+//		log.info "cellTypeId of "+key +"  is "+ cellTypeId + "  and column num=  "+columnnum
+//		if (cellTypeId==0){
+//			log.info "key=="+key 
+//			DecimalFormat df = new DecimalFormat("#") 
+//			dataset.put (key,df.format(rowData.getCell(columnnum).getNumericCellValue()) )
+//			}
+//		else if (cellTypeId==1){
+//			log.info "key=="+key 
+//			
+//			dataset.put(key,rowData.getCell(columnnum).toString())}
+//		else if (cellTypeId==4){
+////
+//		log.info "key=="+key 
+//			//log.info "value="+rowData.getCell(columnnum).getBooleanCellValue())
+//			
+//			//dataset.put(key,rowData.getCell(columnnum).getBooleanCellValue())}		
+//		}
+
+		//log.info dataset.get("tcname")
+}
+ }}
+ catch (Exception e)
+  {
+    log.error "Could not find test data input file ."
+  }
+     } 
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+ def Map getRowDataMap(int rownum)
+   {    	   
+   	    	   int cellTypeId
+   	    def sheet=context.sheetObject
+   	    def index=context.indexObject
+   	    int rowNum= sheet.getLastRowNum()
+   	     Map dataset  = new HashMap();
+   	     Row rowData=sheet.getRow(rownum)  
+   	     	      	
+   	      
+   		for (String key : index.keySet()) {
+   		int columnnum=index.get(key)
+		cellTypeId=rowData.getCell(columnnum).getCellType()
+				
+		if (cellTypeId==0){
+			DecimalFormat df = new DecimalFormat("#") 
+			dataset.put (key,df.format(rowData.getCell(columnnum).getNumericCellValue()) )
+			}
+		else if (cellTypeId==1){dataset.put(key,rowData.getCell(columnnum).toString())}
+		else if (cellTypeId==4){dataset.put(key,rowData.getCell(columnnum).getBooleanCellValue())}		
+		}
+
+			return dataset;
+   }
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+   def resetUser(String msisdn)
+   {
+   	
+          def sql = context.dbConn 
+          
+   	     sql.execute("delete from user_subscription where msisdn='"+msisdn +"';" )
+		sql.execute("delete from user_free_trial_history where user_id='"+msisdn +"';" )
+		sql.execute("delete from log_api.logs where msisdn='"+msisdn +"';" )
+
+   	
+   }
+    def removeLog(String msisdn,String logtype )
+   {
+   	def timelimit=10000
+   	def tmp;
+          def sql = context.dbConn         
+          String query="delete from log_api.logs where msisdn='"+msisdn +"' and header_info like '%"+logtype+"%';"  
+         	sql.execute(query)
+//   	  	long startTime = System.currentTimeMillis();
+//   	  	while(true){
+//   	  		String query2="select header_info from log_api.logs where msisdn='"+msisdn +"' and header_info like '%"+logtype+"%';"
+//   	   	  	 sql.eachRow(query2)
+//   	  	 {
+//   	  	 	row ->
+//   	  	 	 tmp=row[0]
+//   	   	  	 }
+//   	  	 	if(tmp!=null)
+//   	  	 	{
+//   	  	 		long currentTime = System.currentTimeMillis();
+//		if((currentTime-startTime)<timelimit)
+//		{
+//				sleep(500);
+//				log.info "waiting for logs to clear"
+//				
+//			}
+//			
+//				else {
+//					log.error "taking too long to remove logs from DB"
+//					break;
+//					}
+//			
+//   	  	 	}
+//   	  	 	else{
+//   	  	 		break;
+//   	  	 	}
+//   	  	}
+   	  	log.info "log successfully cleared"
+   }
+
+   //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+   def resetUser(String msisdn, String itemid)
+   {  	
+          def sql = context.dbConn 
+          
+   	     sql.execute("delete from user_subscription where msisdn='"+msisdn +"' and item_id='"+itemid+"';" )
+		sql.execute("delete from user_free_trial_history where user_id='"+msisdn +"';" )
+		sql.execute("delete from log_api.logs where msisdn='"+msisdn +"';" )
+
+   	
+   }
+ //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+   def createUser(String customerid,String providerid,String msisdn,String billingcode,String subbillingcode,String currbillingcode,String substate,String startdate,String enddate,
+                   String subdate,String source,String nbd,String currcredit,String userid, String adnetworkid, String adtrnxid)
+ {
+ def sql = context.dbConn
+ String query="INSERT INTO user_subscription (`customer_id`, `provider_id`, `msisdn`, `user_id`,`item_id`, `item_type_id`, billing_code,"+
+"`subscription_billing_code`,`current_billing_code`, `subscription_status_id`,`start_date`, `end_date`, `subscription_date`, `user_source`,"+
+"`charging_source`,last_billing_request_date,last_billing_response_date,last_notification_date,next_billing_date,last_content_sms_date,last_deactivation_date,credits,optout_sms_date,adnetwork_id,adnetwork_transaction_id)"+ 
+"VALUES ("+customerid+","+ providerid+"," + msisdn+","+ userid +",'1','2',"+billingcode+","+subbillingcode+","+currbillingcode+","+substate+","+startdate+","+
+""+enddate+","+subdate+",'"+source+"', 'WAP',NULL,NULL,NULL,"+nbd+",NULL,NULL,"+currcredit+",NULL,"+adnetworkid+",'"+adtrnxid+"');"
+
+sql.execute(query)
+
+   }
+
+    //=====================>>>>>>>>>>>create user overloaded method===================>>>>>>>>>>>>>>
+   def createUser(String customerid,String providerid,String msisdn,String billingcode,String subbillingcode,String currbillingcode,String substate,String startdate,String enddate,
+                   String subdate,String source,String nbd,String currcredit,String userid, String itemid, String itemtypeid, String adnetworkid, String adtrnxid)
+ {
+ def sql = context.dbConn
+ String query="INSERT INTO user_subscription (`customer_id`, `provider_id`, `msisdn`, `user_id`,`item_id`, `item_type_id`, billing_code,"+
+"`subscription_billing_code`,`current_billing_code`, `subscription_status_id`,`start_date`, `end_date`, `subscription_date`, `user_source`,"+
+"`charging_source`,last_billing_request_date,last_billing_response_date,last_notification_date,next_billing_date,last_content_sms_date,last_deactivation_date,credits,optout_sms_date,adnetwork_id,adnetwork_transaction_id)"+ 
+"VALUES ("+customerid+","+ providerid+"," + msisdn+","+ userid +","+itemid+","+itemtypeid+","+billingcode+","+subbillingcode+","+currbillingcode+","+substate+","+startdate+","+
+""+enddate+","+subdate+",'"+source+"', 'WAP',NULL,NULL,NULL,"+nbd+",NULL,NULL,"+currcredit+",NULL,"+adnetworkid+",'"+adtrnxid+"');"
+
+//log.info query
+sql.execute(query)
+
+}
+
+    //=====================>>>>>>>>>>>create user overloaded method 2 for DN test===================>>>>>>>>>>>>>>
+   def createUser(String customerid,String providerid,String msisdn,String billingcode,String subbillingcode,String currbillingcode,String substate,String startdate,
+   String enddate,String subdate,String source,String nbd,String currcredit,String userid, String itemid, String itemtypeid, String adnetworkid,
+   String adtrnxid,String lastreqid,String lastnotid, String custtrnxid, String usr_comm_id, String perf_lang_id, String usr_perf_lang_id )
+ {
+
+ 	
+
+
+ def sql = context.dbConn
+ String query="INSERT INTO user_subscription (`customer_id`, `provider_id`, `msisdn`, `user_id`,`item_id`, `item_type_id`, billing_code,"+
+"`subscription_billing_code`,`current_billing_code`, `subscription_status_id`,`start_date`, `end_date`, `subscription_date`, `user_source`,"+
+"`charging_source`,last_billing_request_date,last_billing_response_date,last_notification_date,next_billing_date,last_content_sms_date,last_deactivation_date,"+
+"credits,optout_sms_date,adnetwork_id,adnetwork_transaction_id, last_billing_request_transaction_id,last_notification_transaction_id, customer_transaction_id ,user_communication_language,preferred_language, user_preferred_language )"+ 
+"VALUES ("+customerid+","+ providerid+"," + msisdn+","+ userid +","+itemid+","+itemtypeid+","+billingcode+","+subbillingcode+","+currbillingcode+","+substate+","+startdate+","+
+""+enddate+","+subdate+",'"+source+"', 'WAP',NULL,NULL,NULL,"+nbd+",NULL,NULL,"+currcredit+",NULL,"+adnetworkid+",'"+adtrnxid+"','"+lastreqid+"','"+lastnotid+"','"+custtrnxid+"','"+usr_comm_id +"','"+ perf_lang_id+"','"+usr_perf_lang_id+"');"
+
+//log.info query
+sql.execute(query)
+
+}
+
+
+
+     //=====================>>>>>>>>>>>overloaded method===================>>>>>>>>>>>>>>
+   def freeTrialHisotry(String msisdn, String num_of_free_trial_availed, String last_free_trial_access, String billingcode)
+ {
+ def sql = context.dbConn
+ String query="INSERT INTO user_free_trial_history ( `user_id`, `number_of_free_trial_availed`, `last_free_trial_datetime`, `last_free_trial_billing_code`) VALUES ("+msisdn+","+num_of_free_trial_availed+","+last_free_trial_access+", "+billingcode+");"
+
+sql.execute(query)
+
+   }
+
+   
+     //=====================>>>>>>>>>>>OJVS Talend Mapping customer trnx id with msisdn===================>>>>>>>>>>>>>>
+   def talendUserData(String msisdn, String providerid, String subscriptionid, String substatus)
+ {
+ def sql = context.dbConn
+ String query="INSERT INTO talend.user_data ( `msisdn`, `provider_id`, `subscription_id`,'param1') VALUES ("+msisdn+","+providerid+","+subscriptionid+","+substatus+");"
+log.info query
+sql.execute(query)
+
+   }
+
+
+ //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+ def Map<String,String> getUserData(String msisdn,String itemid)
+   {
+  long timeoutPeriod = 1000;
+  long startTime = System.currentTimeMillis();
+  String subid;
+   	def sql = context.dbConn
+ 
+   	    Map<String,String>  usersubmap  = new HashMap<String,String> ();
+
+   	String query="select subscription_id,customer_id,provider_id,item_id,item_type_id,billing_code,subscription_billing_code,current_billing_code,subscription_status_id,"+
+   	"timestampdiff(day,start_date,end_Date),timestampdiff(minute,start_date,next_billing_date),user_source,charging_source,billing_retry,credits,adnetwork_id,"+
+   	"adnetwork_transaction_id, circle_code,last_fallback_billing_code,current_retry ,last_notification_status_id ,last_notification_transaction_id,  last_billing_response_status_id , user_preferred_language, preferred_language , next_billing_date , end_date , timestampdiff(hour, start_date, next_billing_date), customer_transaction_id from user_subscription"+
+   	" where msisdn='"+msisdn+"'"+" and item_id='"+itemid+"' order by modify_date desc limit 1;"
+//log.info query
+// while(true) {	    	
+     	sql.eachRow(query)	
+     	{
+   		row ->
+   		// subid=row[0].toString()
+   	     usersubmap.put("subscription_id",row[0])
+   		usersubmap.put("customer_id",row[1])
+   		usersubmap.put("provider_id",row[2])
+   		usersubmap.put("item_id",row[3])
+   		usersubmap.put("item_type_id",row[4])
+   		usersubmap.put("billing_code",row[5])
+   		usersubmap.put("subscription_billing_code",row[6])
+   		usersubmap.put("current_billing_code",row[7])
+   		usersubmap.put("subscription_status_id",row[8])
+   		usersubmap.put("validity",row[9])
+   		usersubmap.put("next_billing_validity",row[10])
+   		usersubmap.put("user_source",row[11])
+   		usersubmap.put("charging_source",row[12])
+   		usersubmap.put("billing_retry",row[13])   		
+   		usersubmap.put("credits",row[14])
+   		usersubmap.put("adnetwork_id",row[15])
+   		usersubmap.put("adnetwork_transaction_id",row[16])
+   		usersubmap.put("circle_code",row[17])
+   		usersubmap.put("last_fallback_billing_code",row[18])
+   		usersubmap.put("current_retry",row[19])  	
+   		usersubmap.put("last_notification_status_id",row[20])	
+   		usersubmap.put("last_notification_transaction_id",row[21])   		
+   		usersubmap.put("last_billing_response_status_id",row[22])	
+   		usersubmap.put("user_preferred_language",row[23])	
+   		usersubmap.put("preferred_language",row[24])	
+   		usersubmap.put("next_billing_date",row[25])	
+   		usersubmap.put("end_date",row[26])	
+   		usersubmap.put("nbd_hour",row[27])	
+   		usersubmap.put("customer_transaction_id",row[28])	
+   		
+   		
+   	
+   		}
+//   		if(subid != null)
+//   		{
+//   			break;
+//   		}
+//   		else {
+//   			long currentTime = System.currentTimeMillis();
+//			if((currentTime-startTime)<timeoutPeriod){
+//				log.info "in wait loop"
+//				sleep(200);
+//			}
+//   			
+//   			}
+   		//}
+   	    return usersubmap;
+   }
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+   def createDirectPaidUser(String msisdn,String billingcode)
+   {
+   	def sql = context.dbConn
+   String	query="insert into user_free_trial_history (user_id,number_of_free_trial_availed,last_free_trial_billing_code) values('"+msisdn+"',1,"+billingcode+")"
+		sql.execute(query)
+   }
+
+
+ //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+   def   removeBlackList(String msisdn,String customerid)
+   {
+   	def sql = context.dbConn
+   	  
+   String	query="delete FROM user_blacklist where msisdn='"+msisdn+"'" +" and customer_id='"+customerid+"'"
+      sql.execute(query) 
+    
+ 
+ }
+ 
+ //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+   def Map<String,String>  getBlackListStatus(String msisdn,String customerid)
+   {
+   	def sql = context.dbConn
+   	  Map<String,String>  blacklistmap  = new HashMap<String,String> ();
+   String	query="SELECT timestampdiff(day,start_date,end_Date), time_unit, validity FROM user_blacklist where msisdn='"+msisdn+"'" +"and customer_id='"+customerid+"'"
+		sql.eachRow(query)	
+     	{
+   		row ->
+		blacklistmap.put("period",row[0])
+		blacklistmap.put("unit",row[1])
+		blacklistmap.put("validity",row[2])
+		
+		   }
+		   return blacklistmap;
+ 
+ }
+  //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+   def String  getLastRequestTrnxId(String msisdn, String customerid)
+   {
+   	def sql = context.dbConn
+   	String trnxid=null;
+   	  
+   String	query="SELECT last_billing_request_transaction_id FROM  user_subscription where msisdn='"+msisdn+"'" +"and customer_id='"+customerid+"'"
+   
+		sql.eachRow(query)	
+     	{
+   		row ->
+		trnxid=row[0]
+		//log.info 		"trnxid="+trnxid +"   msisdn="+msisdn +"   customer id="+customerid
+		   }
+		   return trnxid;
+ 
+ }
+
+ //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+   def Boolean checkUserExists(String msisdn)
+   {   	
+          def sql = context.dbConn 
+          Boolean flag=false;
+          def tmp1;
+          def tmp2;
+          
+   	     sql.eachRow("select * from user_subscription where msisdn='"+msisdn +"';" )
+   	     {
+   	     	row1 ->
+   	     	tmp1=row1[0]
+   	     }
+		sql.eachRow("select * from log_api.logs where msisdn='"+msisdn +"';" )
+		{
+			row2 ->
+   	     	tmp1=row2[0]
+		}
+		if(tmp1==null && tmp2==null)
+		{
+			flag=true
+		}
+   	return flag
+   }
+
+    def insertItemId(String name,String appid, String itemid, String price, String billingcode)
+   {
+   	def sql = context.dbConn
+   String	query="insert into channel_billing_code_mapping (description,service_id,item_id,billing_code,provider_id,item_type_id,channel_id,price) values('"+name+"','"+appid+"','"+itemid+"','"+billingcode+"','90','4','1','"+price+"')"
+		log.info query
+		sql.execute(query)
+   }
+   
+
+ }
+ 
+context.setProperty( "dataSet", new DataSet( log, context, testRunner, Sql ) )]]></script></con:config></con:testStep><con:testStep type="groovy" name="Backend Job" id="5124de26-adbc-4c40-a359-3d19fa8bba14"><con:settings/><con:config><script>import com.jcraft.jsch.JSch
+import com.jcraft.jsch.Session
+import com.jcraft.jsch.UserInfo
+import com.jcraft.jsch.Channel
+import com.jcraft.jsch.ChannelExec
+import groovy.sql.Sql
+import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+
+class BackendJob {
+	def log
+   def context
+   def testRunner
+   def Sql
+   
+   // Class constructor with same case as Class name
+   def BackendJob(logIn,contextIn,testRunnerIn,SqlIn)
+   {
+   	
+      this.log = logIn
+      this.context = contextIn
+      this.testRunner = testRunnerIn
+      this.Sql = SqlIn
+   }
+
+   
+def startJob(String commandQuery ,String sshHost,String sshUser,String sshPass )
+{
+Properties config = new Properties()
+config.put("StrictHostKeyChecking", "no")
+JSch jsch = new JSch()
+
+Session sshSession = jsch.getSession(sshUser, sshHost, 22)
+sshSession.setPassword(sshPass)
+sshSession.setConfig(config)
+sshSession.connect()
+
+ChannelExec channel=(ChannelExec) sshSession.openChannel("exec")
+channel.setCommand(commandQuery)
+channel.connect()
+log.info "job started successfully"
+
+channel.disconnect()
+sshSession.disconnect()
+
+}
+}
+
+context.setProperty( "backendJob", new BackendJob( log, context, testRunner, Sql ) )</script></con:config></con:testStep><con:testStep type="groovy" name="NextBillingDate" id="c2fa575a-ec0b-40a8-9935-8eeb982d9d3d"><con:settings/><con:config><script><![CDATA[import groovy.sql.Sql
+import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+
+class NBD{
+ def log
+   def context
+   def testRunner
+   def Sql
+   def conn
+   // Class constructor with same case as Class name
+   def NBD(logIn,contextIn,testRunnerIn,SqlIn)
+   {  	
+      this.log = logIn
+      this.context = contextIn
+      this.testRunner = testRunnerIn
+      this.Sql = SqlIn
+   }
+public String CalculateOOVS_NBD()
+{
+
+Calendar cal = Calendar.getInstance();
+TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+cal.setTimeZone(gmtTime);
+int hour = cal.get(Calendar.HOUR_OF_DAY);
+Date date0= cal.getTime()
+SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+String updatedDate=formatter.format(date0)
+log.info "updatedDate="+updatedDate +" and hour is ="+hour
+String suffix=null
+String finalDate=null
+
+if(hour>=20 )
+{
+cal.setTimeZone(gmtTime);
+Date date2= (cal.getTime()+1)
+SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
+String updatedDate2=formatter2.format(date2)
+	suffix="08:00:00"
+	finalDate=updatedDate2+" "+suffix
+	log.info "in >=20 "+finalDate
+}
+else if(hour<8)
+{
+	suffix="08:00:00"
+	finalDate=updatedDate+" "+suffix
+	log.info "in  <8 loop"+finalDate
+}
+else if(hour>=8 && hour<12)
+{
+	suffix="12:00:00"
+	finalDate=updatedDate+" "+suffix
+	log.info "in >=8 and <12 loop"+  finalDate
+}
+else if(hour>=11 && hour<=19)
+{
+	cal.setTimeZone(gmtTime);
+Date date1= (cal.getTime()+1)
+SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+String updatedDate1=formatter1.format(date1)
+	suffix="04:00:00"
+	finalDate=updatedDate1+" "+suffix
+	log.info "in >=12 and <19 loop"+finalDate
+}
+
+return finalDate
+}
+
+public String CalculateDVS_NBD(String type)
+{
+
+Calendar cal = Calendar.getInstance();
+TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+cal.setTimeZone(gmtTime);
+int hour = cal.get(Calendar.HOUR_OF_DAY);
+Date date0= cal.getTime()
+SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+String updatedDate=formatter.format(date0)
+log.info "updatedDate="+updatedDate +" and hour is ="+hour
+String suffix=null
+String finalDate=null
+if(type=="fail"){
+if(hour>=0 && hour<4)
+{
+	suffix="04:00:00.0"
+	finalDate=updatedDate+" "+suffix
+	
+}
+else if(hour>=4 && hour<8)
+{
+	suffix="08:00:00.0"
+	finalDate=updatedDate+" "+suffix
+	
+}
+else if(hour>=8 && hour<12)
+{
+	suffix="12:00:00.0"
+	finalDate=updatedDate+" "+suffix
+	
+}
+else if(hour>=12 && hour<16)
+{
+	suffix="16:00:00.0"
+	finalDate=updatedDate+" "+suffix
+	
+}
+
+else if(hour>=16 && hour<20)
+{
+	suffix="20:00:00.0"
+	finalDate=updatedDate+" "+suffix
+	
+}
+
+else if(hour>=20 && hour<=23)
+{
+	cal.setTimeZone(gmtTime);
+Date date1= (cal.getTime()+1)
+SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+String updatedDate1=formatter1.format(date1)
+	suffix="00:00:00.0"
+	finalDate=updatedDate1+" "+suffix
+	
+}
+}
+else if(type=="pass")
+{
+	if(hour>= 20){
+	cal.setTimeZone(gmtTime);
+Date date2= (cal.getTime()+1)
+SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+String updatedDate2=formatter1.format(date2)
+	suffix="20:01:00.0"
+	finalDate=updatedDate2+" "+suffix
+	}
+	else
+	{
+		suffix="20:01:00.0"
+	finalDate=updatedDate+" "+suffix
+		
+	}
+}
+
+else if(type=="freetrial")
+{
+	if(hour>= 20){
+	cal.setTimeZone(gmtTime);
+Date date3= (cal.getTime()+2)
+SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
+String updatedDate3=formatter2.format(date3)
+	suffix="20:01:00.0"
+	finalDate=updatedDate3+" "+suffix
+	}
+	else
+	{
+	cal.setTimeZone(gmtTime);
+Date date4= (cal.getTime()+1)
+SimpleDateFormat formatter3 = new SimpleDateFormat("yyyy-MM-dd");
+String updatedDate4=formatter3.format(date4)
+	suffix="20:01:00.0"
+	finalDate=updatedDate4+" "+suffix
+		
+	}
+}
+
+return finalDate
+}
+
+
+public String calculateXLNBD(){
+	
+Calendar cal = Calendar.getInstance();
+TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+cal.setTimeZone(gmtTime);
+int hour = cal.get(Calendar.HOUR_OF_DAY);
+
+Date date0= cal.getTime()
+SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+String updatedDate=formatter.format(date0)
+
+String finalDate=null
+
+if (hour >= 17 || hour <10)
+{
+	finalDate=updatedDate+" "+"10:00:00.0"
+}
+else
+{
+cal.setTimeZone(gmtTime);
+Date date1= (cal.getTime()+1)
+SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+String updatedDate1=formatter1.format(date1)
+	finalDate=updatedDate1+" "+"01:00:00.0"
+}
+return finalDate
+
+
+}
+}
+
+context.setProperty( "nbdObject", new NBD( log, context, testRunner, Sql ) )
+]]></script></con:config></con:testStep><con:testStep type="groovy" name="Reporting" id="ab57ac40-69b9-4c96-bd44-c13e1b6f20cb" disabled="true"><con:settings/><con:config><script><![CDATA[import javax.mail.*;
+import javax.activation.*
+import javax.mail.internet.*;
+import java.util.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+class DataSet {
+   def log
+   def context
+   def testRunner
+   def Sql
+   def conn
+   // Class constructor with same case as Class name
+   def Reporting(logIn,contextIn,testRunnerIn,SqlIn)
+   {
+   	
+       this.log = logIn
+      this.context = contextIn
+      this.testRunner = testRunnerIn
+      this.Sql = SqlIn
+   }
+public void senReport(String filename, String suitename){
+
+ // Recipient's email ID needs to be mentioned.
+        String to = context.expand('${#Global#recipients}')
+        
+       // Sender's email ID needs to be mentioned
+      String from = "vuclipqauser@gmail.com";//change accordingly
+      final String username = "vuclipqauser";//change accordingly
+      final String password = "vucliP@123";//change accordingly
+
+      // Assuming you are sending email through relay.jangosmtp.net
+      String host = "smtp.gmail.com";
+
+      def props = new Properties();
+      props.put("mail.smtp.auth", "true");
+      props.put("mail.smtp.starttls.enable", "true");
+      props.put("mail.smtp.host", host);
+      props.put("mail.smtp.port", "587");
+
+      // Get the Session object.
+      Session session = Session.getInstance(props,
+      new javax.mail.Authenticator() {
+         protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(username, password);
+         }
+      });
+
+      try {
+      	int total=0
+      	int pass=0
+      	int fail=0
+        //String filename = testSuite.getPropertyValue( "outputfile")
+        //String filename ="F://baas_workspace/Output/aircel//aircel_suite_2016_03_01-15-09.txt"
+           File outputfile=new File(filename)
+         // Create a default MimeMessage object.
+         Message message = new MimeMessage(session);
+
+         // Set From: header field of the header.
+         message.setFrom(new InternetAddress(from));
+
+         // Set To: header field of the header.
+         message.setRecipients(Message.RecipientType.TO,
+         InternetAddress.parse(to));
+
+         // Set Subject: header field
+         message.setSubject("BaaS Server:"+context.expand('${#Global#baas_endpoint}')+" Test Execution Report:"+suitename);
+     
+         // Create the message part
+            BodyPart messageBodyPart = new MimeBodyPart();
+            StringBuffer emailMessage = new StringBuffer("Dear All,");
+            emailMessage.append("<br>");
+            emailMessage.append("<h3>Find below "+suitename+" Test Excecution Report.</h3>");
+            
+               BufferedReader br = null;	
+			String sCurrentLine;
+			br = new BufferedReader(new FileReader(outputfile));
+			br2 = new BufferedReader(new FileReader(outputfile));
+
+         while ((sCurrentLine = br.readLine()) != null) {
+			if(sCurrentLine.contains("Total Executed"))
+			{
+				total=total+(sCurrentLine.split("=")[1]).toInteger()
+			}
+			else if(sCurrentLine.contains("Total Pass"))
+			{
+				pass=pass+(sCurrentLine.split("=")[1]).toInteger()
+			}
+			else if(sCurrentLine.contains("Total Fail"))
+			{
+				fail=fail+(sCurrentLine.split("=")[1]).toInteger()
+			}}
+			float passPercent= (pass/total)*100
+			float failPercent=(fail/total)*100
+			
+			def p=   Math.round(passPercent * 100) / 100
+			def f=    Math.round(failPercent * 100) / 100
+			      int n=1
+			      //emailMessage.append("<br>");
+                //     emailMessage.append("<!DOCTYPE html><html><head><style>table, th, td {    border: 1px solid black;}</style></head><body> <table style='width:15%' ; frame=box ><tr><td>Total Test Cases Executed</td><td>"+total+"</td></tr>  <tr> <td bgcolor='##00ff00'>Toatal Test Cases Passed</td>  <td>"+pass+"</td>  </tr> <tr> <td bgcolor='#FF0000'>Total Test Cases Failed</td><td>"+fail+"</td>  </tr></table>")
+			 emailMessage.append("<!DOCTYPE html><html><head><style>table, th, td {    border: 1px solid black;}</style></head><body> <table style='width:25%' ; frame=box ><tr><th>Total Executed</th><th>Passed</th><th>Failed</th><th>Pass %</th><th>Fail %</th></tr><tr><td align='center'>"+total+"</td><td bgcolor='##00ff00' ; align='center'>"+pass+"</td> <td bgcolor='#FF0000' ; align='center'>"+fail+"</td><td bgcolor='##00ff00' ; align='center'>"+p+"</td> <td bgcolor='#FF0000' ; align='center'>"+f+"</td>  </tr></table>")
+			 emailMessage.append("<br>");
+			emailMessage.append("<table  frame=box ><tr><th>S.R.</th><th>Test Case Name</th><th>Status</th></tr>")
+			while ((sCurrentLine = br2.readLine()) != null) {
+				
+				
+				if (sCurrentLine.contains("failed") || sCurrentLine.contains("no record found in log api db") || sCurrentLine.contains("API Response is not proper") )
+				{
+					//emailMessage.append("<p style='color:red;'>"+sCurrentLine+"</p>");
+					emailMessage.append("<tr><td>"+n+"</td><td bgcolor='#FF0000'>"+sCurrentLine+"</td><td bgcolor='#FF0000'>FAIL</td></tr>");
+					 n++
+					
+				}
+				else if(sCurrentLine.contains("passed")){
+      			 //emailMessage.append("<p style='color:green;'>"+sCurrentLine+"</p>");
+      			 emailMessage.append("<tr><td>"+n+"</td><td>"+sCurrentLine+"</td><td bgcolor='##00ff00'>PASS</td></tr>");
+      			  n++
+      			 }
+      			
+      			 else if(sCurrentLine.contains("Expected"))
+      			 {
+      			 	emailMessage.append("<tr>Expected<td></td>"+sCurrentLine+"<td></td></tr>");
+      			 	
+      			 }
+      			  else if( sCurrentLine.contains("Found"))
+      			 {
+      			 	emailMessage.append("<tr>Found<td></td>"+sCurrentLine+"<td></td></tr>");
+      			 	
+      			 }
+			}
+			emailMessage.append("</table>")
+		//Signature of the email body	
+		   emailMessage.append("<br>");
+            emailMessage.append("Thanks & Regards");
+            emailMessage.append("<br>");
+            emailMessage.append("Vuclip QA");
+             emailMessage.append("<br>");
+            
+
+            emailMessage.append("<p>*** This is an automatically generated email, please do not reply ***</p>");
+
+         
+         // Now set the actual message
+           //messageBodyPart.setText(emailMessage.toString());
+         // Create a multipar message
+         Multipart multipart = new MimeMultipart();
+
+         // Set text message part
+         
+
+         // Part two is attachment
+         messageBodyPart = new MimeBodyPart();
+         messageBodyPart.setContent(emailMessage.toString(),"text/html")
+         
+         multipart.addBodyPart(messageBodyPart);
+         //String filename = context.getProperty("resultfile")
+
+         // Send the complete message parts
+         message.setContent(multipart);
+
+      // Send message
+         if (context.expand('${#Global#is_mail_sent}')=='True')
+         {
+         Transport.send(message);
+         }
+         else{log.info "No Email Sent"}
+      } catch (MessagingException e) {
+            throw new RuntimeException(e);
+      }
+
+}
+}
+context.setProperty( "reportObject", new Reporting( log, context, testRunner, Sql ) )]]></script></con:config></con:testStep><con:testStep type="groovy" name="tmp" id="15e08201-2593-4b8e-adf7-a3ec5d10b5ba" disabled="true"><con:settings/><con:config><script><![CDATA[import groovy.sql.Sql
+import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+
+
+////    Date date = new Date();
+////    DateFormat localFormat = new SimpleDateFormat();
+////    TimeZone localTime = TimeZone.getTimeZone("GMT+4");
+////    localFormat.setTimeZone(localTime);
+////    Date newdate=new Date( localFormat.format(date))
+//
+//
+//  int days=1;
+//    Date date = new Date();
+//    DateFormat localFormat = new SimpleDateFormat("yyyy-MM-dd");
+//    TimeZone localTime = TimeZone.getTimeZone("GMT+4");
+//    localFormat.setTimeZone(localTime);
+//    Date newdate = new Date(date.getTime() + days*1000 * 60 * 60 * 24);
+//    
+//  	
+//		 def nbd = localFormat.format(newdate)+" "+"04:00:00.0";
+//		log.info "NBD="+nbd
+////    log.info findaldate
+
+
+//Calendar cal = Calendar.getInstance();
+//TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+//cal.setTimeZone(gmtTime);
+////int hour = cal.get(Calendar.HOUR_OF_DAY);
+//int hour =20
+//Date date0= cal.getTime()
+//SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//String updatedDate=formatter.format(date0)
+//log.info "updatedDate="+updatedDate +" and hour is ="+hour
+//String suffix=null
+//String finalDate=null
+//
+//if(hour>=20 )
+//{
+//cal.setTimeZone(gmtTime);
+//Date date2= (cal.getTime()+1)
+//SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
+//String updatedDate2=formatter2.format(date2)
+//	suffix="10:00:00"
+//	finalDate=updatedDate2+" "+suffix
+//	log.info "in >=20 "+finalDate
+//}
+//else if(hour<10)
+//{
+//	suffix="10:00:00"
+//	finalDate=updatedDate+" "+suffix
+//	log.info "in  <10 loop"+finalDate
+//}
+//else if(hour>=10 && hour<14)
+//{
+//	suffix="14:00:00"
+//	finalDate=updatedDate+" "+suffix
+//	log.info "in >=10 and <14 loop"+  finalDate
+//}
+//else if(hour>=14 && hour<=19)
+//{
+//	cal.setTimeZone(gmtTime);
+//Date date1= (cal.getTime()+1)
+//SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+//String updatedDate1=formatter1.format(date1)
+//	suffix="05:00:00"
+//	finalDate=updatedDate1+" "+suffix
+//	log.info "in >=14 and <19 loop"+finalDate
+//}
+
+
+DateFormat localFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+TimeZone localTime = TimeZone.getTimeZone("GMT+7");
+localFormat.setTimeZone(localTime);
+  Date date = new Date();  	
+  localdate = localFormat.format(date); 
+   Date updateddate = df.parse(localdate);
+   int curr_local_hour=updateddate.getHours()
+
+
+
+		 ]]></script></con:config></con:testStep><con:setupScript/><con:properties/><con:reportParameters/></con:testCase>

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:interface xsi:type="con:RestService" id="1ed191f3-b96f-4ac3-87be-75d5cdd3a36c" wadlVersion="http://wadl.dev.java.net/2009/02" name="VuConnect" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="1ed191f3-b96f-4ac3-87be-75d5cdd3a36cfileName">VuConnect</con:setting></con:settings><con:definitionCache/><con:endpoints><con:endpoint>http://192.168.249.94:8090</con:endpoint></con:endpoints></con:interface>

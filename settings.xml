@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="4c172a80-ad4a-4f1a-bfaf-0728d1d5e831" activeEnvironment="Default environment" name="BaaS_Util" resourceRoot="${projectDir}" soapui-version="6.0.0" abortOnError="false" runType="SEQUENTIAL" defaultScriptLanguage="Groovy" lastOpened="2016-12-05T15:29:30.457+05:30" xmlns:con="http://eviware.com/soapui/config"><con:description>jdbc:mysql://testdb2.blueapple.mobi:3306/baas jdbc:mysql://192.168.254.10:3306/baas   'http://64.71.156.243:18088/unsubscriptionMock'  'http://192.168.254.9:8088/talend/unsubscriptionMock' http://64.71.156.243:18010/baas/CGController/consentParser/1?msisdn=8318123224367940637&amp;result=success&amp;transid=985676561212362167  staging 192.168.250.10
+
+FREE_TRIAL_ENABLED("freeTrialEnabled","freeTrialEnabled"),
+ IS_FREE_TRIAL_USER("isFreeTrialUser","isFreeTrialUser");</con:description><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.actions.iface.tools.soapui.TestRunnerAction@values-local"><![CDATA[<xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  <con:entry key="Environment" value="Default"/>
+  <con:entry key="Global Properties" value=""/>
+  <con:entry key="TestSuite" value="Aircel-BaaS Test Suite"/>
+  <con:entry key="Password" value=""/>
+  <con:entry key="TestRunner Path" value=""/>
+  <con:entry key="Tool Args" value=""/>
+  <con:entry key="Ignore Errors" value="true"/>
+  <con:entry key="Host:Port" value=""/>
+  <con:entry key="user-settings.xml Password" value=""/>
+  <con:entry key="WSS Password Type" value=""/>
+  <con:entry key="Save Project" value="false"/>
+  <con:entry key="Enable UI" value="false"/>
+  <con:entry key="System Properties" value=""/>
+  <con:entry key="Domain" value=""/>
+  <con:entry key="Coverage Report" value="false"/>
+  <con:entry key="Export JUnit Results" value="true"/>
+  <con:entry key="Open Report" value="false"/>
+  <con:entry key="Project Properties" value=""/>
+  <con:entry key="Export All" value="true"/>
+  <con:entry key="Project Password" value=""/>
+  <con:entry key="Report Format(s)" value=""/>
+  <con:entry key="TestCase" value="TC-7 Verify LCM APIs Fields Validation"/>
+  <con:entry key="Print Report" value="true"/>
+  <con:entry key="Username" value=""/>
+  <con:entry key="Root Folder" value=""/>
+  <con:entry key="Save After" value="false"/>
+  <con:entry key="Add Settings" value="false"/>
+  <con:entry key="Endpoint" value=""/>
+  <con:entry key="Select Report Type" value=""/>
+</xml-fragment>]]></con:setting><con:setting id="ProjectSettings@shadowPassword"/></con:settings><con:vcsConfiguration><con:vcsName>Git</con:vcsName><con:repositoryIdentifier>https://github.com/SouvikDcoder/Microservice-POC.git</con:repositoryIdentifier></con:vcsConfiguration><con:endpointStrategy xsi:type="con:DefaultEndpointStrategy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:endpoint mode="OVERRIDE">http://192.168.254.90</con:endpoint><con:endpoint mode="OVERRIDE">http://${#NPP_BaaS#baas}</con:endpoint></con:endpointStrategy><con:properties/><con:encryptedContent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/><con:wssContainer/><con:databaseConnectionContainer/><con:oAuth2ProfileContainer/><con:sensitiveInformation/><con:authRepository/><con:tags/></con:soapui-project>

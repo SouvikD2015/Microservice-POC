@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testSuite id="a97fd23b-351c-42fb-ae8d-67c68a4ed359" name="Common Util" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="a97fd23b-351c-42fb-ae8d-67c68a4ed359fileName">Common-Util</con:setting></con:settings><con:runType>SEQUENTIAL</con:runType><con:properties/><con:setupScript>
+
+
+
+log.info context.getProperty("baas_endpoint")
+log.info context.getProperty("talend_endpoint")</con:setupScript><con:reportParameters/></con:testSuite>

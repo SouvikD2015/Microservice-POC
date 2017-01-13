@@ -1,0 +1,858 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="875923ce-5dcd-49a9-aaa1-02b652f1532d" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="BaaS API" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="875923ce-5dcd-49a9-aaa1-02b652f1532dfileName">BaaS-API</con:setting></con:settings><con:testStep type="restrequest" name="BaaS_Status" id="2d1d3927-8f51-4a11-b02b-aa1d0ea3eb32"><con:settings/><con:config service="BaaS_API" resourcePath="/baas/rest/userStatus" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="BaaS_Status" id="6337b5b7-63f8-4c22-9383-396edfbeb666" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/userStatus</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="customerId" value="98"/>
+  <con:entry key="authKey" value="authKeyDummy"/>
+  <con:entry key="userId" value="9800000996"/>
+  <con:entry key="epocTime" value="1467198570"/>
+</con:parameters><con:parameterOrder><con:entry>userId</con:entry><con:entry>transactionId</con:entry><con:entry>customerId</con:entry><con:entry>epocTime</con:entry><con:entry>authKey</con:entry><con:entry>additionalInfo</con:entry><con:entry>fetchMode</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="BaaS_ACT" id="57d23455-7f00-49e2-a717-8ea2ea844ae6"><con:settings/><con:config service="BaaS_API" resourcePath="/baas/rest/activation" methodName="Activation" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="BaaS_ACT" id="bee0161d-353a-4019-ad3a-5181a05ad1d9" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="hrc" value="475049tlhoh" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://null///baas/rest/activation</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="localeId" value="ar"/>
+  <con:entry key="accessMode" value="WAP"/>
+  <con:entry key="transactionId" value="trnx00000000013"/>
+  <con:entry key="authKey" value="authKeyDummy"/>
+  <con:entry key="cgImageUrl" value="http://google.com"/>
+  <con:entry key="chargeDescription" value="desc"/>
+  <con:entry key="dirtHashCode" value="1013"/>
+  <con:entry key="availFreeTrial" value="null"/>
+  <con:entry key="billingCode" value="575760701"/>
+  <con:entry key="itemId" value="18515"/>
+  <con:entry key="languageId" value="1"/>
+  <con:entry key="circleCode" value="MH"/>
+  <con:entry key="ct" value=" "/>
+  <con:entry key="itemTypeId" value="4"/>
+  <con:entry key="callbackUrl" value="http://64.71.156.167:6060/uiaas/redirect"/>
+  <con:entry key="source" value="Activation_7_Parking_Vodafone"/>
+  <con:entry key="deviceType" value="1"/>
+  <con:entry key="adNetworkTransactionId" value="kp=Activation_7_Parking_Vodafone"/>
+  <con:entry key="userId" value="9889000114"/>
+  <con:entry key="adNetworkId" value="1"/>
+  <con:entry key="chargingMode" value="WAP"/>
+  <con:entry key="epocTime" value="1467210563"/>
+</con:parameters><con:parameterOrder><con:entry>userId</con:entry><con:entry>billingCode</con:entry><con:entry>itemId</con:entry><con:entry>itemTypeId</con:entry><con:entry>callbackUrl</con:entry><con:entry>epocTime</con:entry><con:entry>authKey</con:entry><con:entry>cgImageUrl</con:entry><con:entry>adNetworkTransactionId</con:entry><con:entry>source</con:entry><con:entry>chargingMode</con:entry><con:entry>adNetworkId</con:entry><con:entry>transactionId</con:entry><con:entry>circleCode</con:entry><con:entry>languageId</con:entry><con:entry>chargeDescription</con:entry><con:entry>sessionId</con:entry><con:entry>accessMode</con:entry><con:entry>availFreeTrial</con:entry><con:entry>dirtHashCode</con:entry><con:entry>deviceType</con:entry><con:entry>localeId</con:entry><con:entry>ct</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="BaaS_DCT" id="3563a10a-1803-4cc4-aa3a-7b2f81ead3ad"><con:settings/><con:config service="BaaS_API" resourcePath="/baas/rest/deActivation" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="BaaS_DCT" id="116b5ee5-f89b-4648-bb9e-c23e685df765" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/deActivation</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="accessMode" value="WAP"/>
+  <con:entry key="authKey" value="authKeyDummy"/>
+  <con:entry key="userId" value="9889000144"/>
+  <con:entry key="billingCode" value="575774907"/>
+  <con:entry key="itemId" value="18515"/>
+  <con:entry key="epocTime" value="1467210659"/>
+</con:parameters><con:parameterOrder><con:entry>userId</con:entry><con:entry>billingCode</con:entry><con:entry>transactionId</con:entry><con:entry>itemId</con:entry><con:entry>itemTypeId</con:entry><con:entry>epocTime</con:entry><con:entry>authKey</con:entry><con:entry>chargingMode</con:entry><con:entry/></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="BaaS_Confirm" id="0aa717a0-8fe5-49ed-b41b-26763a41f778"><con:settings/><con:config service="LCM_API" resourcePath="/baas/rest/lcm/confirm" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="BaaS_Confirm" id="b57d8229-d2da-4e87-b01c-291f96ab7bda" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.250.92/baas/rest/lcm/confirm</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="activityResult" value="abcd124"/>
+  <con:entry key="responseCode" value="trnx1000000017"/>
+  <con:entry key="msisdn" value=""/>
+  <con:entry key="billingCode" value="110199304"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Credit_Update" id="e0453317-adba-453f-a6cc-2c58d8fc6c90"><con:settings/><con:config service="BaaS_API" resourcePath="/baas/rest/updateCredit" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Credit_Update" id="d4cc867b-2377-4edd-a131-caaad9ef9a6a" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/updateCredit</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="subscriptionId" value="7208" xmlns="http://eviware.com/soapui/config"/></con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Update_User" id="fe223f17-5abe-45c0-aaa9-07bf8553a8a5"><con:settings/><con:config service="BaaS_API" resourcePath="/baas/rest/updateUserInfo" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Update_User" id="e3b6ca9d-3277-41b9-b049-43fa9b488c63" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/updateUserInfo</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="userCommunicationLanguage" value="3"/>
+  <con:entry key="userPreferredLanguage" value="1"/>
+  <con:entry key="credits" value="10"/>
+  <con:entry key="lwvd" value="2016-05-11 09:44:26"/>
+  <con:entry key="subscriptionId" value="7209"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Base_Recon" id="5daacc59-5043-474f-8985-82569d6fe383"><con:settings/><con:config service="LCM_API" resourcePath="/baas/rest/lcm/baseRecon" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Base_Recon" id="85c8c326-a60f-4adc-b007-dc87d03173c1" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/lcm/baseRecon</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="responseMessage" value="AOC:Success"/>
+  <con:entry key="activityResult" value="Dct_Error"/>
+  <con:entry key="responseCode" value="1000"/>
+  <con:entry key="accessMode" value="notification"/>
+  <con:entry key="transactionId" value="BR4639463"/>
+  <con:entry key="msisdn" value="918800014"/>
+  <con:entry key="billingCode" value="1606035074"/>
+  <con:entry key="itemId" value="100"/>
+  <con:entry key="chargingMode" value="WAP"/>
+  <con:entry key="itemTypeId" value="4"/>
+</con:parameters><con:parameterOrder><con:entry>billingCode</con:entry><con:entry>msisdn</con:entry><con:entry>activityResult</con:entry><con:entry>accessMode</con:entry><con:entry>chargingMode</con:entry><con:entry>targetState</con:entry><con:entry>transactionId</con:entry><con:entry>responseCode</con:entry><con:entry>responseMessage</con:entry><con:entry>itemTypeId</con:entry><con:entry/></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="LCM_ACT" id="faac44a5-118c-472c-a359-d4886fce5ed6"><con:settings/><con:config service="LCM_API" resourcePath="/baas/rest/lcm/activate" methodName="Activate" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="LCM_ACT" id="b5d85ffb-f922-462d-9b56-165cb64a9242" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://64.71.156.243/baas/rest/lcm/activate</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="activityResult" value="Error"/>
+  <con:entry key="responseMessage" value="Activated"/>
+  <con:entry key="responseCode" value="tx47307443074"/>
+  <con:entry key="transactionId" value="tx47307443074"/>
+  <con:entry key="msisdn" value="9900001036"/>
+  <con:entry key="billingCode" value="990000100"/>
+  <con:entry key="chargingMode" value="WAP"/>
+</con:parameters><con:parameterOrder><con:entry>billingCode</con:entry><con:entry>msisdn</con:entry><con:entry>activityResult</con:entry><con:entry>transactionId</con:entry><con:entry>responseCode</con:entry><con:entry>responseMessage</con:entry><con:entry>accessMode</con:entry><con:entry>chargingMode</con:entry><con:entry>userId</con:entry><con:entry/></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="LCM_DCT" id="0e4f21c1-63ed-451f-8af7-95219f523def"><con:settings/><con:config service="LCM_API" resourcePath="/baas/rest/lcm/deactivate" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="LCM_DCT" id="16cebd10-1e0b-45bd-86ac-7aed76ca8ef0" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/lcm/deactivate</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="activityResult" value="Error"/>
+  <con:entry key="responseCode" value="tx47307443074"/>
+  <con:entry key="accessMode" value="notification"/>
+  <con:entry key="transactionId" value="tx47307443074"/>
+  <con:entry key="msisdn" value="9900001032"/>
+  <con:entry key="billingCode" value="990000100"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="OOVS_CG_Controller" id="e4ec00c1-f085-4049-afc5-413935b4b976"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/2" methodName="2" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="OOVS_CG_Controller" id="5c2d2951-7df0-4686-806d-7e1986ed5bca" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.250.92/baas/CGController/consentParser/8</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="transid" value="TX20160628142841433553" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>transid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="VE_CG_Controller" id="bb7a88d0-cb8d-4b4a-b464-4d2194eb6e54"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/5" methodName="5" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="VE_CG_Controller" id="5c2d2951-7df0-4686-806d-7e1986ed5bca" mediaType="application/json"><con:settings/><con:endpoint>http://192.168.0.237:8080</con:endpoint><con:request/><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>transid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="AMJ_CG_Controller" id="2310a625-1f12-472b-8c42-fb0c50a17c44"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/6" methodName="6" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="AMJ_CG_Controller" id="5c2d2951-7df0-4686-806d-7e1986ed5bca" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://m.vuclip.com/msg=Error</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="state" value="TX20160629132102931108"/>
+  <con:entry key="code" value="9f073f5c-73f2-4ddd-80db-7ee73601b94e"/>
+  <con:entry key="transid" value="TX20160629132102931108"/>
+</con:parameters><con:parameterOrder><con:entry>transid</con:entry><con:entry>state</con:entry><con:entry>code</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="UMobCGController" id="f3435200-76e7-4d29-a1f3-22f4eda25efa"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/7" methodName="7" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="UMobCGController" id="5c2d2951-7df0-4686-806d-7e1986ed5bca" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.250.92/baas/CGController/consentParser/7</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="transid" value="TX20160626044819687826" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>transid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="DVS_CG_Controller" id="9d2787bd-7de3-4e93-ae7b-f4ca4fa505eb"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/8" methodName="8" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="DVS_CG_Controller" id="5c2d2951-7df0-4686-806d-7e1986ed5bca" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://m.vuclip.com/msg=Error</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="transid" value="TX20160628142756627489" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>transid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="EVS_CG_Controller" id="6c2ef703-f339-42da-b752-6aa02e7a1aba"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/91" methodName="91" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="EVS_CG_Controller" id="5c2d2951-7df0-4686-806d-7e1986ed5bca" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.29.94/baas/CGController/consentParser/91</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="transid" value="TX20160628143121767319" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>transid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Maxis_CG_Controller" id="d71f27bc-5189-4dc3-aab3-3229b6baab8b"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/90" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Maxis_CG_Controller" id="8c2c66f0-787d-4c77-bbad-326df1d90a69" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.29.94/baas/CGController/consentParser/90</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="chargedMSISDN" value="906000019"/>
+  <con:entry key="ChargeId" value="20160628145910353387"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="OJVS_CG_Controller" id="35dba8f2-d3e3-49ec-8151-787fc15a9519"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/92" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="OJVS_CG_Controller" id="8c2c66f0-787d-4c77-bbad-326df1d90a69" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.0.237/baas/CGController/consentParser/92</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="transid" value="TX20160628143516775460" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="XL_CG_Controller" id="809d2d6e-6fdf-4123-ae1d-98f65efc96e7"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/33" methodName="33" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="XL_CG_Controller" id="5c2d2951-7df0-4686-806d-7e1986ed5bca" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://64.71.156.167/uiaas/redirect</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="transid" value="TX20160629125901425435" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>transid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="SM2_CG_Controller" id="419d8973-afff-49db-b999-ee03f352f86e"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/98" methodName="98" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="SM2_CG_Controller" id="5c2d2951-7df0-4686-806d-7e1986ed5bca" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://64.71.156.167/Matomy</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="transid" value="TX20160629111210998118" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>transid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="SM3_CG_Controller" id="14a77c53-4617-4743-828e-9a5e5796283a"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/99" methodName="99" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="SM3_CG_Controller" id="5c2d2951-7df0-4686-806d-7e1986ed5bca" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://64.71.156.167/Matomy</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="transid" value="TX20160308075601403054" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>transid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="LCM_DCT_INIT" id="ae9a43eb-508c-4666-b3be-6a96052a2814"><con:settings/><con:config service="LCM_API" resourcePath="/baas/rest/lcm/deactivateInit" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="LCM_DCT_INIT" id="c5a533a2-babb-4fe8-9c98-41bb56ca5001" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/lcm/deactivateInit</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="msisdn" value="9900001017"/>
+  <con:entry key="billingCode" value="990000100"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="LCM_REN_INIT" id="e0521c75-499b-441c-b1c1-b1c66891acc8"><con:settings/><con:config service="LCM_API" resourcePath="/baas/rest/lcm/renewInit" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="LCM_REN_INIT" id="85c8c326-a60f-4adc-b007-dc87d03173c1" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/lcm/renewInit</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="accessMode" value="backend"/>
+  <con:entry key="notificationResponseCode" value=""/>
+  <con:entry key="msisdn" value="9900000997"/>
+  <con:entry key="notificationTransactionId" value=""/>
+  <con:entry key="billingCode" value="990000100"/>
+  <con:entry key="notificationResponseMessage" value=""/>
+  <con:entry key="chargingMode" value="backend"/>
+</con:parameters><con:parameterOrder><con:entry>billingCode</con:entry><con:entry>msisdn</con:entry><con:entry>activityResult</con:entry><con:entry>notificationTransactionId</con:entry><con:entry>notificationResponseCode</con:entry><con:entry>notificationResponseMessage</con:entry><con:entry>accessMode</con:entry><con:entry/></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="VVA_CG_Controller" id="805a50dd-9be8-48d1-a6bf-f0551003015e"><con:settings/><con:config service="CGController" resourcePath="/baas/CGController/consentParser/57" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="VVA_CG_Controller" id="f0f12c53-ae3b-4175-9760-b03196f036d9" mediaType="application/json"><con:settings/><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://64.71.156.167/uiaas/redirect</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="transid" value="TX20160629143202161484"/>
+  <con:entry key="MSISDN" value="9889000114"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="LCM_REN" id="83be2670-5d91-4153-aaf0-4b8926994626"><con:settings/><con:config service="LCM_API" resourcePath="/baas/rest/lcm/renew" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="LCM_REN" id="b3d4ca8d-fa37-460a-b731-73f9607f544a" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/lcm/renew</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="activityResult" value="Error"/>
+  <con:entry key="responseCode" value="tx47307443074"/>
+  <con:entry key="accessMode" value="notification"/>
+  <con:entry key="transactionId" value="tx47307443074"/>
+  <con:entry key="msisdn" value="9900001003"/>
+  <con:entry key="billingCode" value="990000100"/>
+  <con:entry key="itemId" value="1"/>
+  <con:entry key="notificationResponseMessage" value=""/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="AdNetworkByCustomerIdName" id="d0a19353-cbd6-4c26-b94c-4f4cd7d358b8"><con:settings/><con:config service="BaaS_API" resourcePath="/baas/rest/getCustomerAdNetworks" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="AdNetworkByCustomerIdName" id="226f0532-5233-415f-9864-89ffdabfea07" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/getCustomerAdNetworks</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="customerName" value="SM3 Product"/>
+  <con:entry key="customerId" value=""/>
+</con:parameters><con:parameterOrder><con:entry>customerId</con:entry><con:entry>customerName</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Do_BlackList" id="a122ad78-0767-42b5-9517-b9d721c76d4b"><con:settings/><con:config service="BaaS_API" resourcePath="/baas/rest/bc/doBlacklist" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Do_BlackList" id="1fdd07af-6527-4ae4-b07a-94c718abde6e" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/bc/doBlacklist</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="authKey" value=""/>
+  <con:entry key="userId" value="4703473946"/>
+  <con:entry key="epocTime" value="1234"/>
+  <con:entry key="whiteList" value="true"/>
+</con:parameters><con:parameterOrder><con:entry>customerId</con:entry><con:entry>userId</con:entry><con:entry>epocTime</con:entry><con:entry>authKey</con:entry><con:entry>whiteList</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="StatusBlackList" id="b1db9e7d-370d-4049-8f2d-56d704f045bf"><con:settings/><con:config service="BaaS_API" resourcePath="/baas/rest/bc/getStatus" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="StatusBlackList" id="a910eda9-7198-4d4e-9a39-d94060ebdfa0" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/baas/rest/bc/getStatus</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="customerId" value="2"/>
+  <con:entry key="userId" value="96228348304"/>
+  <con:entry key="epocTime" value="0"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="OTP_OJVS_CONTROLLER" id="2da7b355-7fd1-4da6-a80d-55552fa32d7a"><con:settings/><con:config service="CGController" resourcePath="/baas/OTPController/consentParser/92" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="OTP_OJVS_CONTROLLER" id="8c2c66f0-787d-4c77-bbad-326df1d90a69" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="hrc" value="" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request/><con:originalUri>http://64.71.156.167/uiaas/redirect</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="customerTransactionId" value="92000006"/>
+  <con:entry key="transid" value="TX20160624114242194667"/>
+  <con:entry key="otp" value="NA"/>
+</con:parameters><con:parameterOrder><con:entry>transid</con:entry><con:entry>otp</con:entry><con:entry/></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Input_Producer" id="70865c8a-dab8-47f6-b3de-ebd480ce7bc0"><con:settings/><con:config service="BaaS_API" resourcePath="/baas/rest/backendjobs/inputproducer" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Input_Producer" id="01a137e3-c813-4065-9ed8-defc239bbbd6" mediaType="application/x-www-form-urlencoded" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8080</con:endpoint><con:request><![CDATA[customerId=57&providerId=57&jobType=4&queueName=AUTO_CHURN&host=rabbitmq-server&productName=VVA&targetConsumer=baas&activityType=PRE_DEACTIVATION&sendSms=false&jobSchedulerId=1234&activityResult=Success]]></con:request><con:originalUri>http://192.168.249.65/baas/rest/backendjobs/inputproducer</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="API Run" id="032599cc-3c78-4948-b2ae-7e126a162e5a"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+ class APIRun {
+ def log
+   def context
+   def testRunner
+   
+   // Class constructor with same case as Class name
+   def APIRun(logIn,contextIn,testRunnerIn)
+   {
+      this.log = logIn
+      this.context = contextIn
+      this.testRunner = testRunnerIn      
+   }
+ 
+ //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+   def stepInitiliazer(String msisdn,String billingcode,String source, String trnxid, String adnetid, String adtrnxid,String languageid,String itemid,String itemtypeid,String aft ,String dirthash, String otp)   
+   {   	  	
+try{
+  String epoctime=getEpoc();
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+//def projectResource=projectResource
+
+	def 	stepInitialise= projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("BaaS_ACT")
+	
+	stepInitialise.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))
+	     	     
+	     //To set Parameter Values  of Activation API 	
+      	stepInitialise.setPropertyValue("userid",msisdn)	 	
+		stepInitialise.setPropertyValue("billingCode",billingcode)
+	     stepInitialise.setPropertyValue("source",source)	
+		stepInitialise.setPropertyValue("transactionId",trnxid)
+	     stepInitialise.setPropertyValue("adNetworkId",adnetid)
+	     stepInitialise.setPropertyValue("adNetworkTransactionId",adtrnxid)	
+	     stepInitialise.setPropertyValue("languageId",languageid)	
+	     stepInitialise.setPropertyValue("itemId",itemid)	
+	     stepInitialise.setPropertyValue("itemTypeId",itemtypeid)    
+	     stepInitialise.setPropertyValue("epocTime",epoctime)
+	     stepInitialise.setPropertyValue("authKey","authKeyDummy")		
+	     stepInitialise.setPropertyValue("availFreeTrial",aft)		
+	     stepInitialise.setPropertyValue("dirtHashCode",dirthash)	
+	     stepInitialise.setPropertyValue("ct",otp)	   
+	     
+	     stepInitialise.run(testRunner,testRunner.getRunContext())	
+
+	   def responseStepInitialise = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("BaaS_ACT").getPropertyValue("response")
+	   def  slurperStepInitialise= new JsonSlurper().parseText(responseStepInitialise) 
+
+	   context.setProperty("jsonStepInitialise",slurperStepInitialise)
+   }
+   catch (Exception ex) {
+          log.info "MalformedURIException caught"
+        }  	
+
+   }
+
+ //=====================>>>>>>>>>>>Overloaded method >>>>>>>>>>>>>>
+   def stepInitiliazer(String userid,String billingcode,String source, String itemid, String epoctime, String authkey,String  cgimgurl)
+   
+   { 
+   	 def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}  	  	
+	def 	stepInitialise= projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("BaaS_ACT")
+	stepInitialise.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))
+	     	     
+	     //To set Parameter Values  of Activation API 	
+      	stepInitialise.setPropertyValue("userid",userid)	 	
+		stepInitialise.setPropertyValue("billingCode",billingcode)
+	     stepInitialise.setPropertyValue("source",source)	
+		stepInitialise.setPropertyValue("itemId",itemid)
+	     stepInitialise.setPropertyValue("epocTime",epoctime)
+	     stepInitialise.setPropertyValue("authKey",authkey)	
+	     stepInitialise.setPropertyValue("cgImageUrl",cgimgurl)	   
+	     stepInitialise.run(testRunner,testRunner.getRunContext())	
+
+	   def responseStepInitialise = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("BaaS_ACT").getPropertyValue("response")
+	   def  slurperStepInitialise= new JsonSlurper().parseText(responseStepInitialise) 
+	   
+	   context.setProperty("jsonStepInitialise",slurperStepInitialise)
+   }
+
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepGetUserStatus(String msisdn,String customerid)
+   { 
+   	String epoctime=getEpoc();
+   	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepStatus=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("BaaS_Status")    
+	stepStatus.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	  //To set Parameter Values  of Status API 
+		stepStatus.setPropertyValue("userId",msisdn)		
+		stepStatus.setPropertyValue("customerId",customerid)
+		stepStatus.setPropertyValue("epocTime",epoctime)		
+		stepStatus.setPropertyValue("authKey","authKeyDummy")				
+
+		//baas getStatus api execution 
+		stepStatus.run(testRunner,testRunner.getRunContext())	
+	     def  responseStepStatus = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("BaaS_Status").getPropertyValue("response")
+	     def slurperStepStatus= new JsonSlurper().parseText(responseStepStatus) 	  
+
+	   context.setProperty("jsonStepStatus",slurperStepStatus)
+    }
+
+
+     //=====================overloaded Status API method>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepGetUserStatus(String userid,String custid,String  epoctime,String authkey)
+   { 
+   	  	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepStatus=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("BaaS_Status")  
+	stepStatus.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))    
+	  //To set Parameter Values  of Status API 
+		stepStatus.setPropertyValue("userId",userid)	
+		stepStatus.setPropertyValue("customerId",custid)	
+		stepStatus.setPropertyValue("epocTime",epoctime)	
+		stepStatus.setPropertyValue("authKey",authkey)				
+
+		//baas getStatus api execution 
+		stepStatus.run(testRunner,testRunner.getRunContext())	
+	     def  responseStepStatus = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("BaaS_Status").getPropertyValue("response")
+	     def slurperStepStatus= new JsonSlurper().parseText(responseStepStatus) 	  
+
+	   context.setProperty("jsonStepStatus",slurperStepStatus)
+    }
+
+     //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepBaasDCT(String msisdn, String billingcode, String itemid, String itemtypeid)
+   { 
+   	String epoctime=getEpoc();
+   	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepDCT=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "BaaS_DCT")  
+	stepDCT.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	   // To set Parameter Values  baas dct API
+	   stepDCT.setPropertyValue("userId",msisdn)
+	   stepDCT.setPropertyValue("billingCode",billingcode)
+	   stepDCT.setPropertyValue("itemId",itemid)
+	   stepDCT.setPropertyValue("itemTypeId",itemtypeid)	
+	   stepDCT.setPropertyValue("epocTime",epoctime)
+	   stepDCT.setPropertyValue("authKey","authKeyDummy")	
+
+		stepDCT.run(testRunner,testRunner.getRunContext())
+         def responseStepDCT = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "BaaS_DCT").getPropertyValue("response")
+	   def   slurperStepDCT= new JsonSlurper().parseText(responseStepDCT) 	  
+
+	   context.setProperty("jsonStepDCT",slurperStepDCT)
+    }
+        
+         //=====================>>>>>>>>>>>Overloaded BaaS Deactivaiton Method===================>>>>>>>>>>>>>>
+    def stepBaasDCT(String userid, String billingcode, String itemid, String epoctime, String authkey)
+   { 
+ def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepDCT=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "BaaS_DCT")  
+	stepDCT.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	   // To set Parameter Values  baas dct API
+	   stepDCT.setPropertyValue("userId",userid)
+	   stepDCT.setPropertyValue("billingCode",billingcode)	
+	   	stepDCT.setPropertyValue("itemId",itemid)		
+	   	stepDCT.setPropertyValue("epocTime",epoctime)		
+	   	stepDCT.setPropertyValue("authKey",authkey)		
+
+		stepDCT.run(testRunner,testRunner.getRunContext())
+         def responseStepDCT = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "BaaS_DCT").getPropertyValue("response")
+	   def   slurperStepDCT= new JsonSlurper().parseText(responseStepDCT) 	  
+
+	   context.setProperty("jsonStepDCT",slurperStepDCT)
+    }
+
+     //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepUpdateCredit(String subid, String creditcount)
+   { 
+   	String epoctime=getEpoc();
+   	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepUpdateCredit=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "Credit_Update")  
+	stepUpdateCredit.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	  	//set api property
+		stepUpdateCredit.setPropertyValue("subscriptionId",subid)
+		stepUpdateCredit.setPropertyValue("creditCount", creditcount)		
+
+	    stepUpdateCredit.run(testRunner,testRunner.getRunContext())
+         def responseUpdateCredit = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("Credit_Update").getPropertyValue("response")
+	   def   slurperUpdateCredit= new JsonSlurper().parseText(responseUpdateCredit) 	  
+
+	   context.setProperty("jsonUpdateCredit",slurperUpdateCredit)
+    }
+
+     //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepUpdateUserInfo(String subid, String credit,String topup, String videodate, String preflanguage, String communicationlanguage )
+   { 
+   	
+   	String epoctime=getEpoc();
+   	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepUpdateUser=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "Update_User")  
+	stepUpdateUser.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	  	//set api property
+		stepUpdateUser.setPropertyValue("subscriptionId",subid)
+		stepUpdateUser.setPropertyValue("credits", credit)	
+		stepUpdateUser.setPropertyValue("lwvd", videodate)	
+		stepUpdateUser.setPropertyValue("topup", topup)	
+		stepUpdateUser.setPropertyValue("userPreferredLanguage", preflanguage)
+		stepUpdateUser.setPropertyValue("userCommunicationLanguage", communicationlanguage)		
+        
+	    stepUpdateUser.run(testRunner,testRunner.getRunContext())
+         def responseUpdateUser = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("Update_User").getPropertyValue("response")
+	   def   slurperUpdateUser= new JsonSlurper().parseText(responseUpdateUser) 	  
+
+	   context.setProperty("jsonUpdateUser",slurperUpdateUser)
+    }
+
+      //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def adNetworkByCustomerIdName(String param, String paramvalue)
+   { 
+   	
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def adNetworkByCustomer=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "AdNetworkByCustomerIdName")
+	adNetworkByCustomer.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	  	//set api property
+	  	if(param=="ID"){
+		adNetworkByCustomer.setPropertyValue("customerId",paramvalue)
+		adNetworkByCustomer.setPropertyValue("customerName","")
+	  	}
+	  	else if( param=="NAME"){
+	    		adNetworkByCustomer.setPropertyValue("customerName",paramvalue)
+	  		adNetworkByCustomer.setPropertyValue("customerId","")
+	  	}
+		 adNetworkByCustomer.run(testRunner,testRunner.getRunContext())
+		 
+         def jsonResponse = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("AdNetworkByCustomerIdName").getPropertyValue("response")
+	   def   parsedJson= new JsonSlurper().parseText(jsonResponse) 	  
+
+	   context.setProperty("adNetworkByCustomerIdNameJson",parsedJson)
+	   }            
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def doBlackList(String msisdn, String customerid ,String iswhitelist)
+   { 
+   	String epoctime=getEpoc();
+  def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}  
+    
+    def contextStep=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("Do_BlackList")  
+	contextStep.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))	
+	  	//set api property
+	  	contextStep.setPropertyValue("userId", msisdn)		
+		contextStep.setPropertyValue("customerId", customerid)
+		contextStep.setPropertyValue("whiteList", iswhitelist)	
+			contextStep.setPropertyValue("epocTime", epoctime)	
+		contextStep.setPropertyValue("authKey", "dummyAuthKey")	
+			
+		contextStep.run(testRunner,testRunner.getRunContext())	
+			 
+         def jsonResponse = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("Do_BlackList").getPropertyValue("response")
+	   def   parsedJson= new JsonSlurper().parseText(jsonResponse) 	  
+
+	   context.setProperty("blackListJson",parsedJson)
+		} 
+//=====================>>>>>>>>>>>Overloaded Method to check mandatory fields===================>>>>>>>>>>>>>>
+    def doBlackList(String msisdn, String customerid ,String epoctime, String authkey)
+   { 
+   	
+  def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}  
+    
+    def contextStep=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("Do_BlackList")  
+	contextStep.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))	
+	  	//set api property
+	  	contextStep.setPropertyValue("userId", msisdn)		
+		contextStep.setPropertyValue("customerId", customerid)	
+		contextStep.setPropertyValue("epocTime", epoctime)	
+		contextStep.setPropertyValue("authKey", authkey)	
+			
+		contextStep.run(testRunner,testRunner.getRunContext())	
+			 
+         def jsonResponse = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("Do_BlackList").getPropertyValue("response")
+	   def   parsedJson= new JsonSlurper().parseText(jsonResponse) 	  
+
+	   context.setProperty("blackListJson",parsedJson)
+		} 
+
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def getBlackListStatus(String msisdn, String customerid)
+   { 
+   
+  def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}  
+    
+    def contextStep=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("StatusBlackList")  
+	contextStep.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))	
+	  	//set api property		
+	  	contextStep.setPropertyValue("userId", msisdn)		
+		contextStep.setPropertyValue("customerId", customerid)		
+		contextStep.run(testRunner,testRunner.getRunContext())	
+
+	 def jsonResponse = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("StatusBlackList").getPropertyValue("response")
+	   def   parsedJson= new JsonSlurper().parseText(jsonResponse) 	  
+
+	   context.setProperty("blackListStatusJson",parsedJson)
+	 
+		}
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def inputProducerInvoke(String queryparam)
+{
+	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}  
+    
+    def contextStep=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("Input_Producer")  
+	contextStep.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))	
+	def request = contextStep.getTestRequest()
+	request.setRequestContent(queryparam)
+	contextStep.run(testRunner,testRunner.getRunContext())	
+	
+}
+def String getEpoc()
+{
+Date date=new Date();
+def epocms= date.getTime()/1000;
+String epoc = String.format("%.0f", epocms);
+return epoc
+}		         
+} 
+ context.setProperty( "apiRun", new APIRun( log, context, testRunner ) )]]></script></con:config></con:testStep><con:testStep type="groovy" name="Controllers" id="5dad8343-9e7c-4f37-a1d0-9c0694562326"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+ class Controllers {
+ def log
+   def context
+   def testRunner
+   
+   // Class constructor with same case as Class name
+   def Controllers(logIn,contextIn,testRunnerIn)
+   {
+      this.log = logIn
+      this.context = contextIn
+      this.testRunner = testRunnerIn
+      
+   }   
+
+ def CGController(String transid, String providerid)
+   { 
+  def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+
+    HashMap<Integer,String> cgmap=new HashMap<Integer,String>();
+    cgmap.put('2','OOVS_CG_Controller')
+    cgmap.put('7','UMobCGController')
+    cgmap.put('8','DVS_CG_Controller')
+    cgmap.put('99','SM3_CG_Controller')
+    cgmap.put('98','SM2_CG_Controller')
+    cgmap.put('91','EVS_CG_Controller')
+    cgmap.put('92','OJVS_CG_Controller')
+    cgmap.put('33','XL_CG_Controller')
+    
+    
+      def contextStep=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName(cgmap.get(providerid).toString())  
+	contextStep.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))
+	
+	  	//set api property		
+	  	contextStep.setPropertyValue("transid", transid)		
+		contextStep.run(testRunner,testRunner.getRunContext())				
+		}  
+ 
+     //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def airtelMovieJnCGController(String transid, String code,String state)
+   { 
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+
+	def amjCGController=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "AMJ_CG_Controller")  
+	amjCGController.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	  	//set api property
+		amjCGController.setPropertyValue("state",state)
+		amjCGController.setPropertyValue("code", code)			
+		amjCGController.setPropertyValue("transid", transid)		
+		amjCGController.run(testRunner,testRunner.getRunContext())				
+		}  
+		     //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def maxisCGController(String transid, String msisdn,String statuscode, String result)
+   { 
+   	
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+
+	def maxisCGController=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "Maxis_CG_Controller")  
+	maxisCGController.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	  	//set api property
+		maxisCGController.setPropertyValue("chargedMSISDN",msisdn)
+		maxisCGController.setPropertyValue("ChargeId", transid)			
+		maxisCGController.setPropertyValue("StatusCode", statuscode)	
+		maxisCGController.setPropertyValue("result", result)		
+		maxisCGController.run(testRunner,testRunner.getRunContext())				
+		} 
+
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def OTPController(String transid, String providerid, String pin,String custtrnxid)
+   { 
+   	  def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+
+    HashMap<Integer,String> cgmap=new HashMap<Integer,String>();
+     cgmap.put('92','OTP_OJVS_CONTROLLER')
+    
+      def contextStep=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName(cgmap.get(providerid).toString())  
+	contextStep.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))	
+	  	//set api property		
+	  	contextStep.setPropertyValue("transid", transid)
+	  	contextStep.setPropertyValue("otp", pin)		
+	  	contextStep.setPropertyValue("customerTransactionId", custtrnxid)	
+	  				  	
+		contextStep.run(testRunner,testRunner.getRunContext())				
+		} 	
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+			        
+def VVACGController(String transid,String msisdn,String cgStatus,String cgStatusCode,String providerid )
+   { 
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+
+                def vvaCGController=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("VVA_CG_Controller")  
+                vvaCGController.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+                                //set api property
+                                
+                                vvaCGController.setPropertyValue("transid", transid)
+                                vvaCGController.setPropertyValue("MSISDN",msisdn)
+                                vvaCGController.setPropertyValue("CGStatus", cgStatus)
+                                vvaCGController.setPropertyValue("CGStatusCode",cgStatusCode)
+                                
+                                vvaCGController.run(testRunner,testRunner.getRunContext())                                                                
+                                }
+
+}
+ 
+ context.setProperty( "controllers", new Controllers( log, context, testRunner ) )]]></script></con:config></con:testStep><con:testStep type="groovy" name="LCM Run" id="f9dac9fa-01a6-4385-83ab-cbfbdf5bf42c"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+
+ class LCMRun {
+ def log
+   def context
+   def testRunner
+   
+   // Class constructor with same case as Class name
+   def LCMRun(logIn,contextIn,testRunnerIn)
+   {
+      this.log = logIn
+      this.context = contextIn
+      this.testRunner = testRunnerIn
+      
+   }
+ 
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepConfirmation(String msisdn,String billingcode,String activityresult)
+   { 
+   	String epoctime=getEpoc();
+   	 def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}  	
+	def stepConfirm=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("BaaS_Confirm")
+	stepConfirm.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))
+	        
+	        //To set Parameter Values  of COnfim  API 	
+		stepConfirm.setPropertyValue("msisdn",msisdn)
+		stepConfirm.setPropertyValue("billingCode",billingcode) 
+		stepConfirm.setPropertyValue("activityResult",activityresult) 
+
+          //bass  confirm api execution
+		stepConfirm.run(testRunner,testRunner.getRunContext()) 	
+		def responseStepConfirm = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("BaaS_Confirm").getPropertyValue("response")
+	   def  slurperStepConfirm= new JsonSlurper().parseText(responseStepConfirm)
+
+	   context.setProperty("jsonStepConfirm",slurperStepConfirm)
+ }
+
+     //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepLcmCommon(String apiname,String msisdn, String billingcode, String activityres, String trnxid)
+   { 
+   	
+   	String epoctime=getEpoc();
+   	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def step=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName(apiname) 
+	step.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}')) 
+	   // To set Parameter Values  baas dct API
+	   step.setPropertyValue("msisdn",msisdn)
+	   step.setPropertyValue("billingCode",billingcode)			
+        step.setPropertyValue("activityResult",activityres)
+	   step.setPropertyValue("transactionId",trnxid)
+	    step.setPropertyValue("responseCode",trnxid)
+	 
+	 step.run(testRunner,testRunner.getRunContext())
+         def responseStep = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName(apiname).getPropertyValue("response")
+	   def   slurperStepLcm= new JsonSlurper().parseText(responseStep) 	  
+
+	   context.setProperty("jsonLcmCommon",slurperStepLcm)
+    }
+    
+
+     //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepLcmACT(String msisdn, String billingcode, String activityres, String trnxid)
+   { 
+   	String epoctime=getEpoc();
+   	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepACT=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "LCM_ACT")  
+	stepACT.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	   // To set Parameter Values  baas dct API
+	   stepACT.setPropertyValue("msisdn",msisdn)
+	   stepACT.setPropertyValue("billingCode",billingcode)			
+        stepACT.setPropertyValue("activityResult",activityres)
+	   stepACT.setPropertyValue("transactionId",trnxid)
+	 
+		stepACT.run(testRunner,testRunner.getRunContext())
+         def responseStepLcmACT = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("LCM_ACT").getPropertyValue("response")
+	   def   slurperStepLcmACT= new JsonSlurper().parseText(responseStepLcmACT) 	  
+
+	   context.setProperty("jsonStepLcmACT",slurperStepLcmACT)
+    }
+
+         //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepLcmDCT(String msisdn, String billingcode, String activityres, String trnxid)
+   { 
+   	String epoctime=getEpoc();
+ def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepDCT=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "LCM_DCT")  
+	stepDCT.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	   // To set Parameter Values  baas dct API
+	   stepDCT.setPropertyValue("msisdn",msisdn)
+	   stepDCT.setPropertyValue("billingCode",billingcode)			
+        stepDCT.setPropertyValue("activityResult",activityres)
+	   stepDCT.setPropertyValue("transactionId",trnxid)	
+
+	   	log.debug "stepLcmDCT called with param>>>>>>>>>>"+msisdn +"||"+billingcode+"||"+activityres+"||"+trnxid
+
+		stepDCT.run(testRunner,testRunner.getRunContext())
+         def responseStepLcmDCT = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("LCM_DCT").getPropertyValue("response")
+	   def   slurperStepLcmDCT= new JsonSlurper().parseText(responseStepLcmDCT) 	  
+
+	   context.setProperty("jsonStepLcmDCT",slurperStepLcmDCT)
+    }
+       //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepLcmDCT_INIT(String msisdn, String billingcode, String activityres, String trnxid)
+   { 
+   	String epoctime=getEpoc();
+   	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepDCT_INIT=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "LCM_DCT_INIT")  
+	stepDCT_INIT.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	   // To set Parameter Values  baas dct API
+	   stepDCT_INIT.setPropertyValue("msisdn",msisdn)
+	   stepDCT_INIT.setPropertyValue("billingCode",billingcode)			
+        stepDCT_INIT.setPropertyValue("activityResult",activityres)
+	   stepDCT_INIT.setPropertyValue("transactionId",trnxid)	
+        stepDCT_INIT.run(testRunner,testRunner.getRunContext())
+         def responseStepLcmDCT_INIT = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("LCM_DCT_INIT").getPropertyValue("response")
+	   def   slurperStepLcmDCT_INIT= new JsonSlurper().parseText(responseStepLcmDCT_INIT) 	  
+
+	   context.setProperty("jsonStepLcmDCT_INIT",slurperStepLcmDCT_INIT)
+    }
+
+         //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def stepLcmREN(String msisdn, String billingcode, String activityres, String trnxid,String accessmode)
+   { 
+   	String epoctime=getEpoc();
+   	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepREN=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "LCM_REN")  
+	stepREN.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	   // To set Parameter Values  baas dct API
+	   stepREN.setPropertyValue("msisdn",msisdn)
+	   stepREN.setPropertyValue("billingCode",billingcode)			
+        stepREN.setPropertyValue("activityResult",activityres)
+	   stepREN.setPropertyValue("transactionId",trnxid)	
+	   stepREN.setPropertyValue("accessMode",accessmode)	
+	   
+         	//log.debug "stepREN called with param>>>>>>>>>>"+msisdn +"||"+billingcode+"||"+activityres+"||"+trnxid
+		stepREN.run(testRunner,testRunner.getRunContext())
+         def responseStepLcmREN = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("LCM_REN").getPropertyValue("response")
+	   def   slurperStepLcmREN= new JsonSlurper().parseText(responseStepLcmREN) 	  
+
+	   context.setProperty("jsonStepLcmREN",slurperStepLcmREN)
+    }   
+
+           //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+    def baseRecon(String msisdn, String billingcode, String activityres, String trnxid,String accessmode, String chargingmode, String target, 
+    String itemid, String itemtypeid,String responsecode, String responsemessage)
+   { 
+   	
+   	String epoctime=getEpoc();
+   	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def stepBaseRecon=projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName( "Base_Recon")  
+	stepBaseRecon.getHttpRequest().setEndpoint(context.expand('${#Global#baas_endpoint}'))  
+	   // To set Parameter Values  baas dct API
+	   stepBaseRecon.setPropertyValue("msisdn",msisdn)
+	   stepBaseRecon.setPropertyValue("billingCode",billingcode)			
+        stepBaseRecon.setPropertyValue("activityResult",activityres)	   
+	   stepBaseRecon.setPropertyValue("accessMode",accessmode)
+	   stepBaseRecon.setPropertyValue("chargingMode",chargingmode)
+	   stepBaseRecon.setPropertyValue("targetState",target)
+	   stepBaseRecon.setPropertyValue("transactionId",trnxid)		   
+	   stepBaseRecon.setPropertyValue("itemTypeId",itemtypeid)
+	   stepBaseRecon.setPropertyValue("responseCode",responsecode)
+	   stepBaseRecon.setPropertyValue("responseMessage",responsemessage)	
+	   stepBaseRecon.setPropertyValue("itemId",itemid)   
+	   
+         	stepBaseRecon.run(testRunner,testRunner.getRunContext())
+//         def responsestepBaseRecon = projectResource.testSuites["Common Util"].testCases["BaaS API"].getTestStepByName("Base_Recon").getPropertyValue("response")
+//	   def   slurperStepBaseRecon= new JsonSlurper().parseText() 	  
+//
+//	   context.setProperty("jsonStepBaseRecon",slurperStepBaseRecon)
+    }   
+    
+ def String getEpoc()
+{
+Date date=new Date();
+def epocms= date.getTime()/1000;
+String epoc = String.format("%.0f", epocms);
+return epoc
+}
+		         
+}
+ 
+ context.setProperty( "lcmRun", new LCMRun( log, context, testRunner ) )]]></script></con:config></con:testStep><con:properties><con:property><con:name>transid</con:name><con:value/></con:property></con:properties><con:reportParameters/></con:testCase>

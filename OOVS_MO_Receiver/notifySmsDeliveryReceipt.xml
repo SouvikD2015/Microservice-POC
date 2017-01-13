@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:operation id="9d280bc1-dcd2-4c2b-b953-0047badb4f9d" isOneWay="false" action="http://www.csapi.org/schema/parlayx/sms/notification/v2_2/local/notifySmsDeliveryReceipt" name="notifySmsDeliveryReceipt" bindingOperationName="notifySmsDeliveryReceipt" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="9d280bc1-dcd2-4c2b-b953-0047badb4f9dfileName">notifySmsDeliveryReceipt</con:setting></con:settings><con:call id="4178b013-98e5-4e81-9302-d8ad8ce98480" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://192.168.250.93:18040/services/ooredoo/SMSService</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:loc="http://www.csapi.org/schema/parlayx/sms/notification/v2_2/local">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <loc:notifySmsReception>
+         <loc:correlator>REQUEST_MO_MESSAGE</loc:correlator>
+         <loc:message>
+            <message>SUB</message>
+            <senderAddress>tel:965100001</senderAddress>
+            <smsServiceActivationNumber>tel:965100001</smsServiceActivationNumber>
+            <!--Optional:-->
+            <dateTime>2015-09-23T08:31:13.313Z</dateTime>
+         </loc:message>
+      </loc:notifySmsReception>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.csapi.org/schema/parlayx/sms/notification/v2_2/local/notifySmsDeliveryReceipt"/><con:wsrmConfig version="1.2"/></con:call></con:operation>

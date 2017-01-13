@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="eee81359-3e6d-465a-878e-d2ab6c8ad6f1" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Talend_API" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:description>//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+def setOOVSMOProperty(String action,String telnumber)
+{	
+	    //def 	propertyMO=  testRunner.testCase.testSuite.project.workspace.getProjectByName("BaaS_Util").testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("properties")
+	     	
+      	propertyMO.setPropertyValue("action",action)	 	
+		propertyMO.setPropertyValue("telnumber",telnumber)
+		log.info "property set as action="+action +" telnumber="+telnumber
+		
+}
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+def oovsMoRx(String action,String telnumber)
+{
+	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open &amp;&amp; workspace!=null) 
+{workspace.openProject(projectResource)
+}
+
+	 def propertyMO=  projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("properties")
+	     	
+      	propertyMO.setPropertyValue("action",action)	 	
+		propertyMO.setPropertyValue("telnumber",telnumber)
+		
+	def 	stepMORx= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("OOVS_MO_Rx")	     	 
+	   	
+	   	stepMORx.run(testRunner,testRunner.getRunContext())	
+	   	}
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+def airtelMovieNotifyRx()
+{
+	log.info "in Method"
+	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open &amp;&amp; workspace!=null) 
+{workspace.openProject(projectResource)
+}		
+	def 	stepNotifyRx= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("AMJ_Notify")	     	 
+	   	
+	   	stepNotifyRx.run(testRunner,testRunner.getRunContext())	
+	   	}</con:description><con:settings><con:setting id="eee81359-3e6d-465a-878e-d2ab6c8ad6f1fileName">Talend_API</con:setting></con:settings><con:testStep type="restrequest" name="Aircel_Notify" id="d3fe537c-d46f-4c63-bbb4-119f43606d24"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/talend/notification" methodName="ProcessNotification" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Aircel_Notify" id="0d27e80d-919e-483f-8063-80ce9bf81eb0" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request/><con:originalUri>http://64.71.156.243/processNotification</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="SID" value="9000000052"/>
+  <con:entry key="ServiceName" value="VSD1"/>
+  <con:entry key="NotifyType" value="SUB-2"/>
+  <con:entry key="ProductName" value="VSD1"/>
+  <con:entry key="AmountCharged" value="0"/>
+  <con:entry key="SubscriptionValidity" value="2"/>
+  <con:entry key="ChannelType" value="WAP"/>
+</con:parameters><con:parameterOrder><con:entry>ProductName</con:entry><con:entry>ServiceName</con:entry><con:entry>SID</con:entry><con:entry>NotifyType</con:entry><con:entry>SubscriptionValidity</con:entry><con:entry>ChannelType</con:entry><con:entry>AmountCharged</con:entry><con:entry>Reason</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="AircelCGCallback" id="82f3711d-73ee-44bf-bb2c-c0d12863f0f3"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/talend/CGcallback" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="AircelCGCallback" id="c58f4aef-f2e7-4404-99f3-3c1b23901c56" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/talend/CGcallback</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="msisdn" value="9000000028"/>
+  <con:entry key="cgid" value="Trnx853140781"/>
+  <con:entry key="transid" value="Trnx853140781"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Voda_Egypt_Billing" id="6560bf93-e505-4a0a-8a9e-59509a545f1f"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/talend/ve/" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Voda_Egypt_Billing" id="d6162a0e-e1dd-42f7-822d-4858f1a64973" mediaType="application/json"><con:settings/><con:endpoint>http://192.168.250.93:8088</con:endpoint><con:request/><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Vodafone_Notify" id="ed9266a5-e58d-43da-912c-93d658154966"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/vodafone/notification" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Vodafone_Notify" id="3563bc7f-64d6-42bd-8f76-b5cae1461237" mediaType="application/json"><con:settings/><con:endpoint>http://192.168.250.93:8088</con:endpoint><con:request/><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="DVS_MO_Rx" id="e5f0a48f-8ffa-419e-86c4-964c482ee627"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/dvs/mo" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="DVS_MO_Rx" id="f84c1283-dd8d-40c8-a487-33109a3aab96" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/dvs/mo</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="messageCode" value="unSuB vS"/>
+  <con:entry key="msisdn" value="971880078"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="OOVS_DN_Rx" id="d0253d27-0511-4ebf-afa8-b18c9d18204a"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/oovs-timwe/notification" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="OOVS_DN_Rx" id="c4b064d4-ef04-4b70-b1fa-3ebcef6f38cd" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/oovs-timwe/notification</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="TxId" value="tx1965000008"/>
+  <con:entry key="Origin" value="9688800006"/>
+  <con:entry key="ExtTxId" value="r7073346907928b"/>
+  <con:entry key="DeliStatusId" value="10"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="OOVS_MO_Rx" id="5906c5db-3844-4320-a215-07caf03f10ff"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/oovs-timwe/mo" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="OOVS_MO_Rx" id="d39eee9f-d804-48a2-8f58-2f982e4047a8" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/oovs-timwe/mo</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="Text" value="إشترك"/>
+  <con:entry key="PricePointId" value="180385"/>
+  <con:entry key="TxId" value="MOTx70495740957"/>
+  <con:entry key="Origin" value="965000005"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="OJVS_Notify" id="bee58969-fa51-4fa6-92a6-672fb2b993f8"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/tpay/notification" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="OJVS_Notify" id="13954342-0af9-4a7d-949e-37e523953070" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/OrangeJordan/notification</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="subscriptionContractId" value="92000028"/>
+  <con:entry key="productCatalogName" value="Orange Jordan Video Store"/>
+  <con:entry key="paymentDate" value="2016-06-21 12:58:29Z"/>
+  <con:entry key="status" value="NA"/>
+  <con:entry key="nextPaymentDate" value="2016-06-22 12:58:29Z"/>
+  <con:entry key="customerAccountNumber" value="Vuclip"/>
+  <con:entry key="digest" value="RcXa2QSuNz1XeHmcTuz9:95583de4ae4394a84ffd8743701c9cdd15d9dace91148c0204549b96e6cfafc1"/>
+  <con:entry key="amountCharged" value="0.10"/>
+</con:parameters><con:parameterOrder><con:entry>action</con:entry><con:entry>subscriptionContractId</con:entry><con:entry>customerAccountNumber</con:entry><con:entry>paymentTransactionStatusCode</con:entry><con:entry>transactionId</con:entry><con:entry>amountCharged</con:entry><con:entry>currencyCode</con:entry><con:entry>paymentDate</con:entry><con:entry>errorMessage</con:entry><con:entry>nextPaymentDate</con:entry><con:entry>productCatalogName</con:entry><con:entry>productId</con:entry><con:entry>status</con:entry><con:entry>reason</con:entry><con:entry>digest</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="OJVS_Billing" id="e0ef46c4-77f3-4a78-8320-e077dd529a2f"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/tpay/billing" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="OJVS_Billing" id="09b2817f-67b7-4458-8563-72738a799b86" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/ojvs/billing</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="customerTransactionId" value="92000075"/>
+  <con:entry key="carrierSubscriptionId" value="92000075"/>
+  <con:entry key="msisdn" value="962000075"/>
+  <con:entry key="chargingMode" value="backend"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="OJVS_VuConnectNotify" id="95b46bc4-a9cf-4c26-966f-21a44ef15f65"><con:settings/><con:config service="VuConnect" resourcePath="/vuconnect/tpayNotificationReceiver" methodName="TpayNotificationReceiver" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="OJVS_VuConnectNotify" id="d035d89f-050f-4176-b030-1cfe31c8e3e2" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8090</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/vuconnect/tpayNotificationReceiver</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="subscriptionContractId" value="92000054"/>
+  <con:entry key="paymentDate" value="2016-06-28 20:03:48Z"/>
+  <con:entry key="status" value="Purged"/>
+  <con:entry key="nextPaymentDate" value="2016-06-29 20:03:48Z"/>
+  <con:entry key="paymentTransactionStatusCode" value=""/>
+  <con:entry key="action" value="SubscriptionContractStatusChanged"/>
+  <con:entry key="customerAccountNumber" value="Vuclip"/>
+  <con:entry key="digest" value="RcXa2QSuNz1XeHmcTuz9:f27be0c83a6f0442c461dc59e2a21bc806f52853056335b3fa3cde04c8e2103c"/>
+  <con:entry key="amountCharged" value=""/>
+</con:parameters><con:parameterOrder><con:entry>action</con:entry><con:entry>subscriptionContractId</con:entry><con:entry>customerAccountNumber</con:entry><con:entry>paymentTransactionStatusCode</con:entry><con:entry>transactionId</con:entry><con:entry>amountCharged</con:entry><con:entry>currencyCode</con:entry><con:entry>paymentDate</con:entry><con:entry>nextPaymentDate</con:entry><con:entry>productCatalogName</con:entry><con:entry>productId</con:entry><con:entry>digest</con:entry><con:entry>status</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="XL_MO" id="130110b8-fd5b-4b9e-8a23-631f96808865"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/exclecom/mo" methodName="MO Receiver" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="XL_MO" id="0d27e80d-919e-483f-8063-80ce9bf81eb0" mediaType="application/x-www-form-urlencoded" postQueryString="true"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request/><con:originalUri>http://64.71.156.243/processNotification</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="X-Dest-Addr:" value="97878"/>
+  <con:entry key="X-Pull-Trx-Id" value="1234"/>
+  <con:entry key="X-Source-Addr" value="620000047"/>
+  <con:entry key="_SC" value="Berhenti"/>
+  <con:entry key="Content-Type" value="application/x-www-form-urlencoded"/>
+</con:parameters><con:parameterOrder><con:entry>_SC</con:entry><con:entry>X-Source-Addr</con:entry><con:entry>X-Dest-Addr:</con:entry><con:entry>X-Pull-Trx-Id</con:entry><con:entry>Content-Type</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="XL_USSD" id="a77b15c6-a731-4184-a32c-9f0fe24b2f3d"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/excelcom/ussd" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="XL_USSD" id="831051b9-09b7-4ab7-8e84-73a3cc8b8f9a" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/excelcom/ussd</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="level2" value="2"/>
+  <con:entry key="MSISDN" value="620000042"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="VVA_Notify" id="d6c228bc-c4f3-45fc-ba13-90cd04dd77d1"><con:settings/><con:config service="Talend_Enpoints" resourcePath="/vodafoneIndia/notification" methodName="Method 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="VVA_Notify" id="92c61b6a-0b03-4664-b448-0f782e61e790" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://192.168.249.94:8088</con:endpoint><con:request/><con:originalUri>http://192.168.249.94/vodafoneIndia/notification</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="CIRCLE_ID" value="MH"/>
+  <con:entry key="CHARGING_MODE" value="null"/>
+  <con:entry key="REQ_MOD" value="WAP"/>
+  <con:entry key="STATUS" value="SUCCESS"/>
+  <con:entry key="ACTION" value="DCT"/>
+  <con:entry key="MSISDN" value="9889000147"/>
+</con:parameters><con:parameterOrder><con:entry>MSISDN</con:entry><con:entry>SERVICE_ID</con:entry><con:entry>CLASS</con:entry><con:entry>TXNID</con:entry><con:entry>CHARGING_MODE</con:entry><con:entry>REQUEST_ID</con:entry><con:entry>BALANCE</con:entry><con:entry>REQ_MOD</con:entry><con:entry>CIRCLE_ID</con:entry><con:entry>PROVIDER_ID</con:entry><con:entry>ACTION</con:entry><con:entry/></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Talend_API_Run" id="e929ed41-1072-46d3-9454-80155ec47881"><con:settings/><con:config><script><![CDATA[import groovy.json.JsonSlurper
+import java.io.*
+import java.text.*
+import java.util.*
+import com.eviware.soapui.model.project.ProjectFactoryRegistry
+import com.eviware.soapui.impl.wsdl.WsdlProjectFactory
+import com.tpay.digest.*;
+import groovy.util.XmlSlurper
+
+ class TalendAPIRun {
+ def log
+   def context
+   def testRunner
+   
+   // Class constructor with same case as Class name
+   def TalendAPIRun(logIn,contextIn,testRunnerIn)
+   {
+   	
+      this.log = logIn
+      this.context = contextIn
+      this.testRunner = testRunnerIn      
+   }
+   //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def String  AircelNotify(String msisdn, String productname,String servicename,String notifytype,String amount,String validity,String channel)
+{
+	
+	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+//def projectResource=testRunner.testCase.testSuite.project.workspace.getProjectByName("BaaS_Util")
+	
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("Aircel_Notify")
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	
+	   
+		 // To set Parameter Values  of Talend Notify Prcess API 	
+		stepNotify.setPropertyValue("ProductName",productname) 	
+		stepNotify.setPropertyValue("ServiceName",servicename) 	
+		stepNotify.setPropertyValue("NotifyType",notifytype) 
+		stepNotify.setPropertyValue("SID",msisdn) 
+		stepNotify.setPropertyValue("AmountCharged",amount) 	
+		stepNotify.setPropertyValue("SubscriptionValidity",validity) 
+		stepNotify.setPropertyValue("ChannelType",channel) 
+		
+	   	
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+	  String response=projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("Aircel_Notify").testRequest.response.contentAsString
+       return response;
+}
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def String AircelCGCallback(String msisdn, String result)
+{
+	
+		def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+//def projectResource=testRunner.testCase.testSuite.project.workspace.getProjectByName("BaaS_Util")
+
+Random random=new Random()
+
+def tid= "Trnx"+random.nextInt(1000000000)
+	
+	def 	stepConfirm= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("AircelCGCallback")
+	stepConfirm.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	  //To set Parameter Values  of Talend CG callback  API 	
+		stepConfirm.setPropertyValue("msisdn",msisdn) 	
+		stepConfirm.setPropertyValue("result",result)  
+		stepConfirm.setPropertyValue("transid",tid)  
+		stepConfirm.setPropertyValue("cgid",tid)  
+		
+	   	
+	   	stepConfirm.run(testRunner,testRunner.getRunContext())	
+	  String response=projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("AircelCGCallback").testRequest.response.contentAsString
+       return response;
+       
+}
+ //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def Vodafone_Notify(String msisdn, String serviceid,String classname,String responsetrnxid,
+String action,String status,String chargingmode,String requestid,String reqmode,String circleid)
+{
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("Vodafone_Notify")
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	     stepNotify.setPropertyValue("MSISDN",msisdn)	 	
+		stepNotify.setPropertyValue("SERVICE_ID",serviceid)
+	     stepNotify.setPropertyValue("CLASS",classname)	
+		stepNotify.setPropertyValue("TXNID",responsetrnxid)
+	     stepNotify.setPropertyValue("ACTION",action)
+	     stepNotify.setPropertyValue("STATUS",status)	
+	     stepNotify.setPropertyValue("CHARGING_MODE",chargingmode)	
+	     stepNotify.setPropertyValue("REQUEST_ID",requestid)	
+	     stepNotify.setPropertyValue("REQ_MODE",reqmode)	
+	     stepNotify.setPropertyValue("CIRCLE_ID",circleid)	
+	   	
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+
+//	   def responsestepNotify = testRunner.testCase.testSuite.project.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("Vodafone_Notify").getPropertyValue("response")
+//	   def  slurperstepNotify= new JsonSlurper().parseText(responsestepNotify) 
+//
+//	   context.setProperty("jsonstepNotify",slurperstepNotify)
+}
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def Vodafone_Egypt_Billing(String userid, String activitytype,String billingcode)
+{
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("Voda_Egypt_Billing")
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	     stepNotify.setPropertyValue("userId",userid)	 	
+		stepNotify.setPropertyValue("activityType",activitytype)
+	     stepNotify.setPropertyValue("billingCode",billingcode)	
+		
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+}
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def DVS_MO_Rx(String userid, String keyword)
+{
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("DVS_MO_Rx")
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	     stepNotify.setPropertyValue("msisdn",userid)	 	
+		stepNotify.setPropertyValue("messageCode",keyword)
+	     		
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+}
+
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def OOVS_DN_Rx(String ppid, String origin, String extTxId, String trnxid, String deliStatusId)
+{
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("OOVS_DN_Rx")
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	     stepNotify.setPropertyValue("PricePointId",ppid)	 	
+		stepNotify.setPropertyValue("Origin",origin)
+		stepNotify.setPropertyValue("ExtTxId",extTxId)
+		stepNotify.setPropertyValue("TxId",trnxid)	  
+		stepNotify.setPropertyValue("DeliStatusId",deliStatusId)	   
+		  		
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+}
+
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def OOVS_MO_Rx(String ppid, String origin, String txt, String trnxid)
+{
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("OOVS_MO_Rx")
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	     stepNotify.setPropertyValue("PricePointId",ppid)	 	
+		stepNotify.setPropertyValue("Origin",origin)
+		stepNotify.setPropertyValue("Text",txt)
+		stepNotify.setPropertyValue("TxId",trnxid)
+	     		
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+}
+
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def OJVS_Notify_Rx(String action, String subscriptioncontractid, String status, String paymenttrnxstatuscode, String amount, String errmsg)
+{
+
+Calendar cal = Calendar.getInstance();
+TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+cal.setTimeZone(gmtTime);
+Date date= cal.getTime()
+cal.add(Calendar.DATE, 1);
+Date nextdate=cal.getTime()
+SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+String paymentdate=formatter.format(date)+"Z"
+String nextpaymentdate=formatter1.format(nextdate)+"Z";
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+
+StringBuffer message=new  StringBuffer(action);
+message.append(subscriptioncontractid);
+message.append("Vuclip");
+if(paymenttrnxstatuscode!=null){
+message.append(paymenttrnxstatuscode);
+}
+
+message.append("1232323"+amount+"JOD");
+message.append(paymentdate)
+message.append(errmsg);
+message.append(nextpaymentdate);
+message.append("Orange Jordan Video Store30");
+if(status!=null )
+{
+message.append(status);
+}
+//log.info "Message="+message.toString()
+def signature=Digest.generateSignature(message.toString())
+//log.info "signature="+signature
+	
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("OJVS_Notify")
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	     stepNotify.setPropertyValue("action",action)	 	
+	     stepNotify.setPropertyValue("subscriptionContractId",subscriptioncontractid)
+	     stepNotify.setPropertyValue("paymentTransactionStatusCode",paymenttrnxstatuscode)	
+	     stepNotify.setPropertyValue("paymentDate",paymentdate)	
+	     stepNotify.setPropertyValue("nextPaymentDate",nextpaymentdate)	
+	     stepNotify.setPropertyValue("errorMessage",errmsg)	      
+	     stepNotify.setPropertyValue("status",status)				 
+		stepNotify.setPropertyValue("amountCharged",amount)  
+		stepNotify.setPropertyValue("digest",signature) 
+				  		
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+}
+
+//---------------------------------------------------------------------
+def OJVS_vuconnectnotify(String action, String subscriptioncontractid, String status, String paymenttrnxstatuscode, String amount, String errmsg)
+{
+
+Calendar cal = Calendar.getInstance();
+TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+cal.setTimeZone(gmtTime);
+Date date= cal.getTime()
+cal.add(Calendar.DATE, 1);
+Date nextdate=cal.getTime()
+SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+String paymentdate=formatter.format(date)+"Z"
+String nextpaymentdate=formatter1.format(nextdate)+"Z";
+
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+
+StringBuffer message=new  StringBuffer(action);
+message.append(subscriptioncontractid);
+message.append("Vuclip");
+if(paymenttrnxstatuscode!=null){
+message.append(paymenttrnxstatuscode);
+}
+
+message.append("1232323"+amount+"JOD");
+message.append(paymentdate)
+message.append(errmsg);
+message.append(nextpaymentdate);
+message.append("Orange Jordan Video Store30");
+if(status!=null )
+{
+message.append(status);
+}
+//log.info "Message="+message.toString()
+def signature=Digest.generateSignature(message.toString())
+
+//log.info "signature="+signature
+	
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("OJVS_VuConnectNotify")
+	log.info context.expand('${#Global#vuconnect_endpoint}')
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#vuconnect_endpoint}'))  
+	     stepNotify.setPropertyValue("action",action)	 	
+	     stepNotify.setPropertyValue("subscriptionContractId",subscriptioncontractid)
+	     stepNotify.setPropertyValue("paymentTransactionStatusCode",paymenttrnxstatuscode)	
+	     stepNotify.setPropertyValue("paymentDate",paymentdate)	
+	     stepNotify.setPropertyValue("nextPaymentDate",nextpaymentdate)	
+	     stepNotify.setPropertyValue("errorMessage",errmsg)	      
+	     stepNotify.setPropertyValue("status",status)				 
+		stepNotify.setPropertyValue("amountCharged",amount)  
+		stepNotify.setPropertyValue("digest",signature) 
+					  		
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+}
+//----------------------------------------------------------------------
+def ojvsBilling(String msisdn, String billingcode, String parentbillcode,String activitytype,String requestid, String mode ,
+String  custtrnxid,String currbillcode,String carriersubid  )
+{
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("OJVS_Billing")
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	     stepNotify.setPropertyValue("msisdn",msisdn)	 	
+		stepNotify.setPropertyValue("billingCode",billingcode)
+		stepNotify.setPropertyValue("parentbillingCode",parentbillcode)
+		stepNotify.setPropertyValue("activityType",activitytype)
+		stepNotify.setPropertyValue("requestTypeId",requestid)
+		stepNotify.setPropertyValue("chagringMode",mode)
+		stepNotify.setPropertyValue("customerTransactionId",custtrnxid)
+		stepNotify.setPropertyValue("currentBillingCode",currbillcode)
+		stepNotify.setPropertyValue("carrierSubscriptionId",carriersubid)				     		
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+
+	   		def response = projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("OJVS_Billing").getPropertyValue("response")
+	   def  parsedXmlResponse= new XmlSlurper().parseText(response) 
+
+	   context.setProperty("talendResponse",parsedXmlResponse)
+	   
+}
+
+   //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def String  XL_MOReceiver(String msisdn, String keyword)
+{
+	
+	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("XL_MO")
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	
+	   
+		 // To set Parameter Values  of Talend Notify Prcess API 	
+		stepNotify.setPropertyValue("_SC",keyword) 	
+		stepNotify.setPropertyValue("X-Source-Addr", msisdn) 	
+			   	
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+	 
+}
+
+
+   //=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def String  XL_USSDReceiver(String msisdn, String keyword)
+{
+	
+	def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+	
+	def 	stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("XL_USSD")
+	stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+	
+	   
+		 // To set Parameter Values  of Talend Notify Prcess API 	
+		stepNotify.setPropertyValue("level2",keyword) 	
+		stepNotify.setPropertyValue("MSISDN", msisdn) 	
+			   	
+	   	stepNotify.run(testRunner,testRunner.getRunContext())	
+	 
+}
+//=====================>>>>>>>>>>>===================>>>>>>>>>>>>>>
+
+def Vodafone_Notify(String msisdn, String serviceid,String classname,String chargingmode,String reqmode,String circleid,String action,String status)
+{
+def workspace = testRunner.testCase.testSuite.project.workspace
+def projectResource = (workspace==null) ? 
+  ProjectFactoryRegistry.getProjectFactory(WsdlProjectFactory.WSDL_TYPE).createNew(context.expand('${projectDir}')+"/BaaS-Util.xml") :  workspace.getProjectByName("BaaS_Util")
+if(!projectResource.open && workspace!=null) 
+{workspace.openProject(projectResource)
+}
+ 
+ def  stepNotify= projectResource.testSuites["Common Util"].testCases["Talend_API"].getTestStepByName("VVA_Notify")
+ stepNotify.getHttpRequest().setEndpoint(context.expand('${#Global#talend_endpoint}'))  
+      stepNotify.setPropertyValue("MSISDN",msisdn)   
+      stepNotify.setPropertyValue("SERVICE_ID",serviceid)
+      stepNotify.setPropertyValue("CLASS",classname) 
+      stepNotify.setPropertyValue("ACTION",action)
+      stepNotify.setPropertyValue("STATUS",status) 
+      stepNotify.setPropertyValue("CHARGING_MODE",chargingmode)   
+      stepNotify.setPropertyValue("REQ_MODE",reqmode) 
+      stepNotify.setPropertyValue("CIRCLE_ID",circleid) 
+     
+     stepNotify.run(testRunner,testRunner.getRunContext()) 
+
+}
+
+
+	}
+
+ context.setProperty( "talendApiRun", new TalendAPIRun( log, context, testRunner ) )]]></script></con:config></con:testStep><con:properties/><con:reportParameters/></con:testCase>

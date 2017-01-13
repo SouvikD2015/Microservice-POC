@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="110ede50-1e55-40b9-a850-9bc1d9bf78be" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="TestCase_CustomerProjectOrder_AZURE URI_GetByCompanyCode" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="110ede50-1e55-40b9-a850-9bc1d9bf78befileName">TestCase_CustomerProjectOrder_AZURE-URI_GetByCompanyCode</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="SetDynamicURI" id="544fd5a1-b0df-40d4-9537-50db7d302078"><con:settings/><con:config><script>context["host"]= "mum-dev"
+context["port"]= "5005"
+context["context1"]= "api/customerprojectorder/companycode/mh"///AAIR01"
+context["colon"] = ":"
+context["backslash"] = "/"
+
+
+ log.info "http://" + context["host"] + context["colon"] +context["port"] + context["backslash"] +context["context1"] 
+ //+context["context2"]
+</script></con:config></con:testStep><con:testStep type="restrequest" name="REST Request_GetByCompanyCode" id="178228a1-eceb-4bc9-a1f2-64c3f22335f3"><con:settings/><con:config service="REST Service 35" resourcePath="/" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_GetByCompanyCode" id="37f32f23-9306-45ef-b4bb-7041a0015a8f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://${host}${colon}${port}${backslash}${context1}</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/customerprojectorder/companycode/j4/</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Validate_ERP_ProjectNumber_Azure_MH_UAE" id="9f00d1b5-8e87-4dee-853f-a573b382bcf4"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+
+def getRespo = testRunner.testCase.getTestStepByName("REST Request_GetByCompanyCode").getPropertyValue("Response") 
+//log.info getRespo
+
+def CusId= parse(getRespo).read('$..ERP_Project_Number__c')
+//log.info CusId
+//log.info length=CusId.size()
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\CustomerProjectOrder\\UAE\\pr01_mh_pr01001.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+//def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+def lineNo = CusId.size()
+def lines = file.readLines()
+
+for(def reps = 0; reps &lt;= lineNo; reps++ )
+
+{
+if(lines[reps] != null)
+{
+	
+	if(CusId[reps] == lines[reps])
+	{
+		log.info "TS PASS"
+      	log.info CusId[reps]
+		log.info lines[reps]
+	}
+	else
+	{
+		log.error "TS FAIL"
+      	log.info CusId[reps]
+		log.info lines[reps]
+		testRunner.gotoStepByName("Send Mail")
+	}
+	
+}
+
+}
+</script></con:config></con:testStep><con:testStep type="groovy" name="Validate_Subject_Azure_MH_UAE" id="3f7ecbbe-b380-44ba-a81b-da21dd1f3d9e"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+
+def getRespo = testRunner.testCase.getTestStepByName("REST Request_GetByCompanyCode").getPropertyValue("Response") 
+//log.info getRespo
+
+def CusId= parse(getRespo).read('$..Subject')
+log.info CusId
+//log.info length=CusId.size()
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\CustomerProjectOrder\\UAE\\pr01_mh_pr01009.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+//def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+def lineNo = CusId.size()
+def lines = file.readLines()
+
+for(def reps = 0; reps &lt;= lineNo; reps++ )
+
+{
+if(lines[reps] != null)
+{
+	
+	if(CusId[reps] == lines[reps])
+	{
+		log.info "TS PASS"
+      	log.info CusId[reps]
+		log.info lines[reps]
+	}
+	else
+	{
+		log.error "TS FAIL"
+      	log.info CusId[reps]
+		log.info lines[reps]
+		testRunner.gotoStepByName("Send Mail")
+	}
+	
+}
+
+}
+</script></con:config></con:testStep><con:testStep type="groovy" name="Validate_ERP_Project_Start_Date_Azure_MH_UAE" id="eebed18c-c6be-4e13-b2c2-0a3097b53538"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+
+def getRespo = testRunner.testCase.getTestStepByName("REST Request_GetByCompanyCode").getPropertyValue("Response") 
+//log.info getRespo
+
+def CusId= parse(getRespo).read('$..ERP_Project_Start_Date__c')
+//log.info CusId
+//log.info length=CusId.size()
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\CustomerProjectOrder\\UAE\\pr01_mh_pr01067.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+//def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+def lineNo = CusId.size()
+def lines = file.readLines()
+
+for(def reps = 0; reps &lt;= lineNo; reps++ )
+
+{
+if(lines[reps] != null)
+{
+	
+	if(CusId[reps] == lines[reps])
+	{
+		log.info "TS PASS"
+      	log.info CusId[reps]
+		log.info lines[reps]
+	}
+	else
+	{
+		log.error "TS FAIL"
+      	log.info CusId[reps]
+		log.info lines[reps]
+		testRunner.gotoStepByName("Send Mail")
+	}
+	
+}
+
+}
+</script></con:config></con:testStep><con:testStep type="groovy" name="Validate_ERP_Project_End_Date_Azure_MH_UAE" id="1c1aae28-5292-4dba-8c9b-29f4f916166d"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+
+def getRespo = testRunner.testCase.getTestStepByName("REST Request_GetByCompanyCode").getPropertyValue("Response") 
+//log.info getRespo
+
+def CusId= parse(getRespo).read('$..ERP_Project_End_Date__c')
+//log.info CusId
+//log.info length=CusId.size()
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\CustomerProjectOrder\\UAE\\pr01_mh_pr01069.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+//def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+def lineNo = CusId.size()
+def lines = file.readLines()
+
+for(def reps = 0; reps &lt;= lineNo; reps++ )
+
+{
+if(lines[reps] != null)
+{
+	
+	if(CusId[reps] == lines[reps])
+	{
+		log.info "TS PASS"
+      	log.info CusId[reps]
+		log.info lines[reps]
+	}
+	else
+	{
+		log.error "TS FAIL"
+      	log.info CusId[reps]
+		log.info lines[reps]
+		testRunner.gotoStepByName("Send Mail")
+	}
+	
+}
+
+}
+</script></con:config></con:testStep><con:testStep type="groovy" name="Validate_Account_Azure_MH_UAE" id="d668fbb3-76b1-45ea-8670-b6fbab18b2f1"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+
+def getRespo = testRunner.testCase.getTestStepByName("REST Request_GetByCompanyCode").getPropertyValue("Response") 
+//log.info getRespo
+
+def CusId= parse(getRespo).read('$..Account')
+//log.info CusId
+//log.info length=CusId.size()
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\CustomerProjectOrder\\UAE\\pr01_mh_pr01003.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+//def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+def lineNo = CusId.size()
+def lines = file.readLines()
+
+for(def reps = 0; reps &lt;= lineNo; reps++ )
+
+{
+if(lines[reps] != null)
+{
+	
+	if(CusId[reps] == lines[reps])
+	{
+		log.info "TS PASS"
+      	log.info CusId[reps]
+		log.info lines[reps]
+	}
+	else
+	{
+		log.error "TS FAIL"
+      	log.info CusId[reps]
+		log.info lines[reps]
+		testRunner.gotoStepByName("Send Mail")
+	}
+	
+}
+
+}
+</script></con:config></con:testStep><con:testStep type="groovy" name="Validate_CustomerPONumber_Azure_MH_UAE" id="787c0d29-4148-4001-896f-da4eadb3be8c"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+
+def getRespo = testRunner.testCase.getTestStepByName("REST Request_GetByCompanyCode").getPropertyValue("Response") 
+//log.info getRespo
+
+def CusId= parse(getRespo).read('$..ERP_Customer_PO_Number__c')
+//log.info CusId
+//log.info length=CusId.size()
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\CustomerProjectOrder\\UAE\\pr01_mh_pr01106.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+//def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+def lineNo = CusId.size()
+def lines = file.readLines()
+
+for(def reps = 0; reps &lt;= lineNo; reps++ )
+
+{
+if(lines[reps] != null)
+{
+	
+	if(CusId[reps] == lines[reps])
+	{
+		log.info "TS PASS"
+      	log.info CusId[reps]
+		log.info lines[reps]
+	}
+	else
+	{
+		log.error "TS FAIL"
+      	log.info CusId[reps]
+		log.info lines[reps]
+		testRunner.gotoStepByName("Send Mail")
+	}
+	
+}
+
+}
+</script></con:config></con:testStep><con:testStep type="groovy" name="Validate_Description_Azure_MH_UAE" id="94eafc06-419f-456c-b203-461748fb095b"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+
+def getRespo = testRunner.testCase.getTestStepByName("REST Request_GetByCompanyCode").getPropertyValue("Response") 
+//log.info getRespo
+
+def CusId= parse(getRespo).read('$..Description')
+//log.info CusId
+//log.info length=CusId.size()
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\CustomerProjectOrder\\UAE\\pr01_mh_Description.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+//def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+def lineNo = CusId.size()
+def lines = file.readLines()
+
+for(def reps = 0; reps &lt;= 30; reps++ )
+
+{
+if(lines[reps] != null)
+{
+	
+	if(CusId[reps] == lines[reps])
+	{
+		log.info "TS PASS"
+      	log.info CusId[reps]
+		log.info lines[reps]
+	}
+	else
+	{
+		log.error "TS FAIL"
+      	log.info CusId[reps]
+		log.info lines[reps]
+		testRunner.gotoStepByName("Send Mail")
+	}
+	
+}
+
+}
+</script></con:config></con:testStep><con:properties><con:property><con:name>Counter</con:name><con:value>-1</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>5c76ee49-1e02-4f4d-945e-b1af01b04500</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c416ebb9-afdc-456e-8ff8-75be425ffe65</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>e1ea6554-c863-4c6d-bfbd-4f965969d199</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>016054f0-0a01-4096-95b0-f0597032269e</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>7e7bf774-b90e-4dbd-a442-2df0b5e3fe30</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>2e9e792e-f024-4b56-bb21-1187c1a9f00b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>0e8ee51e-0fd9-48db-b51a-09cc59782321</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>69a7b63c-dec4-4ed1-9297-6e723edb8388</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>6155af3d-71d4-4f85-a59b-1d97e51c2a38</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c4eec24d-49ea-43ef-a47a-973f29a28fbc</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase>

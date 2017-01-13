@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="5914ba93-3501-4894-909f-ac026b708a27" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="TestCase_CustomerProjectOrder_AZURE URI_GetByProjectName" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="5914ba93-3501-4894-909f-ac026b708a27fileName">TestCase_CustomerProjectOrder_AZURE-URI_GetByProjectName</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="restrequest" name="REST Request" id="4baa9cb4-91ea-4067-8586-2e6c2dd40b67" disabled="true"><con:settings/><con:config service="REST Service 34" resourcePath="/api/customerprojectorder/companycode/l1/projectnumber/MD00000450" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request" id="e639004a-b996-45b0-9d3d-fd07a96f7d7d" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://mum-dev:5005</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/customerprojectorder/companycode/l1/projectnumber/MD00000450</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Set Counter" id="c81cf05a-97e6-4333-b8fc-ca38a990d149"><con:settings/><con:config><script>testRunner.testCase.setPropertyValue("Counter", "-1")</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Increment Counter" id="4de2d162-3bf7-4bf0-9bed-683043107843"><con:settings/><con:config><script>def i = testRunner.testCase.getPropertyValue("Counter")
+//def counter_inc
+
+def counter_inc = i.toInteger() + 1
+
+
+testRunner.testCase.setPropertyValue("Counter", counter_inc.toString())
+
+log.info "Current Counter Value :" +testRunner.testCase.getPropertyValue("Counter")</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Count Lines in the txt file" id="f17959af-e78a-4bc3-8995-ba43cb16bb83"><con:settings/><con:config><script>
+
+
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\J1_Thailand\\pr01009_j1_ProjectName.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+
+def lines = file.readLines()
+if(lines[lineNo] != null)
+{
+	log.info "There are more Lines!"
+	testRunner.testCase.setPropertyValue("LineCount", lineNo.toString())
+}
+else
+{
+	testRunner.testCase.setPropertyValue("LineCount", lineNo.toString())
+}
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_SetDynamicURL" id="c5adf62a-a643-471c-9e57-4a73a923e028"><con:settings/><con:config><script>
+
+//Set the variable part of the Get Method
+
+//File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\j4\\GetByProductName.txt")
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\J1_Thailand\\pr01009_j1_ProjectName.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+
+def lines = file.readLines()
+if(lines[lineNo] != null)
+{
+//log.info  "Here is the first line: ${lines[lineNo]}"
+context["host"]= "mum-dev"
+context["port"]= "5005"
+context["context1"]= "api/customerprojectorder/companycode/j1/projectname/"///AAIR01"
+context["context2"] = "${lines[lineNo]}"
+
+context["colon"] = ":"
+context["backslash"] = "/"
+//log.info context["RestfulURI"]
+
+ log.info "http://" + context["host"] + context["colon"] +context["port"] + context["backslash"] +context["context1"]+context["context2"]
+
+//${endpoint}
+
+//testRunner.gotoStepByName("REST Request")
+testRunner.gotoStepByName("REST Request_GetByProjectName")
+}
+else 
+{
+	//testRunner.testCase.setPropertyValue("LineCount", lineNo.toString())
+               testRunner.gotoStepByName("Send Mail")
+}
+//==========================================================================
+//context["context2"]="AAIR01"//
+
+ 
+
+// log.info "http://" + context["host"] + context["colon"] +context["port"] + context["backslash"] +context["context1"]+context["backslash"]+context["context2"]
+
+
+//http://mum-dev:5002/api/customer/companycode/n1/customerCode/AAIR01
+
+//http://mum-dev:5002/api/customer/companycode/n1/customerCode/AAIR01
+//http://mum-dev:5002/api/customer/companycode/n1/customerCode/AAIR01
+ 
+//http://${host}${colon}${port}${backslash}${context1}${backslash}${context2} </script></con:config></con:testStep><con:testStep type="restrequest" name="REST Request_GetByProjectName" id="c54778d0-52b4-4f33-9e74-3eaf4c748f67"><con:settings/><con:config service="REST Service 35" resourcePath="/" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_GetByProjectName" id="d3979b65-3894-4c15-a0ae-59591944efd5" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://${host}${colon}${port}${backslash}${context1}${context2}</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/customerprojectorder/companycode/j4/customerPONo/7000128779/</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_ValidateProjectName_Entries" id="953c95a9-8a09-4a58-8adc-d9e53f79f0a2"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_GetByProjectName").getPropertyValue("Response")
+def CusId = parse(getAzureResponse).read('$..Subject')
+
+log.info CusId.size()
+
+for(def var = 0; var &lt;=  CusId.size(); var++)
+{
+	if(CusId[var] != null)
+	{
+		log.info "No. of Entries = "+CusId.size()
+		log.info "Valid Entries Returned."
+	}
+}
+
+/*
+if(CusId.size() == 1)
+{
+	log.info "Correct No of entries of for the Project Number is returned."
+	log.info "No. of Entries = "+CusId.size()
+}
+*/</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_ValidateAllEntries" id="1352d626-da8f-4467-83e6-dd899453de3a"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+//try
+//{
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_GetByProjectName").getPropertyValue("Response")
+def CusId = parse(getAzureResponse).read('$..Subject')
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\J1_Thailand\\pr01009_j1_ProjectName.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+
+def lines = file.readLines()
+log.info CusId.size()
+if(lines[lineNo] != null)
+{
+	 projectNumber = "${lines[lineNo]}"
+	//log.info projectNumber
+
+	for(def var = 0; var &lt;=  CusId.size(); var++)
+{
+	if(CusId[var] == projectNumber)
+	{
+		log.info "No. of Entries = "+CusId.size()
+		log.info "Valid Entries Returned."
+	}
+}
+}
+else
+{
+	testRunner.gotoStepByName("Groovy Script_GetByProjectNumber_Response time")
+	//testRunner.gotoStepByName("Send Mail on TS Fail")
+}
+
+
+//log.info projectNumber
+
+/*
+for(def var = 0; var &lt;=  CusId.size(); var++)
+{
+	if(CusId[var] == projectNumber)
+	{
+		log.info "No. of Entries = "+CusId.size()
+		log.info "Valid Entries Returned."
+	}
+}
+*/
+/*
+}
+catch(NullPointerException e)
+{
+	log.info e.printStackTrace()	
+	testRunner.gotoStepByName("Send Mail on TS Fail")
+}
+*/
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Rerun Test Step" id="bd935443-5c67-42e4-a539-c18a51d64c77"><con:settings/><con:config><script>/*
+def i = testRunner.testCase.getPropertyValue("Counter").toInteger()
+def j = testRunner.testCase.getPropertyValue("LineCount").toInteger()
+
+
+if(i &lt;= j)
+{
+testRunner.gotoStepByName("Groovy Script_Increment Counter")
+}
+else
+{
+	log.info "All entriees checked!"
+	testRunner.gotoStepByName("Groovy Script_GetByProjectName_Response time")
+	
+}
+*/
+
+//========================================================================================================================================
+
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\J1_Thailand\\pr01009_j1_ProjectName.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+def lineNo = testRunner.testCase.getPropertyValue("LineCount").toInteger()
+
+def lines = file.readLines()
+if(lines[lineNo] != null)
+{
+	testRunner.gotoStepByName("Groovy Script_Increment Counter")
+}
+else
+{
+	log.info "All entriees checked!"
+	testRunner.gotoStepByName("Groovy Script_GetByProjectName_Response time")
+	
+}
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_GetByProjectName_Response time" id="d7428804-d0f6-4886-9d30-8c0090023878"><con:settings/><con:config><script>
+//def iTime = testRunner.timeTaken
+/*
+def iTime = testRunner.testCase.testSteps["REST Request"].timeTaken
+
+log.info iTime 
+
+if(iTime &lt;= 30000 ){
+	log.info "Test case get response within time"
+	log.info "Test case taken time is" + " " + testRunner.getTimeTaken();
+	}else{
+		testRunner.fail("Test Case taken time beyond the limit")
+	     log.error "Test case taken time is" + " " + testRunner.getTimeTaken();
+		log.info "Test case failed"
+	 
+	}
+	*/
+
+	def response_time = testRunner.testCase.testSteps["REST Request_GetByProjectName"].testRequest.response.timeTaken
+
+	log.info response_time
+
+	if(response_time &lt;= 500)
+	{
+		log.info "Response time is as expected!"
+		testRunner.gotoStepByName("Send Mail on Correct Response time for URL")
+	}
+	else
+	{
+		log.error "Response time exceeded expected time!"
+		testRunner.gotoStepByName("Send Mail on Incorrect Response time for URL")
+	}
+</script></con:config></con:testStep><con:testStep type="sendmailteststep" name="Send Mail on Incorrect Response time for URL" id="ac7d1ab4-256a-452e-af39-d1d18d8a688e" disabled="true"><con:settings/><con:config><subject>Alert on Response time Authentication | Microservices</subject><message>Hi! This is a Test Case Failure report.
+
+Validation : Response time of the REST request should be less than 500ms -- has ben Authenticated.
+
+Note : This is an auto generated e-mail for validation purposes only. PLEASE DO NOT REPLY !! </message><server>webmail.jci.com</server><port>25</port><login>souvik.dey@jci.com</login><password>Jci@1111</password><mailTo>shashank.singh-ext@jci.com,souvik.dey@jci.com</mailTo><mailFrom>souvik.dey@jci.com</mailFrom><timeout>5000</timeout><timeout_measure>1</timeout_measure></con:config></con:testStep><con:testStep type="sendmailteststep" name="Send Mail on Correct Response time for URL" id="3837c78b-bead-4747-9e1e-9acd14f4faa3" disabled="true"><con:settings/><con:config><subject>Alert on Response time Fail | Microservices</subject><message>Hi! This is a Test Case Failure report.
+
+Validation : Response time of the REST request should be less than 500ms -- has failed.
+
+Note : This is an auto generated e-mail for validation purposes only. PLEASE DO NOT REPLY !! </message><server>webmail.jci.com</server><port>25</port><login>souvik.dey@jci.com</login><password>Jci@1111</password><mailTo>shashank.singh-ext@jci.com,souvik.dey@jci.com</mailTo><mailFrom>souvik.dey@jci.com</mailFrom><timeout>5000</timeout><timeout_measure>1</timeout_measure></con:config></con:testStep><con:testStep type="sendmailteststep" name="Send Mail on TS Fail" id="e757e064-18cd-42d9-b370-74e68034d5d2" disabled="true"><con:settings/><con:config><subject>Alert on Test Case Fail | Microservices </subject><message>Hi! This is a Test Case Failure report.
+
+Validation Failure : NULL Value returned from the Microservice!
+
+Note : This is an auto generated e-mail for validation purposes only. PLEASE DO NOT REPLY !! </message><server>webmail.jci.com</server><port>25</port><login>souvik.dey@jci.com</login><password>Jci@1111</password><mailTo>souvik.dey@jci.com</mailTo><mailFrom>souvik.dey@jci.com</mailFrom><timeout>5000</timeout><timeout_measure>1</timeout_measure></con:config></con:testStep><con:testStep type="restrequest" name="REST Request 2" id="491a7226-511a-42ee-9efa-1798b9d0a4b8" disabled="true"><con:settings/><con:config service="REST Service 36" resourcePath="/api/customerprojectorder/companycode/l1/startDate/2010-08-03/endDate/2011-02-28" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request 2" id="ee7337a6-4045-4335-8733-20c8ae0d8136" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://mum-dev:5005</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/customerprojectorder/companycode/l1/startDate/2010-08-03/endDate/2011-02-28</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="REST Request 3" id="4d486e70-97f9-48d2-88b9-4bc62f646652" disabled="true"><con:settings/><con:config service="REST Service 37" resourcePath="/api/customerprojectorder/companycode/l1/projectname/CJ" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request 3" id="7416867e-5379-4777-b72f-954cee9fd0f3" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://mum-dev:5005</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/customerprojectorder/companycode/l1/projectname/CJ</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:properties><con:property><con:name>Counter</con:name><con:value>10</con:value></con:property><con:property><con:name>LineCount</con:name><con:value>10</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>d51bab9c-b8f2-4dc2-b652-1c05225959cf</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>8b401a59-f9b5-43e5-a26e-b9b7963e2202</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>7323399e-2f59-4ba1-a14b-ea34facced87</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>be58b38b-775d-42c6-81e0-d9a82e401ce0</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>a49880a0-252b-496f-be53-6febd2b43c62</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>a89c2131-faca-4e3a-949c-351bfb3ade5c</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase>

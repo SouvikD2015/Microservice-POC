@@ -1,0 +1,1495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="0baba5e8-4f8d-45b8-b52d-5712ff49f3ff" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="TestCase_Custom Report" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:description>Description</con:description><con:settings><con:setting id="IncludeOverview">true</con:setting><con:setting id="IncludeResults">true</con:setting><con:setting id="FlowLayout">false</con:setting><con:setting id="ErrorDetails">true</con:setting><con:setting id="IncludeCoverage">true</con:setting><con:setting id="GeneratableJUnitReport@Style">Single Page (Print)</con:setting><con:setting id="GeneratableJUnitReport@Folder">C:\Users\cdeyso\Desktop\RnD\SOAP UI Sample Project\Sprint 01 CustomerProjectOrder\Reports</con:setting><con:setting id="0baba5e8-4f8d-45b8-b52d-5712ff49f3fffileName">TestCase_Custom-Report</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="Groovy Script_Set Counter" id="2a9f80e1-1af4-4be5-8e65-cc8556042114"><con:settings/><con:config><script>testRunner.testCase.setPropertyValue("Counter", "-1")</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Increment Counter" id="868c3aa1-a0b9-4796-8814-1e4c3602d30c"><con:settings/><con:config><script>def i = testRunner.testCase.getPropertyValue("Counter")
+//def counter_inc
+
+def counter_inc = i.toInteger() + 1
+
+//def counter_inc = i.toInteger() + 1
+
+
+testRunner.testCase.setPropertyValue("Counter", counter_inc.toString())
+
+log.info "Current Counter Value :" +testRunner.testCase.getPropertyValue("Counter")
+
+
+def testStepStatus = testRunner.getStatus()
+log.info testStepStatus</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Custom report Loop" id="7bf59dcd-bae4-4a88-9e19-13e43750dfb5" disabled="true"><con:settings/><con:config><script><![CDATA[import com.eviware.soapui.model.*
+import com.eviware.soapui.model.testsuite.Assertable
+import com.eviware.soapui.support.XmlHolder
+import java.io.File;
+import java.util.*;
+import jxl.write.*
+import jxl.*
+
+def regLogger = org.apache.log4j.Logger.getLogger(“RegressionTestLoger”)
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context )
+def properties = new java.util.Properties();
+//context.expand(‘${Properties#propertyname}’)
+def s2
+def s3=(testRunner.testCase.getPropertyValue(“RUN”))
+regLogger.info(s3);
+
+if (s3 != ‘1’ && s3 != ‘2’ && s3 != ‘3’)
+
+{ 
+	testRunner.testCase.setPropertyValue(“RUN”, ‘1’ );
+     s3=(testRunner.testCase.getPropertyValue(“RUN”));
+
+}
+
+//if (s2==’0′)
+
+//{
+
+//{
+
+Workbook workbook = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\output.xls"))
+for (count in 2..< 10)
+{
+Sheet sheet = workbook.getSheet(0)
+
+Cell a1 = sheet.getCell(0,count) // getCell(row,column) — place some values in myfile.xls
+
+Cell b2 = sheet.getCell(s3.toInteger(),count) // then those values will be acessed using a1, b2 & c3 Cell.
+String s1 = a1.getContents();
+s2 = b2.getContents();
+//Cell c2 = sheet.getCell(2,1)
+testRunner.testCase.setPropertyValue(s1,s2);
+
+}
+
+def flag = (testRunner.testCase.getPropertyValue("RUN")).toInteger()+1;
+testRunner.testCase.setPropertyValue("RUN",flag.toString());
+
+workbook.close()]]></script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_CustomReport_Test Case Details_XL" id="51075543-2412-4276-a83f-dd1419adb4f9" disabled="true"><con:settings/><con:config><script>
+import jxl.*
+import jxl.write.*
+
+
+/*
+WritableWorkbook workbook = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\CustomReportSD.xls"));
+//WritableSheet sheet = workbook.getSheetAt(1);
+//WritableSheet sheet = workbook.createSheet("Test Case Details", 1)
+
+WritableSheet sheet1 = workbook.createSheet("Worksheet Number 1", 1) 
+*/
+
+Workbook workbook1 = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\CustomReportSD.xls"))
+Sheet sheet = workbook1.getSheet(1)
+
+Label label = new Label(0, 1, "SL. NO."); //column=0=A,row=0=1
+sheet.addCell(label);
+Label label1 = new Label(1, 1, "Test Case");
+sheet.addCell(label1);
+Label labelstatus2 = new Label(2, 1, "Test Case Status");
+sheet.addCell(labelstatus2);
+
+def project = context.testCase.testSuite.project;
+def testSuiteNo = project.testSuiteList.size()
+def i = 0;
+def serialNo = 1;
+def sheetSerialNo = 1;
+//def testStatus = 
+log.info "No of Test Suites is "+testSuiteNo
+for (testSuite in project.testSuiteList) 
+{
+//log.info "Test Suite Names"+testSuite.name;
+def testSuiteName1 = testSuite.name;
+log.info testSuiteName1;
+log.info testSuiteName1.length();
+
+for (testCase in testSuite.testCaseList) 
+{
+log.info testCase.name;
+}
+//def var_length1 = testSuiteName1.length().toInteger() - 36
+//int var_length = var_length1 - 1 
+//log.info var_length1
+//def result_str = testSuiteName1.substring(testSuiteName1,36,""+var_length1) // getting error
+//log.info result_str
+
+//for (def i= 0; i&lt;= testSuiteNo - 1; i++)
+//{
+
+// =============================================== wtrite test suite names ==========================================================
+/*
+	def row_update = 2 + i 
+	log.info row_update
+	Label labelSuite1 =  new Label(1, row_update, testSuite.name)
+	sheet.addCell(labelSuite1)
+	// =============================================== Complete ===================================================
+	//i++
+	Label labelSlno1 =  new Label(0, row_update, ""+serialNo)
+	sheet.addCell(labelSlno1)
+	Label labelsuitestatus2 = new Label(2, row_update, ""+testSuiteStatus);
+	sheet.addCell(labelsuitestatus2);
+	//Create seperate Sheets for Every Test Suite
+	//WritableSheet sheet_testcase = workbook.createSheet(""+testSuite.name, sheetSerialNo)
+	i++
+	serialNo++
+	//sheetSerialNo++
+
+	*/
+	// =============================================== Complete ===================================================
+//}
+//Label labelCase = new Label(3, 1, "Test Case");
+//sheet.addCell(labelCase);
+
+
+
+}
+
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD" id="a298b397-b674-4335-9499-f94ca1eac9f1" disabled="true"><con:settings/><con:config><script>
+/*
+def state = testRunner.testCase.getTestStepByName("Groovy Script_Set Counter").passed
+
+log.info state
+
+*/
+
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+//
+//def tsetpName1 = testRunner..name
+//myTestStepResult = testRunner.runTestStepByName(tsetpName)
+myTestStepResult = testRunner.runTestStepByName("Groovy Script_Set Counter")
+myStatus = myTestStepResult.getStatus()
+log.info myStatus
+if (myStatus == TestStepStatus.OK)
+{
+	
+	//log.info "The step status is: " + myStatus.toString()
+	log.info "The step status is: PASSED"
+}
+else
+{
+		
+	log.error "The step status is: " + myStatus.toString()
+}
+
+
+//=============================================================================
+
+/*
+          def tsetpNamestat = testRunner.runContext.currentStep.name
+		log.info "Line no 373 "+tsetpNamestat
+		myTestStepResult = testRunner.runTestStepByName(tsetpNamestat)
+		log.info myTestStepResult
+		myStatus = myTestStepResult.getStatus()
+		if (myStatus == TestStepStatus.OK)
+		{
+		log.info "The step status is: " + myStatus.toString()
+		Label label3stepstat = new Label(5, row_update_step, "This Step is "+myStatus);
+		sheet_teststep.addCell(label3stepstat);
+		}
+		else
+		{
+		log.error "The step status is: " + myStatus.toString()
+		Label label3stepstat = new Label(5, row_update_step, "This Step is "+myStatus);
+		sheet_teststep.addCell(label3stepstat);
+		}
+
+		*/
+		//def stepstat = testRunner.status.toString()
+		//Label label3stepstat = new Label(5, row_update_step, "This Step is "+stepstat);
+		//sheet_teststep.addCell(label3stepstat);
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD_Logger" id="08de4ce3-6efd-41c2-b19c-433448ab5178" disabled="true"><con:settings/><con:config><script>//The below groovy script step is to capture the soapUI log area.
+// "soapUI log" can be replaced with http log, jetty log, script log, error log etc based on the need.
+def logArea = com.eviware.soapui.SoapUI.logMonitor.getLogArea( "script log" );
+//Below two lines of groovy script is to get the project directory, we will be saving the soapUI log contents on a file in that directory.
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context) 
+def projectPath = groovyUtils.projectPath 
+def logFile = new File(projectPath + "\\soapUI-Logs-to-file.txt")
+//This is the first line in the soapUI log file.
+logFile.write("soapUI Logs In a file.\r\n")
+   if( logArea !=null )
+   {
+      def model = logArea.model
+      if( model.size > 0 )            
+         for( c in 0..(model.size-1) )         
+           logFile.append(model.getElementAt( c ))       
+      
+   }
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD_AssertionStatus" id="4077bdd6-4321-4800-bcd7-ddba9a3ad7eb" disabled="true"><con:settings/><con:config><script>import com.eviware.soapui.model.testsuite.Assertable.AssertionStatus
+
+//log.info testRunner.testCase.description
+
+
+//log.info testStepsCurrent.name
+//def testStepStatus = testRunner.testCase.
+//log.info testStepStatus
+
+
+def TestCase = testRunner.getTestCase()
+def StepList = TestCase.getTestStepList()
+StepList.each
+{
+    // check that testStep has assertionStatus 
+    // (for example groovy testSteps hasn't this property since
+    // there is no asserts on its)
+    if(it.metaClass.hasProperty(it,'assertionStatus'))
+    {
+        if(it.assertionStatus == AssertionStatus.FAILED)
+        {
+            log.info "${it.name} FAIL..."
+        }else if(it.assertionStatus == AssertionStatus.VALID)
+        {
+            log.info "${it.name} OK!"
+        }else if(it.assertionStatus == AssertionStatus.UNKNOWN)
+        {
+            log.info "${it.name} UNKNOWN (PROBABLY NOT ALREADY EXECUTED)"
+        }
+    }
+}</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD_StepStatus" id="39c2bcad-5603-4315-b774-c1c0d0d60dd1" disabled="true"><con:settings/><con:config><script>
+
+import jxl.*
+import jxl.write.*
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+
+
+
+log.info "******************getting the test step details for the test case**********************"
+def testCases = context.testCase.testSuite.getTestCaseList()
+log.info testCases
+def testCases_size =  testCases.size()
+log.info testCases_size
+def count = testCases.size()
+log.info count
+
+//testCases.each
+//{
+//def project_step = context.testCase.testSuite.project;
+for (testSuite in project_step.testSuiteList) 
+{
+//log.info "Test Suite Names"+testSuite.name;
+//def testSuiteName1_case1 = testSuite.name;
+//log.info testSuiteName1_case1;
+//log.info testSuiteName1_case1.length();
+
+for (testCase in testSuite.testCaseList) 
+{
+	//for (testStepsCurrent in testCase.testStepList)
+	//{
+
+
+	for (testSteps in testCase.testStepList)
+	{
+		//def testSteps_names[] = testSteps.name
+		//def length = testSteps_names.length().toInteger()
+		//log.info testSteps_names
+		//myStatus = testRunner.getStatus()
+		//for ()
+		//for (def i=0 ; i &lt;= length ; i++)
+		//{
+		log.info testSteps.name
+		myTestStepResult = testRunner.runTestStepByName(testSteps.name)
+		myStatus = myTestStepResult.getStatus()
+		log.info myStatus
+		if (myStatus == TestStepStatus.OK)
+			{
+	
+				//log.info "The step status is: " + myStatus.toString()
+				log.info "The step status is: PASSED"
+			}
+		else
+			{
+		
+				log.error "The step status is: " + myStatus.toString()
+			}
+		//}
+		//Label labelCase = new Label(3, 1, "Test Case");
+		//sheet.addCell(labelCase);
+
+	}
+}
+}
+}
+log.info 'Completed...'
+log.info "******************"</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_SendMail" id="32de4cde-c5f1-47e3-8266-d31b77429878" disabled="true"><con:settings/><con:config><script>import javax.mail.internet.*;
+import javax.mail.*
+import javax.activation.*
+
+
+message = "test groovy mail"
+subject = "groovy sent this"
+toAddress = "to@example.com"
+fromAddress = "from@example.com"
+host = "webmail.jci.com"
+port = "25"
+
+Properties mprops = new Properties();
+mprops.setProperty("mail.transport.protocol","smtp");
+mprops.setProperty("mail.host",host);
+mprops.setProperty("mail.smtp.port",port);
+
+Session lSession = Session.getDefaultInstance(mprops,null);
+MimeMessage msg = new MimeMessage(lSession);
+
+
+//tokenize out the recipients in case they came in as a list
+StringTokenizer tok = new StringTokenizer(toAddress,";");
+ArrayList emailTos = new ArrayList();
+while(tok.hasMoreElements()){
+emailTos.add(new InternetAddress(tok.nextElement().toString()));
+}
+InternetAddress[] to = new InternetAddress[emailTos.size()];
+to = (InternetAddress[]) emailTos.toArray(to);
+msg.setRecipients(MimeMessage.RecipientType.TO,to);
+InternetAddress fromAddr = new InternetAddress(fromAddress);
+msg.setFrom(fromAddr);
+msg.setFrom(new InternetAddress(fromAddress));
+msg.setSubject(subject);
+msg.setText(message)
+
+Transport transporter = lSession.getTransport("smtp");
+transporter.connect();
+transporter.send(msg);</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Description" id="3770b7ac-cb36-4302-ac9e-f779618b9a44" disabled="true"><con:settings/><con:config><script>
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_MailNotifPlugin" id="63dbdce1-c855-4898-a7a5-2d28c8f31c4e" disabled="true"><con:settings/><con:config><script>
+
+import com.dtolabs.rundeck.plugins.notification.NotificationPlugin;
+import org.springframework.mail.javamail.*;
+import javax.mail.internet.*;
+import groovy.xml.MarkupBuilder
+import groovy.text.SimpleTemplateEngine
+
+/**
+ * This plugin can be used to send a custom HTML email as a notification.
+ *
+ * It makes use of the grails mail plugin which is used in Rundeck.
+ */
+
+/**
+ * mail sender configuration properties
+ * @see http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/mail/javamail/JavaMailSenderImpl.html
+ */
+def mailProperties=[
+    host: "webmail.jci.com",
+    port: 25,
+    defaultEncoding:"utf-8"
+]
+
+/**
+ * define the default subject line configuration
+ */
+def defaultSubjectLine='$STATUS [$PROJECT] $JOB run by $USER (#$ID)'
+/**
+ * Expands the Subject string using a predefined set of tokens
+ */
+def subjectString={text,binding->
+    //defines the set of tokens usable in the subject configuration property
+    def tokens=[
+        '$STATUS': binding.execution.status.toUpperCase(),
+        '$status': binding.execution.status.toLowerCase(),
+        '$PROJECT': binding.execution.project,
+        '$JOB': binding.execution.job.name,
+        '$GROUP': binding.execution.job.group,
+        '$JOB_FULL': (binding.execution.job.group?binding.execution.job.group+'/':'')+binding.execution.job.name,
+        '$USER': binding.execution.user,
+        '$ID': binding.execution.id.toString()
+    ]
+    text.replaceAll(/(\$\w+)/){
+        if(tokens[it[1]]){
+            tokens[it[1]]
+        }else{
+            it[0]
+        }
+    }
+}
+
+/**
+ * Generates an HTML string using a markup builder for the input closure
+ */
+def buildHtml={ Closure clos->
+    def sw=new StringWriter()
+    clos.delegate=new MarkupBuilder(sw)
+    clos.resolveStrategy=Closure.DELEGATE_FIRST
+    clos.call()
+    sw.toString()
+}
+
+/**
+ * This closure generates the custom HTML message as a string.
+ * 
+ * @param subject the subject line 
+ * @param execution the execution data map
+ * @param config the plugin configuration data
+ */
+def generateMail={subject, Map execution, Map config->
+    buildHtml{
+        //customize this content with your own HTML
+        html{
+            body{
+                h1(subject)
+                ul{
+                    li{
+                        p{
+
+                        if(execution.status=='running'){
+                            em("Started")
+                            yield(" by: ${execution.user} at ${execution.dateStarted}")
+                        }else if(execution.status=='succeeded'){
+                            em("Finished")
+                            yield(" at: ${execution.dateEnded}")
+                        }else if(execution.abortedBy){
+                            em("KILLED")
+                            yield(" by ${execution.abortedBy} at: ${execution.dateEnded}")
+                        }else{
+                            //failed
+                            em("Failed")
+                            yield(" at: ${execution.dateEnded}")
+                            if(execution.failedNodeList){
+                                div{
+                                    yield("Failed node list:")
+                                    ul{
+                                        execution.failedNodeList.each{
+                                            li(it)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        }
+                    }
+                    li{
+                        a(href:execution.href,"Output for ${execution.id}")
+                    }
+                    // div{
+                    //     yield("execution data: ${execution}")
+                    // }
+                }
+            }
+        }
+    }
+}
+/**
+ * Sends email by building the message from the closure argument
+ */
+def sendMail={Closure callable->
+    //create a sender and set the mail properties
+    def sender = new JavaMailSenderImpl()
+    sender.javaMailProperties.putAll(mailProperties)
+    // mailProperties.each{k,v->
+        // sender[k]=v
+    // }
+
+    //create a builder and use it as the delegate of the closure
+    //which will build the message
+    def mbuilder = new grails.plugin.mail.MailMessageBuilder(sender,new ConfigObject())
+    callable.delegate = mbuilder
+    callable.resolveStrategy = Closure.DELEGATE_FIRST
+    callable.call()
+
+    //send the message
+    def message = mbuilder.finishMessage()
+    
+    if(message instanceof MimeMailMessage) {
+        MimeMailMessage msg = message
+        MimeMessage mimeMsg = msg.getMimeMessage()
+        sender.send(mimeMsg)
+    }
+}
+
+
+//defines the NotificationPlugin
+rundeckPlugin(NotificationPlugin){
+
+    title="Mail"
+
+    description="Sends Mail"
+
+    configuration{
+
+        recipients(title:"Email recipients",required:true, description: "Enter comma-separated email addresses"){
+            //validate the recipients field as a comma-separated list of emails
+            it.split(",").every { obj ->
+                //allow embedded property references like ${job.user.email}
+                //otherwise, make sure its a valid email address
+                obj.indexOf('${')>=0 || org.apache.commons.validator.EmailValidator.getInstance().isValid(obj)
+            }
+        }
+
+        subject(title:"Subject line",defaultValue:defaultSubjectLine, 
+            required:true,
+            description:'Subject line string, which can contain these variables: $STATUS (job status), $PROJECT (project name), '+
+            '$JOB (job name), $GROUP (group name), $JOB_FULL (job group and name), $USER (user name)')
+    }
+    /**
+     * handleTrigger is the common closure used for all the triggers
+     */
+    def handleTrigger= { String trigger, Map execution, Map config->
+
+        //generate subject string from the configuration template
+        def subjectStr=subjectString(config.subject,[execution:execution,trigger:trigger])
+        try{
+            //try to send the mail to all recipients
+            sendMail{
+                to( config.recipients.split(",") as List)
+                subject subjectStr
+                //generate the HTML to send
+                html( generateMail(subjectStr,execution,config))
+            }
+            return true
+        }catch(Exception e){
+            System.err.println("Error sending notification email: "+e.getMessage());
+        }
+        false
+    }
+
+    //define the triggers, and curry the handleTrigger closure to specify the correct trigger name
+    onsuccess(handleTrigger.curry('success'))
+    onfailure(handleTrigger.curry('failure'))
+    onstart(handleTrigger.curry('start'))
+
+}</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_SetP/F Status" id="5652c3a6-eda3-41e4-af73-a2ca1b1f4108" disabled="true"><con:settings/><con:config><script>/*
+
+import com.eviware.soapui.model.testsuite.TestRunner.Status
+import com.eviware.soapui.model.testsuite.TestStepResult;
+def i = 0;
+def results=testRunner.getResults()
+def reve=results.reverse()
+def UserIDResult;
+def DeviceIDResult;
+def JoblogResult;
+def UserServiceIDResult;
+def GroupIDResult;
+def joblogcountTResult;
+def joblogtotalTResult;
+def joblogdetailTResult;
+def joblogspecialTResult;
+def joblogextendTResult;
+for( r in reve )
+{  i++;
+  if (i==12) {break}
+  if(r.testStep.name =='Verify_joblogextend_table')
+  { joblogextendTResult= r.status.toString()}
+  else if(r.testStep.name =='Verify_joblogspecial_table')
+     { joblogspecialTResult= r.status.toString()}
+     else if(r.testStep.name =='Verify_joblogtotal_table')
+            { joblogtotalTResult= r.status.toString()}
+      else if(r.testStep.name =='Verify_joblogdetails_table')
+       { joblogdetailTResult= r.status.toString()}
+       else if(r.testStep.name =='Verify_Joblogcount_table')
+        { joblogcountTResult= r.status.toString()}
+        else if(r.testStep.name =='UserServcieIDCheck')
+         { UserServiceIDResult= r.status.toString()}
+         else if(r.testStep.name =='GroupIDCheck')
+            { GroupIDResult= r.status.toString()}
+          else if(r.testStep.name =='UserIDCheck')
+           { UserIDResult= r.status.toString()}
+           else if(r.testStep.name =='DeviceIDCheck')
+            { DeviceIDResult=r.status.toString()}
+            else if(r.testStep.name =='JoblogCheck')
+             { JoblogResult=r.status.toString()/*;if(r.status.toString()=='FAILED'){def msg=r.getMessages(); log.fatal ""+msg[0]+msg[1]}*/
+             //}
+//             else {log.fatal "Prasad:StepName condition missed :and actual TestName is "+r.testStep.name}  
+//}
+//To Set the ResultProp
+/*
+def TC=testRunner.getTestCase().getTestStepByName( "ResultProp" )
+TC.setPropertyValue("JoblogResult",JoblogResult);
+TC.setPropertyValue("DeviceIDResult",DeviceIDResult);
+TC.setPropertyValue("UserIDResult",UserIDResult);
+TC.setPropertyValue("GroupIDResult",GroupIDResult);
+TC.setPropertyValue("UserServiceIDResult",UserServiceIDResult);
+TC.setPropertyValue("joblogcountTResult",joblogcountTResult);
+TC.setPropertyValue("joblogdetailTResult",joblogdetailTResult);
+TC.setPropertyValue("joblogtotalTResult",joblogtotalTResult);
+TC.setPropertyValue("joblogspecialTResult",joblogspecialTResult);
+TC.setPropertyValue("joblogextendTResult",joblogextendTResult);
+
+*/
+
+
+//======================================================  My Code =====================================================================
+
+
+import com.eviware.soapui.model.testsuite.TestRunner.Status
+import com.eviware.soapui.model.testsuite.TestStepResult
+
+def results=testRunner.getStatus() 
+//def reve=results.reverse()
+log.info results
+
+
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD_1" id="b3d0f61d-b17f-44e7-af08-43020ac69494" disabled="true"><con:settings/><con:config><script>
+
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+
+
+log.info "******************getting the test step details for the test case**********************"
+def testCases = context.testCase.testSuite.getTestCaseList()
+log.info testCases
+testCases.each
+{
+	for(testSteps in it.testS)
+	{
+		log.info testSteps.name
+		//myTestStepResult = testRunner.runTestStepByName(testSteps.name)
+		//myStatus = myTestStepResult.getStatus()
+		//log.info myStatus
+	}
+}
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD_2" id="f6afcb6d-d25c-4eb1-bf0f-70872c2a467d" disabled="true"><con:settings/><con:config><script>
+
+for ( testCaseResult in testRunner.results )
+{
+   testCaseName = testCaseResult.getTestCase().name
+   log.info testCaseName
+   if ( testCaseResult.getStatus().toString() == 'FAILED' )
+   {
+      log.info "$testCaseName has failed"
+      for ( testStepResult in testCaseResult.getResults() )
+      {
+         testStepResult.messages.each() { msg -> log.info msg }
+      }
+   }
+}</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD_3_TS Status" id="182ef597-bfb7-40fd-8864-efd1858e7ff7" disabled="true"><con:settings/><con:config><script>
+/*
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+
+def testCases = context.testCase.testSuite.getTestCaseList()
+
+testCases.each
+{
+	for(testSteps in it.testStepList)
+	{
+		def name = testSteps.name.toString()
+		
+		//log.info name
+		def status = testRunner.runTestStep(context.testCase.testStepList[context.currentStepIndex - 1]).status
+		log.info "The status of "+testSteps.name +" is "+status
+		//log.info "The status of "+testSteps.name +" is "+testRunner.runTestStep(context.testCase.testStepList[context.currentStepIndex - 1]).status
+		//log.info name
+	}
+}
+*/
+
+//========================================================================
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+
+def testCases = context.testCase.testSuite.getTestCaseList()
+
+testCases.each
+{
+	for(testSteps in it.testStepList)
+	{
+	def tsep_status = testRunner.runTestStep(context.testCase.testStepList[context.currentStepIndex - 1]).status
+	if (tsep_status == TestStepStatus.OK)
+	{
+	
+		//log.info "The step status is: " + myStatus.toString()
+		//log.info "The step status is: PASSED"
+		
+		
+	}
+	else
+	{
+		
+		log.error "The step status is: " + tsep_status.toString()
+	}
+	}
+}</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD_4_TC Status" id="ead83d8d-3f47-44c9-90d5-47e44b6a03b4" disabled="true"><con:settings/><con:config><script>
+/*
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+
+def testCases = context.testCase.testSuite.getTestCaseList()
+
+testCases.each
+{
+	for(testSteps in it.testStepList)
+	{
+		def name = testSteps.name.toString()
+		
+		//log.info name
+		def status = testRunner.runTestStep(context.testCase.testStepList[context.currentStepIndex - 1]).status
+		log.info "The status of "+testSteps.name +" is "+status
+		//log.info "The status of "+testSteps.name +" is "+testRunner.runTestStep(context.testCase.testStepList[context.currentStepIndex - 1]).status
+		//log.info name
+	}
+}
+*/
+
+//========================================================================
+
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+
+def testCases = context.testCase.testSuite.getTestCaseList()
+
+testCases.each
+{
+	for(testSteps in it.testStepList)
+	{
+	def tsep_status = testRunner.runTestStep(context.testCase.testStepList[context.currentStepIndex - 1]).status
+	if (tsep_status == TestStepStatus.OK)
+	{
+	
+		//log.info "The step status is: " + myStatus.toString()
+		log.info "The step status is: PASSED"
+		
+		
+	}
+	else
+	{
+		
+		log.error "The step status is: " + tsep_status.toString()
+	}
+	}
+}
+
+
+//==========================================================================================================================================
+
+/*
+def passedTestCases = 0
+log.info testCaseResult.status.toString()
+testRunner.results.each 
+{ 
+	testCaseResult ->
+     def name = testCaseResult.testCase.name
+     if(testCaseResult.status.toString() == 'PASSED')
+     {
+        passedTestCases ++
+        log.info "$name has Passed"
+        testCaseResult.results.each
+        { 
+        	testStepResults ->
+            testStepResults.messages.each() 
+            { 
+            	msg -> log.info msg 
+            } 
+        }
+    	 }
+    	 else
+    	 {
+        log.info "$name has Failed"
+      }
+}
+
+log.info "total Passed: $passedTestCases"
+
+*/
+
+//=================================================================================================================================
+/*
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+def tc_count = testRunner.testCase.testSuite.getTestCaseCount()
+//log.info tc_count
+
+def ts_count = testRunner.testCase.getTestStepCount()
+//log.info ts_count
+
+def testCases = context.testCase.testSuite.getTestCaseList()
+def counter = 1 
+1.upto(ts_count,{
+	testCases.each
+	{
+		for (testSteps in it.testStepList)
+			{
+				//log.info count
+
+				def names = testSteps.name.toString()
+				log.info names
+				myTestStepResult = testRunner.runTestStepByName(names)
+				myStatus = myTestStepResult.getStatus()
+				log.info myStatus
+				if (myStatus == TestStepStatus.OK)
+				{
+	
+					//log.info "The step status is: " + myStatus.toString()
+					log.info "The step status is: PASSED"
+				}
+				else
+				{
+		
+					log.error "The step status is: " + myStatus.toString()
+				}
+				
+				//log.info counter
+				counter++
+			}
+		}
+})
+	
+//}
+*/
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_Custom Report_TestSuite Report_XL" id="53b7f364-8aea-46cf-8f99-192d00e12b43" disabled="true"><con:settings/><con:config><script>
+import jxl.*
+import jxl.write.*
+import jxl.format.Colour;
+import jxl.format.Pattern;
+import jxl.write.WritableCellFormat
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+
+
+//========================================================= Set the Report File on the project path ======================================
+def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context)
+def projectPath = groovyUtils.projectPath 
+def projectName_repo = testRunner.testCase.testSuite.project.name
+//log.info projectName
+//log.info(new Date().format("yyyy-MM-dd'T'HH:mm:ss SSS"))
+def repo_time = new Date().format("yyyy-MM-dd' 'HH-mm-ss")
+log.info repo_time
+def logFile = new File(projectPath + "\\"+projectName_repo+" "+repo_time+".txt")
+//========================================================= Done ======================================
+
+WritableWorkbook workbook = Workbook.createWorkbook(new File(projectPath + "\\"+projectName_repo+" "+repo_time+".xls"))
+WritableSheet sheet = workbook.createSheet("Test Suite Details", 0)
+WritableSheet sheet_testcase = workbook.createSheet("Test Case Details", 1)
+WritableSheet sheet_teststep = workbook.createSheet("Test Step Details", 2)
+//log.info(sheet1.isHidden())
+
+//================================================ Write Function to Set Cell Color ========================================================
+	/*
+	private static WritableCellFormat getCellFormat(Colour colour, Pattern pattern) throws WriteException 
+	{
+    		WritableFont cellFont = new WritableFont(WritableFont.ARIAL, 10);
+    		WritableCellFormat cellFormat = new WritableCellFormat(cellFont);
+    		cellFormat.setBackground(colour, pattern);
+    		return cellFormat;
+     }
+     */
+//================================================ COMPLETE -- Write Function to Set Cell Color ========================================================
+//To write the project name.
+def projectName = testRunner.testCase.testSuite.project.name
+log.info projectName
+
+Label label_project = new Label(0, 0, "Report for the Soap Project"+projectName); //column=0=A,row=0=1
+sheet.addCell(label_project);
+
+
+Label label = new Label(0, 1, "SL. NO."); //column=0=A,row=0=1
+sheet.addCell(label);
+Label label1 = new Label(1, 1, "Test Suite");
+sheet.addCell(label1);
+Label labelstatus2 = new Label(2, 1, "Test Suite Status");
+sheet.addCell(labelstatus2);
+Label labelstate = new Label(3, 1, "Test Suite Description");
+sheet.addCell(labelstate);
+Label labelsuitetime = new Label(4, 1, "Time Taken");
+sheet.addCell(labelsuitetime);
+/*
+Label labelCase = new Label(3, 1, "Test Case");
+sheet.addCell(labelCase);
+Label labelCase3 = new Label(4, 1, "Test Case Status");
+sheet.addCell(labelCase3);
+Label labelStep = new Label(5, 1, "Test Steps");
+sheet.addCell(labelStep);
+Label labelstatus3 = new Label(6, 1, "Test Steps Status");
+sheet.addCell(labelstatus3);
+*/
+
+//for(def i = 0; )
+
+//=========================================================== get the suite details ==========================================================
+/*
+def projectSuite1 = testRunner.testCase.testSuite.getName()
+log.info projectSuite1
+
+def testSuiteNames = testRunner.testCase.testSuite.getTestCaseCount()
+log.info testSuiteNames
+testCases.each{
+log.info(it.name)
+}
+*/
+
+//Now mention the Suites for the project.
+
+def projectSuite = testRunner.testCase.testSuite.name
+log.info projectSuite
+
+Label labelSuite = new Label(1, 2, "Test Suite Name for the Project "+projectSuite);
+sheet.addCell(labelSuite);
+
+//testCaseResult.getStatus().toString()
+//def testSuiteStatus = testRunner.getStatus()
+//log.info "Test suite status is "+testSuiteStatus
+//def testCaseStatus = 
+//Label labelsuitestatus2 = new Label(2, 2, ""+testSuiteStatus);
+//sheet.addCell(labelsuitestatus2);
+//testCaseResult.getStatus().toString()
+
+///===================================================================== Get the Test Suites for the Project ==============================================
+//Now mention the Test Steps for the project.
+
+/*
+def projectSuiteSteps = testRunner.testCase.testStepList.toArray().toString()
+def projectSuiteSteps_Size = testRunner.testCase.testStepList.size()
+
+for(def i = 0;i &lt;= projectSuiteSteps_Size - 1; i++)
+{
+log.info projectSuiteSteps[i]
+}
+*/
+
+/*
+def testCases_list = context.testCase.testSuite.getTestCaseList() 
+log.info testCases_list
+testCases_list.each{
+log.info(it.name)
+}
+*/
+log.info "******************getting the test SUITE details for the test case**********************"
+def project = context.testCase.testSuite.project;
+def testSuiteNo = project.testSuiteList.size()
+def i = 0;
+def serialNo = 1;
+def sheetSerialNo = 1;
+//def testStatus = 
+log.info "No of Test Suites is "+testSuiteNo
+for (testSuite in project.testSuiteList) 
+{
+log.info "Test Suite Names"+testSuite.name;
+def testSuiteName1 = testSuite.name;
+log.info testSuiteName1;
+log.info testSuiteName1.length();
+def var_length1 = testSuiteName1.length().toInteger() - 36
+//int var_length = var_length1 - 1 
+log.info var_length1
+//def result_str = testSuiteName1.substring(testSuiteName1,36,""+var_length1) // getting error
+//log.info result_str
+
+//for (def i= 0; i&lt;= testSuiteNo - 1; i++)
+//{
+	def testSuiteStatus = testRunner.getStatus()
+	log.info "Test suite status is "+testSuiteStatus
+	def row_update = 2 + i 
+	log.info row_update
+	Label labelSuite1 =  new Label(1, row_update, testSuite.name)
+	sheet.addCell(labelSuite1)
+	//i++
+	Label labelSlno1 =  new Label(0, row_update, ""+serialNo)
+	sheet.addCell(labelSlno1)
+	Label labelsuitestatus2 = new Label(2, row_update, ""+testSuiteStatus);
+	sheet.addCell(labelsuitestatus2);
+
+	log.info "Time taken"+testRunner.timeTaken
+	def suitetime = testRunner.timeTaken
+	Label label3suitetime = new Label(4, row_update, ""+suitetime+" ms");
+	sheet.addCell(label3suitetime);
+
+	//========== Test Suite Description ==================
+
+	def testsuitedesc = testSuite.description
+	Label labelsuite_desc = new Label(3, row_update, ""+testsuitedesc);
+	sheet.addCell(labelsuite_desc);
+
+	// =========================================================== Get the ENABLE/DISABLED details for the Step ======================================
+
+		/*
+	def stateSuite = testSuite.disabled
+	if(stateSuite==true)
+	{    tstepSuite = testRunner.runContext.currentStep.name
+          //Label label1 = new Label(0,0,tstep)
+		Label labelsuite = new Label(3, row_update, "Step Disabled", getCellFormat(Colour.RED, Pattern.GRAY_50)); //column=0=A,row=0=1
+		//sheet1.addCell(label1); 
+		sheet.addCell(labelsuite);
+	}
+	else
+	{
+          tstepSuite = testRunner.runContext.currentStep.name
+          //Label label2 = new Label(0,0,tstep)
+          Label label3statesuite = new Label(3, row_update, "Step Enabled",getCellFormat(Colour.GREEN, Pattern.GRAY_50)); //column=0=A,row=0=1
+		//sheet1.addCell(label2);
+		sheet.addCell(label3statesuite);		
+	}
+	*/
+	//Create seperate Sheets for Every Test Suite
+	//WritableSheet sheet_testcase = workbook.createSheet(""+testSuite.name, sheetSerialNo)
+	i++
+	serialNo++
+	//sheetSerialNo++
+//}
+//Label labelCase = new Label(3, 1, "Test Case");
+//sheet.addCell(labelCase);
+}
+
+log.info 'Completed...'
+log.info "******************"
+
+///===================================================================== Get the Test Cases for the Project ==============================================
+//Now mention the Test Steps for the project.
+
+log.info "******************getting the test step details for the test case**********************"
+def testCases = context.testCase.testSuite.getTestCaseList()
+def testCases_size =  testCases.size()
+log.info testCases_size
+testCases.each
+{
+for (testSteps in it.testStepList)
+{
+log.info testSteps.name
+//Label labelCase = new Label(3, 1, "Test Case");
+//sheet.addCell(labelCase);
+
+}
+}
+log.info 'Completed...'
+log.info "******************"
+
+log.info "******************getting the test CASE details for the test case**********************"
+
+//Workbook workbook1 = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\CustomReportSD.xls"))
+//Sheet sheet1 = workbook1.getSheet(1)
+
+Label label_case = new Label(0, 1, "SL. NO."); //column=0=A,row=0=1
+sheet_testcase.addCell(label_case);
+Label label1_case = new Label(1, 1, "Test Case");
+sheet_testcase.addCell(label1_case);
+Label labelstatus2_case = new Label(2, 1, "Test Case Status");
+sheet_testcase.addCell(labelstatus2_case);
+Label labelstate2 = new Label(3, 1, "Test Case Description");
+sheet_testcase.addCell(labelstate2);
+Label labelcasetime = new Label(4, 1, "Time Taken");
+sheet_testcase.addCell(labelcasetime);
+
+def project_case = context.testCase.testSuite.project;
+def testSuiteNo_case = project_case.testSuiteList.size()
+//def i = 0;
+//def serialNo = 1;
+//def sheetSerialNo = 1;
+//def testStatus = 
+def testcase_serialNo = 1
+def tc_count = 0
+
+log.info "No of Test Suites is "+testSuiteNo_case
+for (testSuite in project_case.testSuiteList) 
+{
+//log.info "Test Suite Names"+testSuite.name;
+def testSuiteName1_case = testSuite.name;
+log.info testSuiteName1_case;
+log.info testSuiteName1_case.length();
+
+for (testCase in testSuite.testCaseList) 
+{
+	def testCaseStatus = testRunner.getStatus()
+	log.info "Test Case status is "+testCaseStatus
+	log.info testCase.name;
+	def row_update_case = 2 + tc_count 
+	log.info row_update_case
+	Label labelCase1 =  new Label(1, row_update_case, testCase.name)
+	sheet_testcase.addCell(labelCase1)
+	Label labelSlno_case =  new Label(0, row_update_case, ""+testcase_serialNo)
+	sheet_testcase.addCell(labelSlno_case)
+	Label labelCaseStatus2 = new Label(2, row_update_case, ""+testCaseStatus);
+	sheet_testcase.addCell(labelCaseStatus2);
+
+	log.info "Time taken"+testRunner.timeTaken
+	def casetime = testRunner.timeTaken
+	Label label3casetime = new Label(4, row_update_case, ""+casetime+" ms");
+	sheet_testcase.addCell(label3casetime);
+
+	//========== Test Suite Description ==================
+
+	def testcasedesc = testCase.description
+	Label labelcase_desc = new Label(3, row_update_case, ""+testcasedesc);
+	sheet_testcase.addCell(labelcase_desc);
+
+	
+	
+	// =========================================================== Get the ENABLE/DISABLED details for the Step ======================================
+
+		/*
+	def stateCase = testCase.disabled
+	if(stateCase==true)
+	{    tstepCase = testRunner.runContext.currentStep.name
+          //Label label1 = new Label(0,0,tstep)
+		Label labelstate5 = new Label(3, row_update_case, "Step Disabled", getCellFormat(Colour.RED, Pattern.GRAY_50)); //column=0=A,row=0=1
+		//sheet1.addCell(label1); 
+		sheet_testcase.addCell(labelstate5);
+	}
+	else
+	{
+          tstepCase = testRunner.runContext.currentStep.name
+          //Label label2 = new Label(0,0,tstep)
+          Label label3stateCase = new Label(3, row_update_case, "Step Enabled",getCellFormat(Colour.GREEN, Pattern.GRAY_50)); //column=0=A,row=0=1
+		//sheet1.addCell(label2);
+		sheet_testcase.addCell(label3stateCase);		
+	}
+	*/
+	tc_count++
+	testcase_serialNo++
+}
+}
+log.info 'Completed...'
+log.info "******************"
+
+///===================================================================== Get the Test Steps for the Project ==============================================
+//Now mention the Test Steps for the project.
+
+log.info "******************getting the test STEP details for the test case**********************"
+def testSteps = context.testCase.getTestStepList()
+def testSteps_size =  testSteps.size()
+log.info testSteps_size
+/*
+testCases.each
+{
+for (testSteps in it.testStepList)
+{
+log.info testSteps.name
+//Label labelCase = new Label(3, 1, "Test Case");
+//sheet.addCell(labelCase);
+
+}
+}
+*/
+//===============================================================================================================
+
+log.info 'Completed...'
+log.info "******************"
+
+log.info "******************getting the test STEP details for the test case**********************"
+
+//Workbook workbook1 = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\CustomReportSD.xls"))
+//Sheet sheet1 = workbook1.getSheet(1)
+
+Label label_step = new Label(0, 1, "SL. NO."); //column=0=A,row=0=1
+sheet_teststep.addCell(label_step);
+Label label1_step = new Label(1, 1, "Test Step");
+sheet_teststep.addCell(label1_step);
+Label labelstatus2_step = new Label(2, 1, "Test Step Status");
+sheet_teststep.addCell(labelstatus2_step);
+Label labelstate3 = new Label(3, 1, "Test Step Description");
+sheet_teststep.addCell(labelstate3);
+Label labelsteptime = new Label(4, 1, "Time Taken");
+sheet_teststep.addCell(labelsteptime);
+
+def project_step = context.testCase.testSuite.project;
+def testSuiteNo_step = project_step.testSuiteList.size()
+//def i = 0;
+//def serialNo = 1;
+//def sheetSerialNo = 1;
+//def testStatus = 
+def teststep_serialNo = 1
+def ts_count = 0
+
+log.info "No of Test Suites is "+testSuiteNo_case
+for (testSuite in project_step.testSuiteList) 
+{
+//log.info "Test Suite Names"+testSuite.name;
+def testSuiteName1_case1 = testSuite.name;
+log.info testSuiteName1_case1;
+log.info testSuiteName1_case1.length();
+
+for (testCase in testSuite.testCaseList) 
+{
+	for (testStepsCurrent in testCase.testStepList)
+	{
+		log.info testStepsCurrent.name
+		def testStepStatus = testRunner.getStatus()
+		//def testStepState = testRunner.
+		log.info "Test Step status is "+testStepStatus
+		def row_update_step = 2 + ts_count 
+		log.info row_update_step
+		Label labelCase1 =  new Label(1, row_update_step, testStepsCurrent.name)
+		sheet_teststep.addCell(labelCase1)
+		Label labelSlno_case =  new Label(0, row_update_step, ""+teststep_serialNo)
+		sheet_teststep.addCell(labelSlno_case)
+		Label labelCaseStatus2 = new Label(2, row_update_step, ""+testStepStatus);
+		sheet_teststep.addCell(labelCaseStatus2);
+
+		//========== Test Suite Description ==================
+
+		def teststepdesc = testStepsCurrent.description
+		Label labelcase_desc = new Label(3, row_update_step, ""+teststepdesc);
+		sheet_teststep.addCell(labelcase_desc);
+
+		//============================================= get the pass fail status of the test step =========================
+
+		// using CONTEXT gives you valid response only for a single session 
+
+		/*
+		def tsep_status = testRunner.runTestStep(context.testCase.testStepList[context.currentStepIndex - 1]).status
+		if (tsep_status == TestStepStatus.OK)
+		{
+	
+			//log.info "The step status is: " + myStatus.toString()
+			log.info "The step status is: PASSED"
+			def state = testStepsCurrent.disabled
+			if(state==true)
+			{
+				Label labelCaseStatus2_pass_dis = new Label(2, row_update_step, "UNKNOWN");
+				sheet_teststep.addCell(labelCaseStatus2_pass_dis);
+			}
+			else
+			{
+				Label labelCaseStatus2_pass_en = new Label(2, row_update_step, "PASSED");
+				sheet_teststep.addCell(labelCaseStatus2_pass_en);
+			}
+		}
+		else
+		{
+		
+			log.error "The step status is: " + tsep_status.toString()
+			Label labelCaseStatus2_fail = new Label(2, row_update_step, ""+tsep_status.toString());
+			sheet_teststep.addCell(labelCaseStatus2_fail);
+		}
+		
+		*/
+		// =========================================================== Get the ENABLE/DISABLED details for the Step ======================================
+
+		/*
+		def tsetpName = testStepsCurrent.name
+		log.info "Test Step Name is "+tsetpName
+		//def state = testRunner.testCase.getTestStepByName(tsetpName).disabled
+		def state = testStepsCurrent.disabled
+		if(state==true)
+		{    tstep = testRunner.runContext.currentStep.name
+               //Label label1 = new Label(0,0,tstep)
+			//Label labelstate51 = new Label(3, row_update_step, "Step Disabled"); //column=0=A,row=0=1
+			Label labelstepcoldis = new Label(3, row_update_step, "Step Disabled", getCellFormat(Colour.RED, Pattern.GRAY_50) )
+			//sheet1.addCell(label1); 
+			//sheet_teststep.addCell(labelstate51);
+			sheet_teststep.addCell(labelstepcoldis);
+		}
+		else
+		{
+              tstep = testRunner.runContext.currentStep.name
+              //Label label2 = new Label(0,0,tstep)
+              Label label3state = new Label(3, row_update_step, "Step Enabled",getCellFormat(Colour.GREEN, Pattern.GRAY_50)); //column=0=A,row=0=1
+		    //sheet1.addCell(label2);
+		    sheet_teststep.addCell(label3state);		
+		}
+		*/
+		// =========================================================== Get the Response Time Details for the Step ======================================
+
+		//log.info "Time taken"+testStepsCurrent.timeTaken
+		log.info "Time taken"+testRunner.timeTaken
+		def steptime = testRunner.timeTaken
+		Label label3steptime = new Label(4, row_update_step, ""+steptime+" ms");
+		sheet_teststep.addCell(label3steptime);
+
+		//============================================================== Get the PASS / FAIL status for the step =======================================
+
+		/*
+		
+		def tsetpNamestat = testRunner.runContext.currentStep.name
+		log.info "Line no 373 "+tsetpNamestat
+		myTestStepResult = testRunner.runTestStepByName(tsetpNamestat)
+		log.info myTestStepResult
+		myStatus = myTestStepResult.getStatus()
+		if (myStatus == TestStepStatus.OK)
+		{
+		log.info "The step status is: " + myStatus.toString()
+		Label label3stepstat = new Label(5, row_update_step, "This Step is "+myStatus);
+		sheet_teststep.addCell(label3stepstat);
+		}
+		else
+		{
+		log.error "The step status is: " + myStatus.toString()
+		Label label3stepstat = new Label(5, row_update_step, "This Step is "+myStatus);
+		sheet_teststep.addCell(label3stepstat);
+		}
+
+		
+		//def stepstat = testRunner.status.toString()
+		//Label label3stepstat = new Label(5, row_update_step, "This Step is "+stepstat);
+		//sheet_teststep.addCell(label3stepstat);
+
+		//============================================================== COMPLETE -- Get the PASS / FAIL status for the step =======================================
+
+		*/
+		
+		ts_count++
+		teststep_serialNo++
+
+	}
+	/*
+	def testCaseStatus = testRunner.getStatus()
+	log.info "Test Case status is "+testCaseStatus
+	log.info testCase.name;
+	def row_update_case = 2 + tc_count 
+	log.info row_update_case
+	Label labelCase1 =  new Label(1, row_update_case, testCase.name)
+	sheet_testcase.addCell(labelCase1)
+	Label labelSlno_case =  new Label(0, row_update_case, ""+testcase_serialNo)
+	sheet_testcase.addCell(labelSlno_case)
+	Label labelCaseStatus2 = new Label(2, row_update_case, ""+testCaseStatus);
+	sheet_testcase.addCell(labelCaseStatus2);
+	tc_count++
+	testcase_serialNo++
+	*/
+	
+}
+}
+log.info 'Completed...'
+log.info "******************"
+
+workbook.write()
+workbook.close()
+
+/* code lines second test step*/
+ 
+ 
+//import jxl.*
+//import jxl.write.*
+Workbook workbook_print = Workbook.getWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\CustomReportSD.xls"))
+Sheet sheet_print = workbook_print.getSheet(0)
+Cell a1 = sheet_print.getCell(0,1) // getCell(row,column) -- place some values in myfile.xls
+Cell b2 = sheet_print.getCell(1,1)  // then those values will be acessed using a1, b2 &amp; c3 Cell.
+Cell c2 = sheet_print.getCell(2,1)
+log.info a1.getContents()
+log.info b2.getContents()
+log.info c2.getContents()
+
+log.info testRunner.testCase.getPropertyValue("Counter")
+
+workbook_print.close()
+
+//====================================================== The below groovy script step is to capture the soapUI log area. ====================================
+// "soapUI log" can be replaced with http log, jetty log, script log, error log etc based on the need.
+def logArea = com.eviware.soapui.SoapUI.logMonitor.getLogArea( "soapUI log" );
+//Below two lines of groovy script is to get the project directory, we will be saving the soapUI log contents on a file in that directory.
+def groovyUtils_1 = new com.eviware.soapui.support.GroovyUtils(context) 
+def projectPath_1 = groovyUtils_1.projectPath 
+def logFile_1 = new File(projectPath_1 + "\\soapUI-Logs-to-file.txt")
+//This is the first line in the soapUI log file.
+logFile.write("soapUI Logs In a file.\r\n")
+   if( logArea !=null )
+   {
+      def model = logArea.model
+      if( model.size > 0 )            
+         for( c in 0..(model.size-1) )         
+           logFile_1.append(model.getElementAt( c ))       
+      
+   }
+
+log.info '******************************** Report Generation Completed ***********************************'
+log.info "******************"
+   </script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD_5" id="8a117b00-95a0-4df3-b74b-fe67093d5cc3" disabled="true"><con:settings/><con:config><script>import jxl.*
+import jxl.write.*
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+
+
+WritableWorkbook workbook = Workbook.createWorkbook(new File("C:\\Users\\cdeyso\\Desktop\\RnD\\SouvikReport.xls"))
+WritableSheet sheet_teststep = workbook.createSheet("pass fail details", 0)
+
+def project_step = testRunner.testCase.testSuite.project;
+
+
+
+def testCases = testRunner.testCase.testSuite.getTestCaseList()
+def row_update_step = 0
+def testSuite = testRunner.testCase.testSuite.project.getTestSuiteList()
+//for (testSuite in project_step.testSuiteList) 
+//{
+def suitecounter = 0
+//testSuite.each
+//{
+//for (testCase in testSuite.testCaseList) 
+//{
+	testCases.each
+	{
+	for(testSteps in it.testStepList)
+	{
+		counter++ 
+		def tstep_status = testRunner.runTestStep(testRunner.testCase.testStepList[context.currentStepIndex - 1]).status
+
+	//log.info tsep_status
+	def state = testSteps.disabled
+	if (tstep_status == TestStepStatus.OK)
+	{
+		
+		if(state==true)
+			{
+				Label labelCaseStatus2_pass_dis = new Label(2, row_update_step, "UNKNOWN");
+				sheet_teststep.addCell(labelCaseStatus2_pass_dis);
+				log.info "The step status is: UNKNOWN"
+				row_update_step++
+			}
+			else
+			{
+				Label labelCaseStatus2_pass_en = new Label(2, row_update_step, "PASSED");
+				sheet_teststep.addCell(labelCaseStatus2_pass_en);
+				log.info "The step status is: PASSED"
+				row_update_step++
+			}
+			
+		//log.info "The step status is: " + myStatus.toString()
+		log.info "The step status is: PASSED"
+		
+		
+	}
+	else
+	{
+		Label labelCaseStatus2_pass_en = new Label(2, row_update_step, "PASSED");
+		sheet_teststep.addCell(labelCaseStatus2_pass_en);
+		log.error "The step status is: " + tstep_status.toString()
+		row_update_step++
+	}
+	}
+	}
+//}
+//}
+log.info 'Completed...'
+log.info "******************"
+workbook.write()
+workbook.close()</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD_6" id="3539177d-989e-44a0-9590-d99c4c8dc075" disabled="true"><con:settings/><con:config><script>
+import com.eviware.soapui.model.testsuite.TestStepResult.TestStepStatus
+
+
+//def results = testRunner.resultCount
+//log.info results
+
+//def rc = context.currentStepIndex
+//log.info rc
+def project_case = context.testCase.testSuite.project;
+//def testSuite = testRunner.testCase.testSuite.project.getTestSuiteList()
+//def testCases = testRunner.testCase.testSuite.getTestCaseList()
+//def tstep_status = testRunner.runTestStep(testRunner.testCase.testStepList[context.currentStepIndex - 1]).status
+def suitecounter = 0
+def casecounter = 0
+def stepcounter = 0
+//testSuite.each
+for (testSuite in project_case.testSuiteList)
+{
+for(testCases in testSuite.testCaseList)
+{
+	for(testSteps in  testCases.testStepList)
+	{
+	def status = testRunner.runTestStep(context.testCase.testStepList[context.currentStepIndex - 1]).status
+	if (status == TestStepStatus.OK)
+	{
+		log.info "It is PASSED !!"
+	}
+	else
+	{
+		log.info "It has FAILED !!"
+	}
+	//def status = testRunner.testCase.STATUS_PROPERTY//status
+	//log.info status
+	stepcounter ++ 
+	}
+	casecounter++
+}
+suitecounter ++
+}
+
+log.info "Total Suites "+suitecounter // Actual = 16
+log.info "Total Cases "+casecounter // Actual = 91
+log.info "Total Steps "+stepcounter // Actual = 1134</script></con:config></con:testStep><con:tearDownScript>testRunner.results.each{ testStepResult ->
+
+	def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context)
+	def projectPath = groovyUtils.projectPath 
+	def repo_time = new Date().format("yyyy-MM-dd' 'HH-mm-ss")
+	//log.info repo_
+	//filePath = 'C:/Users/cdeyso/Desktop/RnD/SOAP UI Sample Project/Sprint 01 CustomerProjectOrder/Test Step Status/'
+	fos = new FileOutputStream( projectPath + testRunner.testCase.name + repo_time+'.txt', true )
+	pw = new PrintWriter( fos )
+
+	//fos.write("${testStepResult.testStep.name} ${testStepResult.status} \r\n")
+	fos &lt;&lt; ("${testStepResult.testStep.name} ${testStepResult.status} \r\n")
+	
+	
+	//testStepResult.writeTo( pw )
+	pw.close()
+	fos.close()
+    // log.info "${testStepResult.testStep.name} ${testStepResult.status}"
+}</con:tearDownScript><con:properties><con:property><con:name>Counter</con:name><con:value>0</con:value></con:property></con:properties><con:reportScript>import soapui.demo.subreport.SystemPropertiesSubReport
+
+	if( !report.hasSubReport("SystemProperties"))
+	{
+		report.addSubReport(new SystemPropertiesSubReport(testSuite))
+	}
+</con:reportScript><con:reportParameters/><con:breakPoints><con:testStepId>5805c468-c131-4566-a921-2d8d355a693c</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>566e4ca9-90a0-4ab6-8e39-933f3a9fae75</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>4077bdd6-4321-4800-bcd7-ddba9a3ad7eb</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>53b7f364-8aea-46cf-8f99-192d00e12b43</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase>

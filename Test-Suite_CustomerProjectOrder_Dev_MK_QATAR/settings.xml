@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testSuite id="f197d938-17ca-43bd-9693-cf3c631f52e2" name="Test Suite_CustomerProjectOrder_Dev_MK_QATAR" disabled="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="f197d938-17ca-43bd-9693-cf3c631f52e2fileName">Test-Suite_CustomerProjectOrder_Dev_MK_QATAR</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:runType>SEQUENTIAL</con:runType><con:properties/><con:reportParameters/></con:testSuite>

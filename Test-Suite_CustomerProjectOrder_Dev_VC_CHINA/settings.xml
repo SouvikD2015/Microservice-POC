@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testSuite id="7a4954c6-a204-4af4-896a-82cb626dad8c" name="Test Suite_CustomerProjectOrder_Dev_VC_CHINA" disabled="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="7a4954c6-a204-4af4-896a-82cb626dad8cfileName">Test-Suite_CustomerProjectOrder_Dev_VC_CHINA</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:runType>SEQUENTIAL</con:runType><con:properties/><con:reportParameters/></con:testSuite>

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="0e6c175c-ed7f-4a97-8c14-777b76d02b62" discardOkResults="true" failOnError="true" failTestCaseOnErrors="true" keepSession="false" name="TestCase_CustomerProjectOrder_AZURE URI_GetByDateRange_MK_Qatar" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="0e6c175c-ed7f-4a97-8c14-777b76d02b62fileName">TestCase_CustomerProjectOrder_AZURE-URI_GetByDateRange_MK_Qatar</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="groovy" name="Groovy Script_SetDynamicURL" id="595a036f-e4ef-40c3-babc-5e8a346801d1"><con:settings/><con:config><script>
+
+//Set the variable part of the Get Method
+
+//File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\j4\\GetByProductName.txt")
+
+/*
+File file = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\L1_Korea\\pr01003_l1_Account.txt")
+
+log.info "Below is the content of the file line by line ${file.absolutePath}"
+
+def lineNo = testRunner.testCase.getPropertyValue("Counter").toInteger()
+
+def lines = file.readLines()
+if(lines[lineNo] != null)
+{
+//log.info  "Here is the first line: ${lines[lineNo]}"
+context["host"]= "mum-dev"
+context["port"]= "5005"
+context["context1"]= "api/customerprojectorder/companycode/l1/account/"///AAIR01"
+context["context2"] = "${lines[lineNo]}"
+context["colon"] = ":"
+context["backslash"] = "/"
+//log.info context["RestfulURI"]
+
+ log.info "http://" + context["host"] + context["colon"] +context["port"] + context["backslash"] +context["context1"]+context["context2"]
+
+
+//${endpoint}
+
+//testRunner.gotoStepByName("REST Request")
+testRunner.gotoStepByName("REST Request_GetByAccount")
+}
+else 
+{
+	//testRunner.testCase.setPropertyValue("LineCount", lineNo.toString())
+               testRunner.gotoStepByName("Send Mail")
+}
+//==========================================================================
+//context["context2"]="AAIR01"//
+*/
+ 
+
+// log.info "http://" + context["host"] + context["colon"] +context["port"] + context["backslash"] +context["context1"]+context["backslash"]+context["context2"]
+
+
+//http://mum-dev:5002/api/customer/companycode/n1/customerCode/AAIR01
+
+//http://mum-dev:5002/api/customer/companycode/n1/customerCode/AAIR01
+//http://mum-dev:5002/api/customer/companycode/n1/customerCode/AAIR01
+ 
+//http://${host}${colon}${port}${backslash}${context1}${backslash}${context2} 
+
+File file_start = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\L1_Korea\\l1_Korea_StartDate.txt")
+File file_end = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\L1_Korea\\l1_Korea_EndDate.txt")
+
+//log.info "Below is the content of the start date file line by line ${file_start.absolutePath}"
+//log.info "Below is the content of the end date file line by line ${file_end.absolutePath}"
+
+//read the line from the file
+def lines_start = file_start.readLines()
+log.info "${lines_start[0]}"
+def lines_end = file_end.readLines()
+log.info "${lines_end[0]}"
+
+context["host"]= "mum-dev"
+context["port"]= "5005"
+context["context1"]= "api/customerprojectorder/companycode/l1/startDate/"
+context["context2"]= "${lines_start[0]}"
+context["context3"]= "/endDate/"
+context["context4"]= "${lines_end[0]}"
+context["colon"] = ":"
+context["backslash"] = "/"
+
+
+ log.info "http://" + context["host"] + context["colon"] +context["port"] + context["backslash"] +context["context1"]+context["context2"]+context["context3"]+context["context4"]   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script></con:config></con:testStep><con:testStep type="restrequest" name="REST Request_GetByDateRange" id="244b9ee0-98eb-4a16-93cb-7879aeb58f31"><con:settings/><con:config service="REST Service 38" resourcePath="/" methodName="GET" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="REST Request_GetByDateRange" id="ebe5e867-f0c5-4ce2-8051-5bea1a90279c" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://${host}${colon}${port}${backslash}${context1}${context2}${context3}${context4}</con:endpoint><con:request/><con:originalUri>http://mum-dev/api/customerprojectorder/companycode/l1/startDate/2010-08-03endDate/2011-02-28/</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_ValidateAccount_Entries" id="e82402df-3dd7-42fc-bd36-86219478201e"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_GetByDateRange").getPropertyValue("Response")
+def CusId = parse(getAzureResponse).read('$..ERP_Project_Start_Date__c')
+
+log.info "Total number of Entries "+CusId.size()
+
+for(def var = 0; var &lt;=  CusId.size(); var++)
+{
+	if(CusId[var] != null)
+	{
+		log.info "No. of Entries = "+CusId.size()
+		log.info "Valid Entries Returned."
+	}
+}
+
+/*
+if(CusId.size() == 1)
+{
+	log.info "Correct No of entries of for the Project Number is returned."
+	log.info "No. of Entries = "+CusId.size()
+}
+*/</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_ValidateDateRange_Entries" id="9aee85a1-a8fd-4d5b-93d2-467782e525df"><con:settings/><con:config><script>
+
+import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+import jxl.*
+
+//try
+//{
+def getAzureResponse = testRunner.testCase.getTestStepByName("REST Request_GetByDateRange").getPropertyValue("Response")
+def CusId_StartDate = parse(getAzureResponse).read('$..ERP_Project_Start_Date__c')
+def CusId_EndDate = parse(getAzureResponse).read('$..ERP_Project_End_Date__c')
+
+def CusId_EndDate_size = CusId_EndDate.size() - 1
+
+//get the start date 
+def CusId_StartDate_start = CusId_StartDate[0].substring(0,10)
+def CusId_StartDate_start_year = CusId_StartDate[0].substring(0,4)
+def CusId_StartDate_start_month = CusId_StartDate[0].substring(5,7)
+def CusId_StartDate_start_date = CusId_StartDate[0].substring(8,10)
+//log.info CusId_StartDate_start
+//log.info CusId_StartDate_start_year
+//log.info CusId_StartDate_start_month
+//log.info CusId_StartDate_start_date
+
+//get the end date
+def CusId_EndDate_end = CusId_EndDate[CusId_EndDate_size].substring(0,10)
+def CusId_EndDate_end_year = CusId_EndDate[CusId_EndDate_size].substring(0,4)
+def CusId_EndDate_end_month = CusId_EndDate[CusId_EndDate_size].substring(5,7)
+def CusId_EndDate_end_date = CusId_EndDate[CusId_EndDate_size].substring(8,10)
+//log.info CusId_EndDate_end
+//log.info CusId_EndDate_end_year
+//log.info CusId_EndDate_end_month
+//log.info CusId_EndDate_end_date
+
+//====================================write a convert to date method============================================================================
+
+class Convert {
+  private from
+  private to
+  private Convert(clazz) { from = clazz }
+  static def from(clazz) {
+
+      new Convert(clazz)
+
+  }
+
+  def to(clazz) {
+
+      to = clazz
+
+      return this
+
+  }
+
+  def using(closure) {
+
+      def originalAsType = from.metaClass.getMetaMethod('asType', [] as Class[])
+
+      from.metaClass.asType = { Class clazz ->
+
+          if( clazz == to ) {
+
+              closure.setProperty('value', delegate)
+
+              closure(delegate)
+
+          } else {
+
+              originalAsType.doMethodInvoke(delegate, clazz)
+
+          }
+
+      }
+
+  }
+
+}
+//================================================================================================================
+
+/*
+File file_start = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\L1_Korea\\l1_Korea_StartDate.txt")
+File file_end = new File("C:\\Users\\cdeyso\\Desktop\\RnD\\DataSheets\\DataSheets_CustomerProjectOrder\\L1_Korea\\l1_Korea_EndDate.txt")
+
+//log.info "Below is the content of the start date file line by line ${file_start.absolutePath}"
+//log.info "Below is the content of the end date file line by line ${file_end.absolutePath}"
+
+//read the line from the file
+def lines_start = file_start.readLines()
+log.info "${lines_start[0]}"
+def lines_end = file_end.readLines()
+log.info "${lines_end[0]}"
+*/
+
+Convert.from( String ).to( Date ).using { new java.text.SimpleDateFormat('yyyy-MM-dd').parse(value) }
+def date_startRange = '2010-08-03' as Date
+def date_endRange = '2011-02-08' as Date
+
+def response_start = CusId_StartDate_start as Date
+def response_end = CusId_EndDate_end as Date
+
+log.info date_startRange
+log.info date_endRange
+log.info response_start
+log.info response_end
+
+if(CusId_EndDate_size != null)
+{
+if(response_start >= date_startRange)
+{
+	log.info "The start range is Valid!"
+}
+else
+{
+	log.error "There are no valid entries!"
+	testRunner.gotoStepByName("Send Mail on TS Fail")
+}
+if(response_end &lt;= date_endRange)
+{
+	log.info "The end range is Valid!"
+}
+else
+{
+	log.error "There are no valid entries!"
+	testRunner.gotoStepByName("Send Mail on TS Fail")
+}
+}
+else
+{
+	log.error "There are no valid entries!"
+	testRunner.gotoStepByName("Send Mail on TS Fail")
+}
+
+/*
+log.info "The date range is from "+CusId_StartDate_start//CusId_StartDate[0]
+log.info "The date range is to "+CusId_EndDate_end//CusId_EndDate[CusId_EndDate_size]
+*/
+</script></con:config></con:testStep><con:testStep type="sendmailteststep" name="Send Mail on TS Fail" id="b50302dd-4269-4431-a5f3-59178ef57a25" disabled="true"><con:settings/><con:config><subject>Alert on Test Case Fail | Microservices </subject><message>Hi! This is a Test Case Failure report.
+
+Validation Failure : NULL Value returned from the Microservice!
+
+Note : This is an auto generated e-mail for validation purposes only. PLEASE DO NOT REPLY !! </message><server>webmail.jci.com</server><port>25</port><login>souvik.dey@jci.com</login><password>Jci@1111</password><mailTo>souvik.dey@jci.com</mailTo><mailFrom>souvik.dey@jci.com</mailFrom><timeout>5000</timeout><timeout_measure>1</timeout_measure></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script_RnD" id="4512e0f5-4c41-4e6c-83ad-304110c8e2ac" disabled="true"><con:settings/><con:config><script>
+
+
+/*
+String string = "2010-08-30";
+DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+Date date = format.parse(string);
+log.info date
+//System.out.println(date);
+*/
+/*
+def christmas = '12-25-2010' as Date
+Convert.from( String ).to( Date ).using { new java.text.SimpleDateFormat('MM-dd-yyyy').parse(christmas) }
+*/
+
+class Convert {
+  private from
+  private to
+  private Convert(clazz) { from = clazz }
+  static def from(clazz) {
+
+      new Convert(clazz)
+
+  }
+
+  def to(clazz) {
+
+      to = clazz
+
+      return this
+
+  }
+
+  def using(closure) {
+
+      def originalAsType = from.metaClass.getMetaMethod('asType', [] as Class[])
+
+      from.metaClass.asType = { Class clazz ->
+
+          if( clazz == to ) {
+
+              closure.setProperty('value', delegate)
+
+              closure(delegate)
+
+          } else {
+
+              originalAsType.doMethodInvoke(delegate, clazz)
+
+          }
+
+      }
+
+  }
+
+}
+
+Convert.from( String ).to( Date ).using { new java.text.SimpleDateFormat('yyyy-MM-dd').parse(value) }
+def date_startRange = '2010-08-03' as Date
+def date_endRange = '2011-02-28' as Date
+
+log.info date_startRange
+log.info date_endRange
+
+
+
+
+
+
+
+
+</script></con:config></con:testStep><con:properties/><con:reportParameters/><con:breakPoints><con:testStepId>f1197ffc-44c7-4c5f-bd12-35868769c3c1</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase>

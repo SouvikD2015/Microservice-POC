@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testSuite id="6b860f39-1719-4825-915f-fdf700df376e" name="TestSuite_Generate Report" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="IncludeOverview">true</con:setting><con:setting id="IncludeResults">true</con:setting><con:setting id="FlowLayout">true</con:setting><con:setting id="ErrorDetails">true</con:setting><con:setting id="IncludeCoverage">true</con:setting><con:setting id="6b860f39-1719-4825-915f-fdf700df376efileName">TestSuite_Generate-Report</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:runType>SEQUENTIAL</con:runType><con:properties/><con:tearDownScript>
+for ( testCaseResult in runner.results )
+{
+   testCaseName = testCaseResult.getTestCase().name
+   log.info testCaseName
+   if ( testCaseResult.getStatus().toString() == 'FAILED' )
+   {
+      log.info "$testCaseName has failed"
+      for ( testStepResult in testCaseResult.getResults() )
+      {
+         testStepResult.messages.each() { msg -> log.info msg }
+      }
+   }
+}
+
+//=============================================================================================================
+/*
+	testRunner.results.each
+	{ testStepResult ->
+
+	def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context)
+	def projectPath = groovyUtils.projectPath 
+	def repo_time = new Date().format("yyyy-MM-dd' 'HH-mm-ss")
+	//log.info repo_
+	//filePath = 'C:/Users/cdeyso/Desktop/RnD/SOAP UI Sample Project/Sprint 01 CustomerProjectOrder/Test Step Status/'
+	fos = new FileOutputStream( projectPath + testRunner.testCase.name + repo_time+ '.txt', true )
+	pw = new PrintWriter( fos )
+
+	//fos.write("${testStepResult.testStep.name} ${testStepResult.status} \r\n")
+	fos &lt;&lt; ("${testStepResult.testStep.name} ${testStepResult.status} \r\n")
+	
+	
+	//testStepResult.writeTo( pw )
+	pw.close()
+	fos.close()
+    // log.info "${testStepResult.testStep.name} ${testStepResult.status}"
+	}
+*/</con:tearDownScript><con:reportParameters/></con:testSuite>
